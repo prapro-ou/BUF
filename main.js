@@ -1,14 +1,10 @@
-const SCREEN_SIZE_W = 480;
-const SCREEN_SIZE_H = 270;
-const GAME_FPS = 1000 / 60;
-const DEFAULT_STAGE = 0;
 //仮想キャンバス宣言
 let vcan = document.createElement("canvas");
 let vcon = vcan.getContext("2d");
 
 //実態キャンバス宣言
 let can = document.getElementById("can");//描画領域適宜
-let con = can.getContext("2d");//どう描くかを制御
+let con = can.getContext("2d");//どう描くかを制御 
 
 //仮想キャンバスサイズ宣言
 vcan.width = SCREEN_SIZE_W;
@@ -26,6 +22,9 @@ con.imageSmoothingEnabled = false;
 
 //キャラクター表示
 let chImg = new Image(); //Imageというオブジェクトを作成
+let RoadImg = new Image();
+
+RoadImg.src = "Road.png";
 chImg.src = "demo_main_char.png";//画像読み込み
 //chImg.onload = draw;//読み込み終了後onloadの関数drawを実行
 
@@ -36,7 +35,7 @@ let startTime;
 //各クラス定義
 let is_stage;
 let Player = new MainCharacter(100<<4, 100<<4);//キャラクタに関する演算を整数で行うためシフトして演算．描画の時に小数に戻す.
-
+let Map = new Field();
 //キーボード入力情報格納用
 let keyb = {
   Left: false,
@@ -67,7 +66,7 @@ function mainLoop(){
     }
 
     //
-    draw();//画像データの出力
+    draw();//画像デaータの出力
     }
     requestAnimationFrame(mainLoop);
 }
@@ -76,6 +75,7 @@ function mainLoop(){
 //更新処理
 function update() {    
     Player.update();
+    Map.update();
 }
 
 //アニメーション（スプライト番号依存の出力処理）
@@ -84,20 +84,25 @@ function drawSprite(snum, x, y){
     let sy = (snum>>4) *16;
     vcon.drawImage(chImg, sx,sy,16,32, x>>4,y>>4,16,32);//キャラクター表示仮想
 }
+function drawSprite2(snum, x, y){
+    let sx = (snum&15) *16;
+    let sy = (snum>>4) *16;
+    vcon.drawImage(RoadImg, sx,sy,60,30, x,y,60,30);//キャラクター表示仮想
+}
 
 //描画処理
 function draw(){
 vcon.fillStyle="#66AAFF";//プロパティcolor水色
 vcon.fillRect(0,0,SCREEN_SIZE_W,SCREEN_SIZE_H);//メソッド画面表示
 Player.draw();
-
+Map.draw();
 //デバッグ情報表示
 vcon.font= "24px 'Impact'";
 vcon.fillStyle="#FFFFFF";//プロパティcolor
 vcon.fillText("FRAME : " +FrameCount, 10, 20);//readme参照
 
 //仮想描画を実体にプロット
-con.drawImage(vcan, 0, 0, SCREEN_SIZE_W, SCREEN_SIZE_H, 0, 0, SCREEN_SIZE_W*3, SCREEN_SIZE_H*3);
+con.drawImage(vcan, 0, 0, SCREEN_SIZE_W, SCREEN_SIZE_H, 0, 0, SCREEN_SIZE_W*2, SCREEN_SIZE_H*2);
 }
 
 // キーボードが押されたとき

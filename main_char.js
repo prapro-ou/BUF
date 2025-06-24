@@ -9,10 +9,12 @@ class MainCharacter{
         this.x = x; //キャラクターの座標x
         this.y = y; //キャラクターの座標y
         this.vx = 0; //キャラクターの速度
+        this.vy = 0;
         this.stat = STOPING;//キャラクターがどういう状態か
         this.side = RIGHT; //キャラクターがどちら向きか
         this.sprite = 0;
         this.framecount = 0;
+        this.is_jumping = false;
     }
 UpdateWalk(){
     if (keyb.Left === true && keyb.Right === false) { 
@@ -40,8 +42,9 @@ UpdateWalk(){
         }
     }
     this.x += this.vx;
+    this.y += this.vy;
 }
-UPdateSpring(){
+UpdateSpring(){
     if(this.stat === STOPING) this.sprite = 0;//キャラが静止しているとき
     else if (this.stat === WALKING) {
         switch (this.side) { 
@@ -54,7 +57,21 @@ UPdateSpring(){
         }
     }
 }
-
+UpdateJump(){
+     //ジャンピング
+        if (keyb.Jump) {
+            if(!this.is_jumping){
+            this.is_jumping = true;
+            this.Jcount = 0;
+            }
+            if(this.Jcount <= 16) {//何フレームまで上へ加速させるか
+                this.vy = -(64 - this.Jcount);
+            } 
+            this.Jcount++;
+        } else {
+        this.is_jumping = false; // ← キーを離したときにジャンプ解除
+    }
+}
 //画像データのどこを画面に出力するか更新
 draw(){
     drawSprite(this.sprite, this.x, this.y);
@@ -62,7 +79,15 @@ draw(){
 //update
 update(){
     this.framecount++;
+    if(this.vy <= 64) this.vy += GRAVITY;
+    if(this.y >210 <<4){// 仮床処理
+            this.vy = 0;
+            this.is_jumping = false;
+            this.y = 210 << 4;
+            this.Jcount = 0;
+        }
+    this.UpdateJump();
     this.UpdateWalk();
-    this.UPdateSpring();
+    this.UpdateSpring();
 }
 }
