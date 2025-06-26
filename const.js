@@ -11,5 +11,5 @@ const MAP_SIZE_W = SCREEN_SIZE_W / 30;
 const MAP_SIZE_H = SCREEN_SIZE_H / 30;
 
 //マップデータの風呂㏍数
-const FIELD_SIZE_W = 16;
+const FIELD_SIZE_W = 210;
 const FIELD_SIZE_H = 9;

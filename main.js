@@ -80,15 +80,11 @@ function update() {
 
 //アニメーション（スプライト番号依存の出力処理）
 function drawSprite(snum, x, y){
-    let sx = (snum&15) *16;
-    let sy = (snum>>4) *16;
+    let sx = (snum&15) *16;//下位4bitと0b1111の＆
+    let sy = (snum>>4)<<4;//(snum>>4) *16;//16で割って何行目か*ピクセル数
     vcon.drawImage(chImg, sx,sy,16,32, x>>4,y>>4,16,32);//キャラクター表示仮想
 }
-function drawSprite2(snum, x, y){
-    let sx = (snum&15) *16;
-    let sy = (snum>>4) *16;
-    vcon.drawImage(RoadImg, sx,sy,60,30, x,y,60,30);//キャラクター表示仮想
-}
+
 
 //描画処理
 function draw(){
@@ -110,6 +106,8 @@ document.addEventListener("keydown", function(e) {
     if (e.code === "Space") keyb.Jump = true;
     if (e.code === "ArrowLeft"||e.code === "KeyA")  keyb.Left  = true;
     if (e.code === "ArrowRight"||e.code === "KeyD") keyb.Right = true;
+    if (e.code === "KeyJ") Map.scx-= 2;
+    if (e.code === "KeyL") Map.scx+=2;
 });
 
 // キーボードが離されたとき

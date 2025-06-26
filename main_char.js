@@ -74,16 +74,18 @@ UpdateJump(){
 }
 //画像データのどこを画面に出力するか更新
 draw(){
-    drawSprite(this.sprite, this.x, this.y);
+    let px = (this.x) - Math.floor(Map.scx / 30);
+    let py = (this.y) - Math.floor(Map.scy / 30);
+    drawSprite(this.sprite, px, py);
 }
 //update
 update(){
     this.framecount++;
     if(this.vy <= 64) this.vy += GRAVITY;
-    if(this.y >210 <<4){// 仮床処理
+    if(this.y >180 <<4){// 仮床処理
             this.vy = 0;
             this.is_jumping = false;
-            this.y = 210 << 4;
+            this.y =180 << 4;
             this.Jcount = 0;
         }
     this.UpdateJump();
