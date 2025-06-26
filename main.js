@@ -49,7 +49,7 @@ window.onload = function(){
     startTime = performance.now();
     update();
     mainLoop();
-} 
+}
 
 //メインループ
 function mainLoop(){
