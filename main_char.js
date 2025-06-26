@@ -44,7 +44,7 @@ UpdateWalk(){
     this.x += this.vx;
     this.y += this.vy;
 }
-UpdateSpring(){//
+UpdateSpring(){
     if(this.stat === STOPING) this.sprite = 0;//キャラが静止しているとき
     else if (this.stat === WALKING) {
         switch (this.side) { 
