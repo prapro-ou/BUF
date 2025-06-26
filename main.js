@@ -92,6 +92,7 @@ vcon.fillStyle="#66AAFF";//プロパティcolor水色
 vcon.fillRect(0,0,SCREEN_SIZE_W,SCREEN_SIZE_H);//メソッド画面表示
 Player.draw();
 Map.draw();
+
 //デバッグ情報表示
 vcon.font= "24px 'Impact'";
 vcon.fillStyle="#FFFFFF";//プロパティcolor

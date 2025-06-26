@@ -51,7 +51,7 @@ UpdateSpring(){
     else if (this.stat === WALKING) {
         switch (this.side) { 
             case RIGHT : 
-                    this.sprite = 1 + (this.framecount >> 2) % 4;
+                    this.sprite = 1 + (this.framecount >> 3) % 4;
                     break;
             case LEFT : 
                     this.sprite = 5 + (this.framecount >> 2) % 4;
