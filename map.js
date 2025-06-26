@@ -18,8 +18,16 @@ class Field{
         this.scy = 0;
     }
     update(){
-        //if(Player.x)
-
+        if((Player.x >> 4) > this.scx + 300){
+            this.scx = (Player.x>>4) - 300;
+        }
+        if((Player.x >> 4) < this.scx + 90){
+            this.scx = (Player.x>>4) - 90;
+        }
+        // 仮想スクリーン幅 (ピクセルで16倍されてる)
+        const maxScrollX = (FIELD_SIZE_W * 30 << 4) - (SCREEN_SIZE_W << 4);
+        if (this.scx < 0) this.scx = 0;
+        if (this.scx > maxScrollX) this.scx = maxScrollX;
     }
     drawBlock(bl, px, py){
         let sx = ((bl - 1) % 30);
@@ -31,7 +39,7 @@ class Field{
     for (let x = 0; x < MAP_SIZE_W+1; x++){
       let mapX = x + Math.floor(this.scx / 30);
       let mapY = y + Math.floor(this.scy / 30);
-      
+      //Player.pixelx = mapX*30 + ((Player.x>>4) - (SCREEN_SIZE_W>>1));
       // 範囲チェック（画面外アクセス回避）
       if (mapX < 0 || mapX >= FIELD_SIZE_W || mapY < 0 || mapY >= FIELD_SIZE_H) continue;
 

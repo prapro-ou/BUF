@@ -8,6 +8,7 @@ class MainCharacter{
     constructor(x, y){
         this.x = x; //キャラクターの座標x
         this.y = y; //キャラクターの座標y
+        //this.pixelx = 0;
         this.vx = 0; //キャラクターの速度
         this.vy = 0;
         this.stat = STOPING;//キャラクターがどういう状態か
@@ -42,6 +43,7 @@ UpdateWalk(){
         } 
     }
     this.x += this.vx;
+    if(this.x < 0) this.x = 0;
     this.y += this.vy;
 }
 UpdateSpring(){
@@ -74,8 +76,8 @@ UpdateJump(){
 }
 //画像データのどこを画面に出力するか更新
 draw(){
-    let px = (this.x) - Math.floor(Map.scx / 30);
-    let py = (this.y) - Math.floor(Map.scy / 30);
+    let px = (this.x>>4) - Map.scx;
+    let py = (this.y>>4) - Map.scy;
     drawSprite(this.sprite, px, py);
 }
 //update

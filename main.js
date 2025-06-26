@@ -82,7 +82,7 @@ function update() {
 function drawSprite(snum, x, y){
     let sx = (snum&15) *16;//下位4bitと0b1111の＆
     let sy = (snum>>4)<<4;//(snum>>4) *16;//16で割って何行目か*ピクセル数
-    vcon.drawImage(chImg, sx,sy,16,32, x>>4,y>>4,16,32);//キャラクター表示仮想
+    vcon.drawImage(chImg, sx,sy,16,32, x,y,16,32);//キャラクター表示仮想
 }
 
 
