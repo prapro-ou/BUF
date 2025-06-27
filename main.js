@@ -7,12 +7,12 @@ let can = document.getElementById("can");//描画領域適宜
 let con = can.getContext("2d");//どう描くかを制御 
 
 //仮想キャンバスサイズ宣言
-vcan.width = SCREEN_SIZE_W;
-vcan.height = SCREEN_SIZE_H;
+vcan.width = SCREEN_SIZE_W;//仮想画面のサイズ横定義
+vcan.height = SCREEN_SIZE_H;//仮想画面のサイズ縦定義
 
 //実態キャンバスサイズ宣言
-can.width = SCREEN_SIZE_W*2;
-can.height = SCREEN_SIZE_H*2;
+can.width = SCREEN_SIZE_W*2;//実画面のサイズ横定義
+can.height = SCREEN_SIZE_H*2;//実画面のサイズ縦定義
 
 //描画のぼやぼやをなくすメソッド
 con.mozimageSmoothingEnabled = false;
@@ -21,21 +21,23 @@ con.webkitimageSmoothingEnabled = false;
 con.imageSmoothingEnabled = false;
 
 //キャラクター表示
-let chImg = new Image(); //Imageというオブジェクトを作成
-let RoadImg = new Image();
+let chImg = new Image(); //キャラクターの画像用オブジェクトを作成
+let RoadImg = new Image(); //デモ道の画像用オブジェクトを作成
 
-RoadImg.src = "Road.png";
-chImg.src = "demo_main_char.png";//画像読み込み
-//chImg.onload = draw;//読み込み終了後onloadの関数drawを実行
+RoadImg.src = "Road.png";//画像データの紐づけ
+chImg.src = "demo_main_char.png";//画像データの紐づけ
 
-//フレームレート制御
+//フレームレート制御用変数
 let FrameCount = 0;
-let startTime;
+let startTime;//メインループ開始時刻の保存用変数
 
 //各クラス定義
-let is_stage;
+//let is_stage;
+//プレイヤーのクラスを実体化
 let Player = new MainCharacter(100<<4, 100<<4);//キャラクタに関する演算を整数で行うためシフトして演算．描画の時に小数に戻す.
+//マップのレイアウトクラスを実体化
 let Map = new Field();
+
 //キーボード入力情報格納用
 let keyb = {
   Left: false,
@@ -46,7 +48,7 @@ let keyb = {
 //setInterval(mainLoop, 1000/60);//1秒間に60回mianLoopを呼び出す
 //HTML読み込み終了後に実行＝ループ開始
 window.onload = function(){    
-    startTime = performance.now();
+    startTime = performance.now();//この命令実行時を0とする
     update();
     mainLoop();
 }
@@ -54,19 +56,22 @@ window.onload = function(){
 //メインループ
 function mainLoop(){
     let nowTime = performance.now();
-    let nowFrame = (nowTime-startTime) / GAME_FPS;//今のプログラム時間，60fpsで動いた時のフレーム数
+
+    //プログラム開始からの時刻を，60fps時の更新間隔時間で割ると現時点で60fps
+    //で動いた時のフレームカウントが出る．
+    let nowFrame = (nowTime-startTime) / GAME_FPS;
     
     if(nowFrame > FrameCount){//更新可能な時＝60fpsを超えないとき
     let c = 0;
 
     while(nowFrame > FrameCount){//いまのフレーム数とフレーム制御の間に大差があるとき4倍で時間を進めて差を小さくする
-    FrameCount++;               //TODOバックグラウンドにウィンドウが長時間行ったときに不具合
+    FrameCount++;//TODOバックグラウンドにウィンドウが長時間行ったときに不具合
     update();//出力画像データの更新．画像のどこを出力するか(snum)を更新
-    if(++c >= 50)break;
+    if(++c >= 4)break;//ループ上限4回まで
     }
 
     //
-    draw();//画像デaータの出力
+    draw();//画像データの出力
     }
     requestAnimationFrame(mainLoop);
 }
@@ -92,6 +97,7 @@ vcon.fillStyle="#66AAFF";//プロパティcolor水色
 vcon.fillRect(0,0,SCREEN_SIZE_W,SCREEN_SIZE_H);//メソッド画面表示
 Player.draw();
 Map.draw();
+
 //デバッグ情報表示
 vcon.font= "24px 'Impact'";
 vcon.fillStyle="#FFFFFF";//プロパティcolor
@@ -106,8 +112,8 @@ document.addEventListener("keydown", function(e) {
     if (e.code === "Space") keyb.Jump = true;
     if (e.code === "ArrowLeft"||e.code === "KeyA")  keyb.Left  = true;
     if (e.code === "ArrowRight"||e.code === "KeyD") keyb.Right = true;
-    if (e.code === "KeyJ") Map.scx-= 2;
-    if (e.code === "KeyL") Map.scx+=2;
+    //if (e.code === "KeyJ") Map.scx-= 2;//スクロール処理が終わったら消す
+    //if (e.code === "KeyL") Map.scx+=2;
 });
 
 // キーボードが離されたとき
