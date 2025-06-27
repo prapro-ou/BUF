@@ -7,6 +7,7 @@ const WALKING = 1;
 const CHARACTER_AX = 1//キャラクターの移動加速度
 const CHARACTER_FRICTION = 1;//キャラクターの摩擦
 const NUMBER_OF_CHAR_FRAME = 4;
+
 class MainCharacter{
     constructor(x, y){
         this.x = x; //キャラクターの座標x
@@ -49,10 +50,10 @@ UpdateWalk(){
         let state = (this.vx > 0) ? 1 : (this.vx < 0) ? 2 : 0;
         switch (state) {
             case 1:
-                this.vx -= CHARACTER_FRICTION;
+                this.vx -= CHARACTER_FRICTION;//キャラクターが右に進んでいるとき何もしないと定数比例で原則
                 break;
             case 2:
-                this.vx += CHARACTER_FRICTION;
+                this.vx += CHARACTER_FRICTION;//キャラクターが左に進んでいるとき何もしないと定数比例で原則
                 break;
             case 0:
                 // 何もしない（既に静止）
