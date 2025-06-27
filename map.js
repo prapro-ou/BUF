@@ -1,5 +1,6 @@
+//
 //map class
-
+//
 let fieldData = [
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -13,40 +14,45 @@ let fieldData = [
 ];
 class Field{
     constructor(){
-        this.scx = 0;
-        this.scy = 0;
+        this.scx = 0;//カメラ座標x
+        this.scy = 0;//カメラ座標y
     }
+    //カメラ座標の更新
     update(){
-        if((Player.x >> 4) > this.scx + 300){
+        if((Player.x >> 4) > this.scx + 300){//キャラクターが座標300を超えたときキャラに合わせて右スクロールする．
             this.scx = (Player.x>>4) - 300;
         }
-        if((Player.x >> 4) < this.scx + 90){
+        if((Player.x >> 4) < this.scx + 90){//キャラクターが座標300を超えたときキャラに合わせて左スクロールする．
             this.scx = (Player.x>>4) - 90;
         }
         // 仮想スクリーン幅 (ピクセルで16倍されてる)
-        const maxScrollX = (FIELD_SIZE_W * 30 << 4) - (SCREEN_SIZE_W << 4);
-        if (this.scx < 0) this.scx = 0;
-        if (this.scx > maxScrollX) this.scx = maxScrollX;
+        const maxScrollX = (FIELD_SIZE_W * BLOCK_PIXEL << 4) - (SCREEN_SIZE_W << 4);
+        if (this.scx < 0) this.scx = 0;//右端でスクロールしないようにする
+        if (this.scx > maxScrollX) this.scx = maxScrollX;//左端でスクロールしないようにする
     }
+    //ブロックごとの描画
     drawBlock(bl, px, py){
-        let sx = ((bl - 1) % 30);
-        let sy = Math.floor((bl - 1) / 30) * 30;
-       vcon.drawImage(RoadImg, sx, sy, 30, 30, px, py, 30, 30);
+        let sx = ((bl - 1) % BLOCK_PIXEL);//スプライトデータのx座標
+        let sy = Math.floor((bl - 1) / BLOCK_PIXEL) * BLOCK_PIXEL;//スプライトデータのy座標
+        vcon.drawImage(RoadImg, sx, sy, 30, 30, px, py, 30, 30);//仮想画面に出力
     }
+    //map描画
     draw(){
-  for (let y = 0; y < MAP_SIZE_H+1; y++) {
-    for (let x = 0; x < MAP_SIZE_W+1; x++){
-      let mapX = x + Math.floor(this.scx / 30);
-      let mapY = y + Math.floor(this.scy / 30);
-      //Player.pixelx = mapX*30 + ((Player.x>>4) - (SCREEN_SIZE_W>>1));
-      // 範囲チェック（画面外アクセス回避）
-      if (mapX < 0 || mapX >= FIELD_SIZE_W || mapY < 0 || mapY >= FIELD_SIZE_H) continue;
-
-      let bl = fieldData[mapY * FIELD_SIZE_W + mapX];
-      let px = x * 30 - (this.scx % 30);
-      let py = y * 30 - (this.scy % 30);
-      
-      if(bl > 0) this.drawBlock(bl, px, py);
+      for (let y = 0; y < MAP_SIZE_H+1; y++) {
+        for (let x = 0; x < MAP_SIZE_W+1; x++){
+          //カメラ座標依存のその画面の各ブロックにアクセス
+          let mapX = x + Math.floor(this.scx / BLOCK_PIXEL);
+          let mapY = y + Math.floor(this.scy / BLOCK_PIXEL);
+          
+          // 範囲チェック（画面外アクセス回避）
+          //if (mapX < 0 || mapX >= FIELD_SIZE_W || mapY < 0 || mapY >= FIELD_SIZE_H) continue;
+          
+          let bl = fieldData[mapY * FIELD_SIZE_W + mapX];//各ブロックにアクセス
+          //各ブロックのピクセル座標を出力
+          let px = x * 30 - (this.scx % 30);
+          let py = y * 30 - (this.scy % 30);
+          //ブロック描画関数へ
+          if(bl > 0) this.drawBlock(bl, px, py);
     }
   }
 }

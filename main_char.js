@@ -6,7 +6,8 @@ const STOPING = 0;
 const WALKING = 1;
 const CHARACTER_AX = 1//キャラクターの移動加速度
 const CHARACTER_FRICTION = 1;//キャラクターの摩擦
-const NUMBER_OF_CHAR_FRAME = 4;
+const NUMBER_OF_CHAR_FRAME = 4;//キャラクターのフレーム数
+
 class MainCharacter{
     constructor(x, y){
         this.x = x; //キャラクターの座標x
@@ -22,6 +23,7 @@ class MainCharacter{
 UpdateJump(){
      //ジャンピング
      //TODOキャラクターが空中にいるときはジャンプできないようにする
+     /*
         if (keyb.Jump) {
             if(!this.is_jumping){//キャラクターがジャンプしていないとき
             this.is_jumping = true;
@@ -33,7 +35,9 @@ UpdateJump(){
             this.Jcount++;
         } else {
         this.is_jumping = false; // ← キーを離したときにジャンプ解除
-    }
+    }*/
+    if(this.vy <= 64) this.vy += GRAVITY;　
+    this.y += this.vy;//座標更新
 }
 UpdateWalk(){
     if (keyb.Left === true && keyb.Right === false) { 
@@ -49,10 +53,10 @@ UpdateWalk(){
         let state = (this.vx > 0) ? 1 : (this.vx < 0) ? 2 : 0;
         switch (state) {
             case 1:
-                this.vx -= CHARACTER_FRICTION;
+                this.vx -= CHARACTER_FRICTION;//キャラクターが右に進んでいるとき何もしないと定数比例で原則
                 break;
             case 2:
-                this.vx += CHARACTER_FRICTION;
+                this.vx += CHARACTER_FRICTION;//キャラクターが左に進んでいるとき何もしないと定数比例で原則
                 break;
             case 0:
                 // 何もしない（既に静止）
@@ -63,7 +67,6 @@ UpdateWalk(){
     this.x += this.vx;//座標更新
     if(this.x < 0) this.x = 0;//画面端で左に行けないようにする．
     //TODO右端も作る
-    this.y += this.vy;//座標更新
 }
 UpdateSpring(){//出力画像データの更新
     if(this.stat === STOPING) this.sprite = 0;//キャラが静止しているとき
@@ -90,7 +93,6 @@ draw(){
 //update
 update(){
     this.framecount++;
-    if(this.vy <= 64) this.vy += GRAVITY;
     if(this.y >180 <<4){// 仮床処理
             this.vy = 0;
             this.is_jumping = false;
