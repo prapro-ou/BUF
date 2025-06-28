@@ -23,7 +23,7 @@ class MainCharacter{
 UpdateJump(){
      //ジャンピング
      //TODOキャラクターが空中にいるときはジャンプできないようにする
-     /*
+     
         if (keyb.Jump) {
             if(!this.is_jumping){//キャラクターがジャンプしていないとき
             this.is_jumping = true;
@@ -35,9 +35,7 @@ UpdateJump(){
             this.Jcount++;
         } else {
         this.is_jumping = false; // ← キーを離したときにジャンプ解除
-    }*/
-    if(this.vy <= 64) this.vy += GRAVITY;　
-    this.y += this.vy;//座標更新
+    }
 }
 UpdateWalk(){
     if (keyb.Left === true && keyb.Right === false) { 
@@ -64,7 +62,6 @@ UpdateWalk(){
                 break;
         } 
     }
-    this.x += this.vx;//座標更新
     if(this.x < 0) this.x = 0;//画面端で左に行けないようにする．
     //TODO右端も作る
 }
@@ -83,7 +80,18 @@ UpdateSpring(){//出力画像データの更新
         }
     }
 }
-
+CheckFloor(){//床の判定処理
+    if(this.vy <= 0) return;
+    let lx = (this.x<<5);
+    let ly = (this.y = this.vy << 5);
+    if(Field.isBlock(lx+1, ly + ((BLOCK_PIXEL<<1) - 1)) || 
+        Field.isBlock(lx+BLOCK_PIXEL-2, ly + ((BLOCK_PIXEL<<1) - 1))){// 仮床処理
+            this.vy = 0;
+            this.is_jumping = false;
+            this.y = (ly+(BLOCK_PIXEL<<1) - 1);
+            this.Jcount = 0;
+    }
+}
 //画像データのどこを画面に出力するか更新
 draw(){
     let px = (this.x>>4) - Map.scx;
@@ -93,14 +101,18 @@ draw(){
 //update
 update(){
     this.framecount++;
-    if(this.y >180 <<4){// 仮床処理
+    if(this.y >288-96 <<4){// 仮床処理
             this.vy = 0;
             this.is_jumping = false;
-            this.y =180 << 4;
+            this.y = 288-96 << 4;
             this.Jcount = 0;
         }
     this.UpdateJump();
     this.UpdateWalk();
     this.UpdateSpring();
+    if(this.vy <= 64) this.vy += GRAVITY;
+    //this.CheckFloor();
+    this.y += this.vy;//座標更新
+    this.x += this.vx;//座標更新
 }
 }

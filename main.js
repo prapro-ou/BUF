@@ -11,8 +11,8 @@ vcan.width = SCREEN_SIZE_W;//仮想画面のサイズ横定義
 vcan.height = SCREEN_SIZE_H;//仮想画面のサイズ縦定義
 
 //実態キャンバスサイズ宣言
-can.width = SCREEN_SIZE_W*2;//実画面のサイズ横定義
-can.height = SCREEN_SIZE_H*2;//実画面のサイズ縦定義
+can.width = SCREEN_SIZE_W*3;//実画面のサイズ横定義
+can.height = SCREEN_SIZE_H*3;//実画面のサイズ縦定義
 
 //描画のぼやぼやをなくすメソッド
 con.mozimageSmoothingEnabled = false;
@@ -25,7 +25,7 @@ let chImg = new Image(); //キャラクターの画像用オブジェクトを�
 let RoadImg = new Image(); //デモ道の画像用オブジェクトを作成
 
 RoadImg.src = "Road.png";//画像データの紐づけ
-chImg.src = "demo_main_char.png";//画像データの紐づけ
+chImg.src = "Player.png";//画像データの紐づけ
 
 //フレームレート制御用変数
 let FrameCount = 0;
@@ -85,9 +85,9 @@ function update() {
 
 //アニメーション（スプライト番号依存の出力処理）
 function drawSprite(snum, x, y){
-    let sx = (snum&15) *16;//下位4bitと0b1111の＆
-    let sy = (snum>>4)<<4;//(snum>>4) *16;//16で割って何行目か*ピクセル数
-    vcon.drawImage(chImg, sx,sy,16,32, x,y,16,32);//キャラクター表示仮想
+    let sx = (snum & (BLOCK_PIXEL-1)) * BLOCK_PIXEL;//下位4bitと0b1111の＆
+    let sy = (snum>>5)<<5;//(snum>>4) *16;//16で割って何行目か*ピクセル数
+    vcon.drawImage(chImg, sx,sy,32,64, x,y,32,64);//キャラクター表示仮想
 }
 
 
@@ -104,7 +104,7 @@ vcon.fillStyle="#FFFFFF";//プロパティcolor
 vcon.fillText("FRAME : " +FrameCount, 10, 20);//readme参照
 
 //仮想描画を実体にプロット
-con.drawImage(vcan, 0, 0, SCREEN_SIZE_W, SCREEN_SIZE_H, 0, 0, SCREEN_SIZE_W*2, SCREEN_SIZE_H*2);
+con.drawImage(vcan, 0, 0, SCREEN_SIZE_W, SCREEN_SIZE_H, 0, 0, SCREEN_SIZE_W*3, SCREEN_SIZE_H*3);
 }
 
 // キーボードが押されたとき
@@ -112,8 +112,8 @@ document.addEventListener("keydown", function(e) {
     if (e.code === "Space") keyb.Jump = true;
     if (e.code === "ArrowLeft"||e.code === "KeyA")  keyb.Left  = true;
     if (e.code === "ArrowRight"||e.code === "KeyD") keyb.Right = true;
-    //if (e.code === "KeyJ") Map.scx-= 2;//スクロール処理が終わったら消す
-    //if (e.code === "KeyL") Map.scx+=2;
+    if (e.code === "KeyJ") Map.scy-= 2;//スクロール処理が終わったら消す
+    if (e.code === "KeyL") Map.scy+=2;
 });
 
 // キーボードが離されたとき
