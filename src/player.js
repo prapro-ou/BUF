@@ -4,7 +4,7 @@ const RIGHT = 1;
 const LEFT = 0;
 const STOPING = 0;
 const WALKING = 1;
-const CHARACTER_AX = 3//キャラクターの移動加速度
+const CHARACTER_AX = 2//キャラクターの移動加速度
 const CHARACTER_FRICTION = 3;//キャラクターの摩擦
 const NUMBER_OF_CHAR_FRAME = 4;//キャラクターのフレーム数
 
