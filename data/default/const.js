@@ -3,7 +3,7 @@ const SCREEN_SIZE_W = 512; // 32x16
 const SCREEN_SIZE_H = 288; // 32x9
 const GAME_FPS = 1000 / 60;// Game fps
 const DEFAULT_STAGE = 0;//通常ステージ
-const GRAVITY = 4;//重力
+const GRAVITY = 8;//重力
 const BLOCK_PIXEL = 32;//１ブロックの辺のピクセル数
 const TILE_COLS = 16
 //一画面当たりのブロック数

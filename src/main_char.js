@@ -1,5 +1,5 @@
 //メインキャラクターのクラス
-const MAX_SPEED = 32;
+const MAX_SPEED = 64;
 const RIGHT = 1;
 const LEFT = 0;
 const STOPING = 0;
@@ -29,7 +29,7 @@ UpdateJump(){
             this.is_jumping = true;
             this.Jcount = 0;
             }
-            if(this.Jcount <= 16) {//何フレームまで上へ加速させるか
+            if(this.Jcount <= 32) {//何フレームまで上へ加速させるか
                 this.vy = -(64 - this.Jcount);
             } 
             this.Jcount++;
@@ -82,36 +82,36 @@ UpdateSpring(){//出力画像データの更新
 }
 CheckFloor(){//床の判定処理
     if(this.vy <= 0) return;
-    let lx = (this.x<<5);
-    let ly = (this.y = this.vy << 5);
-    if(Field.isBlock(lx+1, ly + ((BLOCK_PIXEL<<1) - 1)) || 
-        Field.isBlock(lx+BLOCK_PIXEL-2, ly + ((BLOCK_PIXEL<<1) - 1))){// 仮床処理
+    let lx = (this.x >> 5);//キャラクターの左側1ピクセル下のx座標
+    let ly = ((this.y + this.vy) >> 5);//キャラクターの左側1ピクセル下のy座標
+    if(Map.isBlock(lx+1, ly + ((BLOCK_PIXEL<<1) - 1)) || 
+        Map.isBlock(lx+BLOCK_PIXEL-2, ly + ((BLOCK_PIXEL<<1) - 1))){// 仮床処理
             this.vy = 0;
             this.is_jumping = false;
-            this.y = (ly+(BLOCK_PIXEL<<1) - 1);
+            this.y = ((((ly + 63) >> 5) << 5) - 64) << 5;
             this.Jcount = 0;
     }
 }
 //画像データのどこを画面に出力するか更新
 draw(){
-    let px = (this.x>>4) - Map.scx;
-    let py = (this.y>>4) - Map.scy;
+    let px = (this.x>>5) - Map.scx;
+    let py = (this.y>>5) - Map.scy;
     drawSprite(this.sprite, px, py);
 }
 //update
 update(){
     this.framecount++;
-    if(this.y >288-96 <<4){// 仮床処理
+    /*if(this.y >288-96 <<4){// 仮床処理
             this.vy = 0;
             this.is_jumping = false;
             this.y = 288-96 << 4;
             this.Jcount = 0;
-        }
+        }*/
     this.UpdateJump();
     this.UpdateWalk();
     this.UpdateSpring();
     if(this.vy <= 64) this.vy += GRAVITY;
-    //this.CheckFloor();
+    this.CheckFloor();
     this.y += this.vy;//座標更新
     this.x += this.vx;//座標更新
 }

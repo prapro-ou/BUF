@@ -24,8 +24,8 @@ con.imageSmoothingEnabled = false;
 let chImg = new Image(); //キャラクターの画像用オブジェクトを作成
 let RoadImg = new Image(); //デモ道の画像用オブジェクトを作成
 
-RoadImg.src = "Road.png";//画像データの紐づけ
-chImg.src = "Player.png";//画像データの紐づけ
+RoadImg.src = "../Object_Sprite/Road.png";//画像データの紐づけ
+chImg.src = "../Character_Sprite/Player.png";//画像データの紐づけ
 
 //フレームレート制御用変数
 let FrameCount = 0;
@@ -34,7 +34,7 @@ let startTime;//メインループ開始時刻の保存用変数
 //各クラス定義
 //let is_stage;
 //プレイヤーのクラスを実体化
-let Player = new MainCharacter(100<<4, 100<<4);//キャラクタに関する演算を整数で行うためシフトして演算．描画の時に小数に戻す.
+let Player = new MainCharacter(100<<5, 100<<5);//キャラクタに関する演算を整数で行うためシフトして演算．描画の時に小数に戻す.
 //マップのレイアウトクラスを実体化
 let Map = new Field();
 
