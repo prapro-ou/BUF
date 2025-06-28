@@ -4,8 +4,8 @@ const RIGHT = 1;
 const LEFT = 0;
 const STOPING = 0;
 const WALKING = 1;
-const CHARACTER_AX = 1//キャラクターの移動加速度
-const CHARACTER_FRICTION = 1;//キャラクターの摩擦
+const CHARACTER_AX = 3//キャラクターの移動加速度
+const CHARACTER_FRICTION = 3;//キャラクターの摩擦
 const NUMBER_OF_CHAR_FRAME = 4;//キャラクターのフレーム数
 
 class MainCharacter{
@@ -20,21 +20,11 @@ class MainCharacter{
         this.framecount = 0;//フレームカウント
         this.is_jumping = false;//キャラクターがジャンプしているかどうか
     }
-UpdateJump(){
-     //ジャンピング
-     //TODOキャラクターが空中にいるときはジャンプできないようにする
-     
-        if (keyb.Jump) {
-            if(!this.is_jumping){//キャラクターがジャンプしていないとき
-            this.is_jumping = true;
-            this.Jcount = 0;
-            }
-            if(this.Jcount <= 32) {//何フレームまで上へ加速させるか
-                this.vy = -(64 - this.Jcount);
-            } 
-            this.Jcount++;
-        } else {
-        this.is_jumping = false; // ← キーを離したときにジャンプ解除
+UpdateJump() {
+    // SPACE を押した瞬間だけジャンプ開始
+    if (keyb.Jump && !this.is_jumping) {
+        this.vy = -150;
+        this.is_jumping = true;
     }
 }
 UpdateWalk(){
@@ -62,8 +52,17 @@ UpdateWalk(){
                 break;
         } 
     }
-    if(this.x < 0) this.x = 0;//画面端で左に行けないようにする．
-    //TODO右端も作る
+    if(this.x < 0) {
+        this.vx = 0;//画面端で左に行けないようにする．
+        this.x = 0;
+    }
+    //世界のサイズ(block)を5bitシフトでピクセルサイズに演算は実座標の
+    //5bitシフトなので計10bitシフト
+    if (this.x > (FIELD_SIZE_W<<10)-(32<<5)) {
+    this.vx = 0;
+    this.x = (FIELD_SIZE_W<<10)-(32<<5);
+    }
+    //TODO右端も作るd 
 }
 UpdateSpring(){//出力画像データの更新
     if(this.stat === STOPING) this.sprite = 0;//キャラが静止しているとき
@@ -82,14 +81,40 @@ UpdateSpring(){//出力画像データの更新
 }
 CheckFloor(){//床の判定処理
     if(this.vy <= 0) return;
-    let lx = (this.x >> 5);//キャラクターの左側1ピクセル下のx座標
-    let ly = ((this.y + this.vy) >> 5);//キャラクターの左側1ピクセル下のy座標
-    if(Map.isBlock(lx+1, ly + ((BLOCK_PIXEL<<1) - 1)) || 
-        Map.isBlock(lx+BLOCK_PIXEL-2, ly + ((BLOCK_PIXEL<<1) - 1))){// 仮床処理
+    let char_px = (this.x >> 5);//キャラクターのx座標pixel
+    let char_py = ((this.y + this.vy) >> 5);//キャラクターのy座標pixel
+    if(Map.isBlock(char_px+1,  char_py + 63) == 1|| 
+        Map.isBlock(char_px+30, char_py + 63) == 1){// 仮床処理
             this.vy = 0;
             this.is_jumping = false;
-            this.y = ((((ly + 63) >> 5) << 5) - 64) << 5;
-            this.Jcount = 0;
+            this.Jcount = 0;       
+            this.y = ((((char_py + 63) >> 5) << 5) - 64) << 5;
+    } else  this.is_jumping = true;
+}
+CheckWall(){//壁の判定処理
+    let char_px = ((this.x + this.vx) >> 5);//キャラクターのx座標pixel
+    let char_py = ((this.y + this.vy) >> 5);//キャラクターのy座標pixel
+    //右側チェック
+    if (Map.isBlock(char_px + 31, char_py + 8)  == 1||
+        Map.isBlock(char_px + 31, char_py + 40) == 1||
+        Map.isBlock(char_px + 31, char_py + 62) == 1) {
+            this.vx = 0;
+            this.x -= 16;
+        }
+    if (Map.isBlock(char_px, char_py + 8)  == 1||
+        Map.isBlock(char_px, char_py + 30) == 1||
+        Map.isBlock(char_px, char_py + 62) == 1){
+            this.vx = 0;
+            this.x += 16;
+        }
+}
+CheckCeil(){//天井の判定処理
+    if(this.vy >= 0) return;
+    let char_px = (this.x >> 5);//キャラクターのx座標pixel
+    let char_py = ((this.y + this.vy) >> 5);//キャラクターのy座標pixel
+    if(Map.isBlock(char_px+30, char_py + 4) == 1||
+       Map.isBlock(char_px+ 2, char_py + 4) == 1){
+            this.vy = 0;
     }
 }
 //画像データのどこを画面に出力するか更新
@@ -107,12 +132,20 @@ update(){
             this.y = 288-96 << 4;
             this.Jcount = 0;
         }*/
-    this.UpdateJump();
     this.UpdateWalk();
     this.UpdateSpring();
-    if(this.vy <= 64) this.vy += GRAVITY;
+    this.UpdateJump();         
+    if(this.vy <= 128) this.vy += GRAVITY;
     this.CheckFloor();
+    this.CheckWall();
+    this.CheckCeil()
     this.y += this.vy;//座標更新
     this.x += this.vx;//座標更新
+
+    //仮落下処理
+    if (this.y > ((288 + 32) << 5)) {
+    this.x = 100<<5;
+    this.y = (288-96)<<5;
+}
 }
 }

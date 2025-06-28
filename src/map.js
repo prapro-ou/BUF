@@ -21,12 +21,13 @@ class Field {
         const maxScrollX = (FIELD_SIZE_W * BLOCK_PIXEL) - SCREEN_SIZE_W;
         this.scx = Math.max(0, Math.min(this.scx, maxScrollX));
     }
+    
     isBlock(x, y){
         let bl= fieldData[(y >> 5) * FIELD_SIZE_W + (x >> 5)];
-        if (bl <= 0) return false;
+        if (bl <= 0) return -1;
         switch (Bl_type[bl - 1]) {
-            case 0 : return false;
-            case 1 : return true;
+            case 0 : return 0;
+            case 1 : return 1;
         }          
     }
 
@@ -37,8 +38,8 @@ class Field {
     }
 
     draw() {
-        for (let y = 0; y < MAP_SIZE_H + 1; y++) {
-            for (let x = 0; x < MAP_SIZE_W + 1; x++) {
+        for (let y = 0; y < SC_BLOCK_H + 1; y++) {
+            for (let x = 0; x < SC_BLOCK_W + 1; x++) {
                 const mapX = x + (this.scx >> 5);//表示する画面の各ブロックにアクセス
                                                 // scxはピクセル座標なのでブロック座標に=÷32
                 const mapY = y;//yのカメラ座標は縦スクロールがないのでそのまま

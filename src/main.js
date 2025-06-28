@@ -112,8 +112,8 @@ document.addEventListener("keydown", function(e) {
     if (e.code === "Space") keyb.Jump = true;
     if (e.code === "ArrowLeft"||e.code === "KeyA")  keyb.Left  = true;
     if (e.code === "ArrowRight"||e.code === "KeyD") keyb.Right = true;
-    if (e.code === "KeyJ") Map.scy-= 2;//スクロール処理が終わったら消す
-    if (e.code === "KeyL") Map.scy+=2;
+    //if (e.code === "KeyJ") Map.scy-= 2;//スクロール処理が終わったら消す
+    //if (e.code === "KeyL") Map.scy+=2;
 });
 
 // キーボードが離されたとき
@@ -122,3 +122,4 @@ document.addEventListener("keyup", function(e) {
     if (e.code === "ArrowLeft"||e.code === "KeyA") keyb.Left  = false;
     if (e.code === "ArrowRight"||e.code === "KeyD") keyb.Right = false;
   });
+ 
