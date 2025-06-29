@@ -23,8 +23,8 @@ class Field {
     }
     
     isBlock(x, y){
-        let bl= fieldData[(y >> 5) * FIELD_SIZE_W + (x >> 5)];
-        if (bl <= 0) return -1;
+        let bl= fieldData2[(y >> 5) * FIELD_SIZE_W + (x >> 5)];
+        if (bl <= 0) return 0;
         switch (Bl_type[bl - 1]) {
             case 0 : return 0;
             case 1 : return 1;
@@ -32,9 +32,16 @@ class Field {
     }
 
     drawBlock(bl, px, py) {
-        const sx = ((bl - 1) & (TILE_COLS-1)) << 5;
-        const sy = Math.floor((bl - 1) >> 4) << 5;
-        vcon.drawImage(RoadImg, sx, sy, BLOCK_PIXEL, BLOCK_PIXEL, px, py, BLOCK_PIXEL, BLOCK_PIXEL);
+
+        if(bl <= 4) {
+            let sx = ((bl - 1) & (TILE_COLS-1)) << 5;
+            let sy = Math.floor((bl - 1) >> 4) << 5;            
+            vcon.drawImage(RoadImg, sx, sy, BLOCK_PIXEL, BLOCK_PIXEL, px, py, BLOCK_PIXEL, BLOCK_PIXEL);
+        } else if(bl == 37) {
+                let sx = 0;
+                let sy = 0;            
+                vcon.drawImage(KonbiniImg, sx, sy, 320, 320, px, py, 320, 320);
+        }
     }
 
     draw() {
@@ -46,7 +53,7 @@ class Field {
                 const px = (x << 5) - (this.scx & (BLOCK_PIXEL-1));//表示するブロックのピクセル座標を計算
                 const py = (y << 5);
 
-                const bl = fieldData[mapY * FIELD_SIZE_W + mapX];//表示するブロックのスプライト番号を取得
+                const bl = fieldData2[mapY * FIELD_SIZE_W + mapX];//表示するブロックのスプライト番号を取得
                 if (bl > 0) {
                     this.drawBlock(bl, px, py);
                 }

@@ -23,7 +23,8 @@ con.imageSmoothingEnabled = false;
 //キャラクター表示
 let chImg = new Image(); //キャラクターの画像用オブジェクトを作成
 let RoadImg = new Image(); //デモ道の画像用オブジェクトを作成
-
+let KonbiniImg = new Image();
+KonbiniImg.src = "../Object_Sprite/konbini.png";//画像データの紐づけ
 RoadImg.src = "../Object_Sprite/Road.png";//画像データの紐づけ
 chImg.src = "../Character_Sprite/Player.png";//画像データの紐づけ
 
@@ -95,8 +96,8 @@ function drawSprite(snum, x, y){
 function draw(){
 vcon.fillStyle="#66AAFF";//プロパティcolor水色
 vcon.fillRect(0,0,SCREEN_SIZE_W,SCREEN_SIZE_H);//メソッド画面表示
-Player.draw();
 Map.draw();
+Player.draw();
 
 //デバッグ情報表示
 vcon.font= "24px 'Impact'";
