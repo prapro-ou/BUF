@@ -1,15 +1,9 @@
+//
 //メインキャラクターのクラス
-const MAX_SPEED = 64;
-const RIGHT = 1;
-const LEFT = 0;
-const STOPING = 0;
-const WALKING = 1;
-const CHARACTER_AX = 2//キャラクターの移動加速度
-const CHARACTER_FRICTION = 3;//キャラクターの摩擦
-const NUMBER_OF_CHAR_FRAME = 4;//キャラクターのフレーム数
-
-class MainCharacter{
+//
+class player extends human{ 
     constructor(x, y){
+        super(x, y); // ← これが最初に必要！一番最初に呼ぶことが絶対ルール
         this.x = x; //キャラクターの座標x
         this.y = y; //キャラクターの座標y
         this.vx = 0; //キャラクターの速度x
@@ -125,23 +119,13 @@ draw(){
 }
 //update
 update(){
-    this.framecount++;
-    /*if(this.y >288-96 <<4){// 仮床処理
-            this.vy = 0;
-            this.is_jumping = false;
-            this.y = 288-96 << 4;
-            this.Jcount = 0;
-        }*/
     this.UpdateWalk();
     this.UpdateSpring();
     this.UpdateJump();         
-    if(this.vy <= 128) this.vy += GRAVITY;
     this.CheckFloor();
     this.CheckWall();
     this.CheckCeil()
-    this.y += this.vy;//座標更新
-    this.x += this.vx;//座標更新
-
+    super.Move();
     //仮落下処理
     if (this.y > ((288 + 32) << 5)) {
     this.x = 100<<5;
