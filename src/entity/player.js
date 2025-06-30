@@ -71,11 +71,11 @@ UpdateSprite(){//出力画像データの更新
         switch (this.side) { 
             case RIGHT : 
                     //フレームカウントの二桁右シフトしたときの割り算のあまりがサブセット
-                    this.sprite = 1;// + (this.framecount >> 2) % 7;
+                    this.sprite = 1 + (this.framecount >> 2) % 6;
                     break;
             case LEFT : 
                     //フレームカウントの二桁右シフトしたときの割り算のあまりがサブセット
-                    this.sprite = 8;// + (this.framecount >> 2) % 7;
+                    this.sprite = 8 + (this.framecount >> 2) % 7;
                     break;
         }
     }
@@ -126,6 +126,7 @@ let py = ((this.y - (Map.scy << 5)) >> 5);
 }
 //update
 update(){
+    this.framecount++;
     this.UpdateWalk();
     this.UpdateSprite();
     this.UpdateJump();         

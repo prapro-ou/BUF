@@ -34,7 +34,7 @@ class Field {
         const scxRawMax = (maxScroll << 5);
         this.scxRaw = Math.max(0, Math.min(this.scxRaw, scxRawMax));
     }
-a
+
     isBlock(x, y){
         let bl= fieldData2[(y >> 5) * FIELD_SIZE_W + (x >> 5)];
         if (bl <= 0) return 0;
@@ -58,8 +58,8 @@ a
     }
 
     draw() {
-        for (let y = 0; y < SC_BLOCK_W; y++) {
-            for (let x = 0; x < SC_BLOCK_W+2; x++) {
+        for (let y = 0; y < FIELD_SIZE_W+1; y++) {
+            for (let x = 0; x < FIELD_SIZE_W+1; x++) {
                 const mapX = x + (this.scx >> 5);//表示する画面の各ブロックにアクセス
                                                 // scxはピクセル座標なのでブロック座標に=÷32
                 const mapY = y;//yのカメラ座標は縦スクロールがないのでそのまま
