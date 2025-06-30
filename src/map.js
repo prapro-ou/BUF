@@ -4,33 +4,37 @@
 //
 class Field {
     constructor() {
-        this.scx = 0; // カメラX（スクロール）
-        this.scy = 0; // カメラY（今回は固定でOK）
+        this.scxRaw = 0; // 5ビット固定小数点のスクロール値（単位: 1/32 px）
+        this.scx = 0;     // 描画用の整数ピクセル値（整数px）
     }
+    update() {
+        // プレイヤー座標も 5bit 固定小数（1/32単位）を前提
+        const playerFixed = Player.x; // すでに fixed(<<5) 形式
 
-update() {
-    // プレイヤーのピクセル位置（this.x は 32倍で保持されている前提）
-    let playerPixelX = Player.x >> 5;
+        // スクリーン中心（固定小数として計算）
+        const screenCenter = (SCREEN_SIZE_W >> 1) << 5;
 
-    // スクロールターゲット（プレイヤーを画面中央付近にしたい場合）
-    let targetScx = playerPixelX - (SCREEN_SIZE_W / 2);
+        // スクロール目標位置（固定小数）
+        const targetScx = playerFixed - screenCenter;
 
-    // スクロールはリニア補間で滑らかに追従（サブピクセルまで保持）
-    this.scx += (targetScx - this.scx) * 0.2;
+        // 線形補間（固定小数点演算）
+        this.scxRaw += ((targetScx - this.scxRaw) >> 2); // → 0.25相当
 
-    // 表示用に整数へ丸めてブレを防止（描画処理でも floor 必須）
-    let scrollOffset = Math.floor(this.scx);
+        // 描画時に必要な整数スクロール値
+        let scrollOffsetPx = this.scxRaw >> 5;
 
-    // 画面端を超えないように制限
-    const maxScrollX = (FIELD_SIZE_W * BLOCK_PIXEL) - SCREEN_SIZE_W;
-    scrollOffset = Math.max(0, Math.min(scrollOffset, maxScrollX));
+        // 制限：マップ右端を超えないように調整
+        const maxScroll = ((FIELD_SIZE_W * BLOCK_PIXEL) - SCREEN_SIZE_W);
+        scrollOffsetPx = Math.max(0, Math.min(scrollOffsetPx, maxScroll));
 
-    // 丸めたスクロール座標を反映（描画時はこの値を参照）
-    this.scx = scrollOffset;
-}
+        // 描画時に使うスクロール値（整数px）
+        this.scx = scrollOffsetPx;
 
-
-    
+        // （必要に応じて this.scxRaw も clamp しておくと安定）
+        const scxRawMax = (maxScroll << 5);
+        this.scxRaw = Math.max(0, Math.min(this.scxRaw, scxRawMax));
+    }
+a
     isBlock(x, y){
         let bl= fieldData2[(y >> 5) * FIELD_SIZE_W + (x >> 5)];
         if (bl <= 0) return 0;
@@ -54,8 +58,8 @@ update() {
     }
 
     draw() {
-        for (let y = 0; y < SC_BLOCK_H + 1; y++) {
-            for (let x = 0; x < SC_BLOCK_W + 1; x++) {
+        for (let y = 0; y < SC_BLOCK_W; y++) {
+            for (let x = 0; x < SC_BLOCK_W+2; x++) {
                 const mapX = x + (this.scx >> 5);//表示する画面の各ブロックにアクセス
                                                 // scxはピクセル座標なのでブロック座標に=÷32
                 const mapY = y;//yのカメラ座標は縦スクロールがないのでそのまま

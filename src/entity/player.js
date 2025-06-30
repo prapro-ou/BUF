@@ -46,6 +46,7 @@ UpdateWalk(){
                 this.vx = 0;
                 break;
         }
+        //描画ブレ防止のための丸め
         if (Math.abs(this.vx) < 10) {
         this.vx = 0;
         this.stat = STOPING;
@@ -63,7 +64,6 @@ UpdateWalk(){
         this.vx = 0;//画面端で左に行けないようにする．
         this.x = 0;
     }
-    //TODO右端も作るd 
 }
 UpdateSprite(){//出力画像データの更新
     if(this.stat === STOPING) this.sprite = 0;//キャラが静止しているとき
@@ -71,11 +71,11 @@ UpdateSprite(){//出力画像データの更新
         switch (this.side) { 
             case RIGHT : 
                     //フレームカウントの二桁右シフトしたときの割り算のあまりがサブセット
-                    this.sprite = 1 + (this.framecount >> 2) % 7;
+                    this.sprite = 1;// + (this.framecount >> 2) % 7;
                     break;
             case LEFT : 
                     //フレームカウントの二桁右シフトしたときの割り算のあまりがサブセット
-                    this.sprite = 8 + (this.framecount >> 2) % 7;
+                    this.sprite = 8;// + (this.framecount >> 2) % 7;
                     break;
         }
     }
@@ -120,8 +120,8 @@ CheckCeil(){//天井の判定処理
 }
 //画像データのどこを画面に出力するか更新
 draw(){
-    let px = Math.floor((this.x >> 5) - Map.scx);
-    let py = Math.floor((this.y >> 5) - Map.scy);
+let px = ((this.x - (Map.scx << 5)) >> 5);
+let py = ((this.y - (Map.scy << 5)) >> 5);
     drawSprite(this.sprite, px, py);
 }
 //update
