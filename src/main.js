@@ -27,7 +27,7 @@ let KonbiniImg = new Image();
 
 KonbiniImg.src = "../Object_Sprite/konbini.png";//画像データの紐づけ
 RoadImg.src = "../Object_Sprite/Road.png";//画像データの紐づけ
-chImg.src = "../Character_Sprite/Player.png";//画像データの紐づけ
+chImg.src = "../Character_Sprite/Grandma.png";//画像データの紐づけ
 
 //フレームレート制御用変数
 let FrameCount = 0;
@@ -83,8 +83,8 @@ function mainLoop(){
 
 //更新処理
 function update() {  
+    Player.update();
     Map.update();  
-    Player.update();    
 }
 
 //アニメーション（スプライト番号依存の出力処理）
@@ -99,8 +99,8 @@ function drawSprite(snum, x, y){
 function draw(){
 vcon.fillStyle="#66AAFF";//プロパティcolor水色
 vcon.fillRect(0,0,SCREEN_SIZE_W,SCREEN_SIZE_H);//メソッド画面表示
-Map.draw();
 Player.draw();
+Map.draw();
 
 //デバッグ情報表示
 vcon.font= "24px 'Impact'";

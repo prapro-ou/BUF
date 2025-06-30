@@ -21,6 +21,7 @@ UpdateJump() {
         this.is_jumping = true;
     }
 }
+
 UpdateWalk(){
     if (keyb.Left === true && keyb.Right === false) { 
         if (this.vx >= -MAX_SPEED) this.vx -= CHARACTER_AX; 
@@ -49,17 +50,19 @@ UpdateWalk(){
         if (Math.abs(this.vx) < 10) {
         this.vx = 0;
         this.stat = STOPING;
+        this.side = RIGHT;
         }
-    }
-    if(this.x < 0) {
-        this.vx = 0;//画面端で左に行けないようにする．
-        this.x = 0;
+
     }
     //世界のサイズ(block)を5bitシフトでピクセルサイズに演算は実座標の
     //5bitシフトなので計10bitシフト
     if (this.x > (FIELD_SIZE_W<<10)-(32<<5)) {
     this.vx = 0;
     this.x = (FIELD_SIZE_W<<10)-(32<<5);
+    }
+    if(this.x < 0) {
+        this.vx = 0;//画面端で左に行けないようにする．
+        this.x = 0;
     }
     //TODO右端も作るd 
 }
@@ -73,7 +76,7 @@ UpdateSprite(){//出力画像データの更新
                     break;
             case LEFT : 
                     //フレームカウントの二桁右シフトしたときの割り算のあまりがサブセット
-                    this.sprite = 5 + (this.framecount >> 2) % NUMBER_OF_CHAR_FRAME;
+                    this.sprite = 8 + (this.framecount >> 2) % NUMBER_OF_CHAR_FRAME;
                     break;
         }
     }
@@ -118,8 +121,8 @@ CheckCeil(){//天井の判定処理
 }
 //画像データのどこを画面に出力するか更新
 draw(){
-    let px = (this.x>>5) - Map.scx;
-    let py = (this.y>>5) - Map.scy;
+    let px = Math.floor((this.x >> 5) - Map.scx);
+    let py = Math.floor((this.y >> 5) - Map.scy);
     drawSprite(this.sprite, px, py);
 }
 //update

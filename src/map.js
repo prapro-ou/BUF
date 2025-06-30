@@ -8,19 +8,28 @@ class Field {
         this.scy = 0; // カメラY（今回は固定でOK）
     }
 
-    update() {
-        // カメラはプレイヤーに追従
-        let px = Player.x >> 5;
-        if (px > this.scx + 300) {
-            this.scx = px - 300;
-        } else if (px < this.scx + 90) {
-            this.scx = px - 90;
-        }
+update() {
+    // プレイヤーのピクセル位置（this.x は 32倍で保持されている前提）
+    let playerPixelX = Player.x >> 5;
 
-        // 画面端を超えないように制限
-        const maxScrollX = (FIELD_SIZE_W * BLOCK_PIXEL) - SCREEN_SIZE_W;
-        this.scx = Math.max(0, Math.min(this.scx, maxScrollX));
-    }
+    // スクロールターゲット（プレイヤーを画面中央付近にしたい場合）
+    let targetScx = playerPixelX - (SCREEN_SIZE_W / 2);
+
+    // スクロールはリニア補間で滑らかに追従（サブピクセルまで保持）
+    this.scx += (targetScx - this.scx) * 0.2;
+
+    // 表示用に整数へ丸めてブレを防止（描画処理でも floor 必須）
+    let scrollOffset = Math.floor(this.scx);
+
+    // 画面端を超えないように制限
+    const maxScrollX = (FIELD_SIZE_W * BLOCK_PIXEL) - SCREEN_SIZE_W;
+    scrollOffset = Math.max(0, Math.min(scrollOffset, maxScrollX));
+
+    // 丸めたスクロール座標を反映（描画時はこの値を参照）
+    this.scx = scrollOffset;
+}
+
+
     
     isBlock(x, y){
         let bl= fieldData2[(y >> 5) * FIELD_SIZE_W + (x >> 5)];
