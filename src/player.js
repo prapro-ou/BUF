@@ -43,8 +43,13 @@ UpdateWalk(){
             case 0:
                 // 何もしない（既に静止）
                 this.stat = STOPING;
+                this.vx = 0;
                 break;
-        } 
+        }
+        if (Math.abs(this.vx) < 10) {
+        this.vx = 0;
+        this.stat = STOPING;
+        }
     }
     if(this.x < 0) {
         this.vx = 0;//画面端で左に行けないようにする．
@@ -58,7 +63,7 @@ UpdateWalk(){
     }
     //TODO右端も作るd 
 }
-UpdateSpring(){//出力画像データの更新
+UpdateSprite(){//出力画像データの更新
     if(this.stat === STOPING) this.sprite = 0;//キャラが静止しているとき
     else if (this.stat === WALKING) {
         switch (this.side) { 
@@ -120,7 +125,7 @@ draw(){
 //update
 update(){
     this.UpdateWalk();
-    this.UpdateSpring();
+    this.UpdateSprite();
     this.UpdateJump();         
     this.CheckFloor();
     this.CheckWall();

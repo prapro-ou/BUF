@@ -24,6 +24,7 @@ con.imageSmoothingEnabled = false;
 let chImg = new Image(); //キャラクターの画像用オブジェクトを作成
 let RoadImg = new Image(); //デモ道の画像用オブジェクトを作成
 let KonbiniImg = new Image();
+
 KonbiniImg.src = "../Object_Sprite/konbini.png";//画像データの紐づけ
 RoadImg.src = "../Object_Sprite/Road.png";//画像データの紐づけ
 chImg.src = "../Character_Sprite/Player.png";//画像データの紐づけ
@@ -34,6 +35,8 @@ let startTime;//メインループ開始時刻の保存用変数
 
 //各クラス定義
 //let is_stage;
+
+//grandmaクラスインスタンス化
 //プレイヤーのクラスを実体化
 let Player = new player(100<<5, 100<<5);//キャラクタに関する演算を整数で行うためシフトして演算．描画の時に小数に戻す.
 //マップのレイアウトクラスを実体化
@@ -79,16 +82,16 @@ function mainLoop(){
 
 
 //更新処理
-function update() {    
-    Player.update();
-    Map.update();
+function update() {  
+    Map.update();  
+    Player.update();    
 }
 
 //アニメーション（スプライト番号依存の出力処理）
 function drawSprite(snum, x, y){
     let sx = (snum & (BLOCK_PIXEL-1)) * BLOCK_PIXEL;//下位4bitと0b1111の＆
     let sy = (snum>>5)<<5;//(snum>>4) *16;//16で割って何行目か*ピクセル数
-    vcon.drawImage(chImg, sx,sy,32,64, x,y,32,64);//キャラクター表示仮想
+    vcon.drawImage(chImg, sx,sy, 32,64, x,y,32,64);//キャラクター表示仮想
 }
 
 
@@ -113,8 +116,6 @@ document.addEventListener("keydown", function(e) {
     if (e.code === "Space") keyb.Jump = true;
     if (e.code === "ArrowLeft"||e.code === "KeyA")  keyb.Left  = true;
     if (e.code === "ArrowRight"||e.code === "KeyD") keyb.Right = true;
-    //if (e.code === "KeyJ") Map.scy-= 2;//スクロール処理が終わったら消す
-    //if (e.code === "KeyL") Map.scy+=2;
 });
 
 // キーボードが離されたとき
