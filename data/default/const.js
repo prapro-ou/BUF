@@ -15,13 +15,8 @@ const TILE_COLS = 16;//横に何フレーム連続で画像データが作られ
 const DEFAULT_STAGE = 0;//通常ステージ
 const GRAVITY = 8;//重力
 
-//player extend humanの定数
-
-const MAX_SPEED = 64;
+//エンティティの定数群
 const RIGHT = 1;
 const LEFT = 0;
 const STOPING = 0;
 const WALKING = 1;
-const CHARACTER_AX = 1;//キャラクターの移動加速度
-const CHARACTER_FRICTION = 4;//キャラクターの摩擦
-const NUMBER_OF_CHAR_FRAME = 4;//キャラクターのフレーム数

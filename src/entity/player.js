@@ -21,14 +21,13 @@ UpdateJump() {
         this.is_jumping = true;
     }
 }
-
 UpdateWalk(){
     if (keyb.Left === true && keyb.Right === false) { 
-        if (this.vx >= -MAX_SPEED) this.vx -= CHARACTER_AX; 
+        if (this.vx >= -PLAYER_MAX_SPEED) this.vx -= PLAYER_AX; 
         this.side = LEFT;
         this.stat = WALKING
     } else if (keyb.Right === true && keyb.Left === false) {
-        if (this.vx <= MAX_SPEED) this.vx += CHARACTER_AX;
+        if (this.vx <= PLAYER_MAX_SPEED) this.vx += PLAYER_AX;
         this.side = RIGHT;
         this.stat = WALKING;
     } else {
@@ -36,10 +35,10 @@ UpdateWalk(){
         let state = (this.vx > 0) ? 1 : (this.vx < 0) ? 2 : 0;
         switch (state) {
             case 1:
-                this.vx -= CHARACTER_FRICTION;//キャラクターが右に進んでいるとき何もしないと定数比例で原則
+                this.vx -= PLAYER_FRICTION;//キャラクターが右に進んでいるとき何もしないと定数比例で原則
                 break;
             case 2:
-                this.vx += CHARACTER_FRICTION;//キャラクターが左に進んでいるとき何もしないと定数比例で原則
+                this.vx += PLAYER_FRICTION;//キャラクターが左に進んでいるとき何もしないと定数比例で原則
                 break;
             case 0:
                 // 何もしない（既に静止）
@@ -72,11 +71,11 @@ UpdateSprite(){//出力画像データの更新
         switch (this.side) { 
             case RIGHT : 
                     //フレームカウントの二桁右シフトしたときの割り算のあまりがサブセット
-                    this.sprite = 1 + (this.framecount >> 2) % NUMBER_OF_CHAR_FRAME;
+                    this.sprite = 1 + (this.framecount >> 2) % 7;
                     break;
             case LEFT : 
                     //フレームカウントの二桁右シフトしたときの割り算のあまりがサブセット
-                    this.sprite = 8 + (this.framecount >> 2) % NUMBER_OF_CHAR_FRAME;
+                    this.sprite = 8 + (this.framecount >> 2) % 7;
                     break;
         }
     }

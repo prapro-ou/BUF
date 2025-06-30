@@ -33,12 +33,10 @@ chImg.src = "../Character_Sprite/Grandma.png";//画像データの紐づけ
 let FrameCount = 0;
 let startTime;//メインループ開始時刻の保存用変数
 
-//各クラス定義
-//let is_stage;
 
 //grandmaクラスインスタンス化
 //プレイヤーのクラスを実体化
-let Player = new player(100<<5, 100<<5);//キャラクタに関する演算を整数で行うためシフトして演算．描画の時に小数に戻す.
+let Player = new player(PLAYER_LOC[0], PLAYER_LOC[1]);//キャラクタに関する演算を整数で行うためシフトして演算．描画の時に小数に戻す.
 //マップのレイアウトクラスを実体化
 let Map = new Field();
 
@@ -48,7 +46,6 @@ let keyb = {
   Right: false,
   Jump: false
 };
-
 //setInterval(mainLoop, 1000/60);//1秒間に60回mianLoopを呼び出す
 //HTML読み込み終了後に実行＝ループ開始
 window.onload = function(){    
@@ -56,7 +53,6 @@ window.onload = function(){
     update();
     mainLoop();
 }
-
 //メインループ
 function mainLoop(){
     let nowTime = performance.now();
@@ -79,28 +75,23 @@ function mainLoop(){
     }
     requestAnimationFrame(mainLoop);
 }
-
-
 //更新処理
 function update() {  
-    Player.update();
     Map.update();  
+    Player.update();    
 }
-
 //アニメーション（スプライト番号依存の出力処理）
 function drawSprite(snum, x, y){
     let sx = (snum & (BLOCK_PIXEL-1)) * BLOCK_PIXEL;//下位4bitと0b1111の＆
     let sy = (snum>>5)<<5;//(snum>>4) *16;//16で割って何行目か*ピクセル数
     vcon.drawImage(chImg, sx,sy, 32,64, x,y,32,64);//キャラクター表示仮想
 }
-
-
 //描画処理
 function draw(){
 vcon.fillStyle="#66AAFF";//プロパティcolor水色
 vcon.fillRect(0,0,SCREEN_SIZE_W,SCREEN_SIZE_H);//メソッド画面表示
-Player.draw();
 Map.draw();
+Player.draw();
 
 //デバッグ情報表示
 vcon.font= "24px 'Impact'";
@@ -110,14 +101,12 @@ vcon.fillText("FRAME : " +FrameCount, 10, 20);//readme参照
 //仮想描画を実体にプロット
 con.drawImage(vcan, 0, 0, SCREEN_SIZE_W, SCREEN_SIZE_H, 0, 0, SCREEN_SIZE_W*3, SCREEN_SIZE_H*3);
 }
-
 // キーボードが押されたとき
 document.addEventListener("keydown", function(e) {
     if (e.code === "Space") keyb.Jump = true;
     if (e.code === "ArrowLeft"||e.code === "KeyA")  keyb.Left  = true;
     if (e.code === "ArrowRight"||e.code === "KeyD") keyb.Right = true;
 });
-
 // キーボードが離されたとき
 document.addEventListener("keyup", function(e) {
     if (e.code === "Space") keyb.Jump = false;
