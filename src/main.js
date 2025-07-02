@@ -15,43 +15,87 @@ c.fillRect(0, 0, canvas.width, canvas.height)
 //画像を読み込み
 const image = new Image()
 image.src = '../img/DemoMap.png'
-const playerImage = new Image()
-playerImage.src = '../img/playerDown.png'
+const playerImg_down = new Image()
+      playerImg_down.src = '../img/playerDown.png'
+const playerImg_up = new Image()
+      playerImg_up.src = '../img/playerUp.png'
+const playerImg_right = new Image()
+      playerImg_right.src = '../img/playerRight.png'
+const playerImg_left = new Image()
+      playerImg_left.src = '../img/playerLeft.png'
 
-//c.drawImage(image, 0, 0)
+//クラスのインスタンス化
+const Background = new bg_default({
+    location: {
+        x:-521,
+        y:-1210
+    },
+    iamge: image
+})
+const Hero = new hero({
+    location: {
+        x:-521,
+        y:-1210
+    },
+    iamge: playerImg_down
+})
 //画像を読み込んだのちに実行する
 image.onload = () => {
         animate()
 }
 
+function update(){
+    Background.update()
+    Hero.update()
+}
+
+function draw(){
+    Background.draw()
+    Hero.draw()
+}
+
 function animate(){
     console.log('anime')
     window.requestAnimationFrame(animate)
-        c.drawImage(image, -521, -1210) //プレイヤー初期画面
-    c.drawImage(
-        playerImage, 
-        0,
-        0,
-        playerImage.width>>2,
-        playerImage.height,
-
-        canvas.width>>1, 
-        canvas.height>>1,
-        playerImage.width>>2,
-        playerImage.height) //プレイヤーを画面の中心に
+    update()
+    draw()
 }
 
 // キーボードが押されたとき
 document.addEventListener("keydown", function(e) {
-    if (e.code === "KeyW") keyb.Up  = true;
-    if (e.code === "KeyA") keyb.Left = true;
-    if (e.code === "KeyS") keyb.Down  = true;
-    if (e.code === "KeyD") keyb.Right = true;
-});
+    if (e.code === "KeyW") {
+        keys.w.pressed  = true
+        Hero.is_stopping = false
+    }
+    if (e.code === "KeyA") {
+        keys.a.pressed = true
+        Hero.is_stopping = false
+    }
+    if (e.code === "KeyS") {
+        keys.s.pressed  = true
+        Hero.is_stopping = false
+    }
+    if (e.code === "KeyD") {
+        keys.d.pressed = true
+        Hero.is_stopping = false
+    }
+})
 // キーボードが離されたとき
 document.addEventListener("keyup", function(e) {
-    if (e.code === "KeyW") keyb.Up  = false;
-    if (e.code === "KeyA") keyb.Left = false;
-    if (e.code === "KeyS") keyb.Down  = false;
-    if (e.code === "KeyD") keyb.Right = false;
-  });
+    if (e.code === "KeyW") {
+        keys.w.pressed  = false
+        Hero.is_stopping = true
+    }
+    if (e.code === "KeyA") {
+        keys.a.pressed = false
+        Hero.is_stopping = true
+    }
+    if (e.code === "KeyS") {
+        keys.s.pressed  = false
+        Hero.is_stopping = true
+    }
+    if (e.code === "KeyD") {
+        keys.d.pressed = false
+        Hero.is_stopping = true
+    }
+  })
