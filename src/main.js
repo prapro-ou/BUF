@@ -1,116 +1,57 @@
-//仮想キャンバス宣言
-let vcan = document.createElement("canvas");
-let vcon = vcan.getContext("2d");
+//htmlのキャンバスを操作するための宣言
+const canvas = document.querySelector('canvas')
+const c = canvas.getContext('2d')
 
-//実態キャンバス宣言
-let can = document.getElementById("can");//描画領域適宜
-let con = can.getContext("2d");//どう描くかを制御 
+//ゲーム画像サイズ
+canvas.width = 1024
+canvas.height = 576
 
-//仮想キャンバスサイズ宣言
-vcan.width = SCREEN_SIZE_W;//仮想画面のサイズ横定義
-vcan.height = SCREEN_SIZE_H;//仮想画面のサイズ縦定義
+//ゲーム画面の色をわかりやすく白に設定
+c.fillStyle = "white"
 
-//実態キャンバスサイズ宣言
-can.width = SCREEN_SIZE_W*3;//実画面のサイズ横定義
-can.height = SCREEN_SIZE_H*3;//実画面のサイズ縦定義
+//画面の描画範囲
+c.fillRect(0, 0, canvas.width, canvas.height)
 
-//描画のぼやぼやをなくすメソッド
-con.mozimageSmoothingEnabled = false;
-con.msimageSmoothingEnabled = false;
-con.webkitimageSmoothingEnabled = false;
-con.imageSmoothingEnabled = false;
+//画像を読み込み
+const image = new Image()
+image.src = '../img/DemoMap.png'
+const playerImage = new Image()
+playerImage.src = '../img/playerDown.png'
 
-//キャラクター表示
-let chImg = new Image(); //キャラクターの画像用オブジェクトを作成
-let RoadImg = new Image(); //デモ道の画像用オブジェクトを作成
-let KonbiniImg = new Image();
-
-KonbiniImg.src = "../Object_Sprite/konbini.png";//画像データの紐づけ
-RoadImg.src = "../Object_Sprite/Road.png";//画像データの紐づけ
-chImg.src = "../Character_Sprite/Grandma.png";//画像データの紐づけ
-
-//フレームレート制御用変数
-let FrameCount = 0;
-let startTime;//メインループ開始時刻の保存用変数
-
-
-//grandmaクラスインスタンス化
-//プレイヤーのクラスを実体化
-let Player = new player(PLAYER_LOC[0], PLAYER_LOC[1]);//キャラクタに関する演算を整数で行うためシフトして演算．描画の時に小数に戻す.
-//マップのレイアウトクラスを実体化
-let Map = new Field();
-
-//キーボード入力情報格納用
-let keyb = {
-  Left: false,
-  Right: false,
-  Jump: false
-};
-//setInterval(mainLoop, 1000/60);//1秒間に60回mianLoopを呼び出す
-//HTML読み込み終了後に実行＝ループ開始
-window.onload = function(){    
-    startTime = performance.now();//この命令実行時を0とする
-    update();
-    mainLoop();
+//c.drawImage(image, 0, 0)
+//画像を読み込んだのちに実行する
+image.onload = () => {
+        animate()
 }
-//メインループ
-function mainLoop(){
-    let nowTime = performance.now();
 
-    //プログラム開始からの時刻を，60fps時の更新間隔時間で割ると現時点で60fps
-    //で動いた時のフレームカウントが出る．
-    let nowFrame = (nowTime-startTime) / GAME_FPS;
-    
-    if(nowFrame > FrameCount){//更新可能な時＝60fpsを超えないとき
-    let c = 0;
+function animate(){
+    console.log('anime')
+    window.requestAnimationFrame(animate)
+        c.drawImage(image, -521, -1210) //プレイヤー初期画面
+    c.drawImage(
+        playerImage, 
+        0,
+        0,
+        playerImage.width>>2,
+        playerImage.height,
 
-    while(nowFrame > FrameCount){//いまのフレーム数とフレーム制御の間に大差があるとき4倍で時間を進めて差を小さくする
-    FrameCount++;//TODOバックグラウンドにウィンドウが長時間行ったときに不具合
-    update();//出力画像データの更新．画像のどこを出力するか(snum)を更新
-    if(++c >= 4)break;//ループ上限4回まで
-    }
-
-    //
-    draw();//画像データの出力
-    }
-    requestAnimationFrame(mainLoop);
+        canvas.width>>1, 
+        canvas.height>>1,
+        playerImage.width>>2,
+        playerImage.height) //プレイヤーを画面の中心に
 }
-//更新処理
-function update() {  
-    Map.update();  
-    Player.update();    
-}
-//アニメーション（スプライト番号依存の出力処理）
-function drawSprite(snum, x, y){
-    let sx = (snum & (BLOCK_PIXEL-1)) * BLOCK_PIXEL;//下位4bitと0b1111の＆
-    let sy = (snum>>5)<<5;//(snum>>4) *16;//16で割って何行目か*ピクセル数
-    vcon.drawImage(chImg, sx,sy, 32,64, x,y,32,64);//キャラクター表示仮想
-}
-//描画処理
-function draw(){
-vcon.fillStyle="#66AAFF";//プロパティcolor水色
-vcon.fillRect(0,0,SCREEN_SIZE_W,SCREEN_SIZE_H);//メソッド画面表示
-Map.draw();
-Player.draw();
 
-//デバッグ情報表示
-vcon.font= "24px 'Impact'";
-vcon.fillStyle="#FFFFFF";//プロパティcolor
-vcon.fillText("FRAME : " +FrameCount, 10, 20);//readme参照
-
-//仮想描画を実体にプロット
-con.drawImage(vcan, 0, 0, SCREEN_SIZE_W, SCREEN_SIZE_H, 0, 0, SCREEN_SIZE_W*3, SCREEN_SIZE_H*3);
-}
 // キーボードが押されたとき
 document.addEventListener("keydown", function(e) {
-    if (e.code === "Space") keyb.Jump = true;
-    if (e.code === "ArrowLeft"||e.code === "KeyA")  keyb.Left  = true;
-    if (e.code === "ArrowRight"||e.code === "KeyD") keyb.Right = true;
+    if (e.code === "KeyW") keyb.Up  = true;
+    if (e.code === "KeyA") keyb.Left = true;
+    if (e.code === "KeyS") keyb.Down  = true;
+    if (e.code === "KeyD") keyb.Right = true;
 });
 // キーボードが離されたとき
 document.addEventListener("keyup", function(e) {
-    if (e.code === "Space") keyb.Jump = false;
-    if (e.code === "ArrowLeft"||e.code === "KeyA") keyb.Left  = false;
-    if (e.code === "ArrowRight"||e.code === "KeyD") keyb.Right = false;
+    if (e.code === "KeyW") keyb.Up  = false;
+    if (e.code === "KeyA") keyb.Left = false;
+    if (e.code === "KeyS") keyb.Down  = false;
+    if (e.code === "KeyD") keyb.Right = false;
   });
- 
