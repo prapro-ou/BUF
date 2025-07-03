@@ -52,6 +52,5 @@ class Field{
       if(bl > 0) this.drawBlock(bl, px, py);
     }
   }
-}
-
+    }
 }
