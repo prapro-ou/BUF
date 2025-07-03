@@ -28,7 +28,9 @@ UpdateWalk(){
         this.stat = WALKING;
     } else {
         // vx の状態をカテゴリに分ける
+        // 1: 右に進んでいる, 2: 左に進んでいる, 0: 静止
         let state = (this.vx > 0) ? 1 : (this.vx < 0) ? 2 : 0;
+        // キーが押されていない場合は減速
         switch (state) {
             case 1:
                 this.vx -= 1;

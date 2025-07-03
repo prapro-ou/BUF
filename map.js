@@ -17,14 +17,17 @@ class Field{
         this.scy = 0;
     }
     update(){
+        // プレイヤーが右寄りになると右にスクロール
         if((Player.x >> 4) > this.scx + 300){
             this.scx = (Player.x>>4) - 300;
         }
+        // プレイヤーが左寄りになると左にスクロール
         if((Player.x >> 4) < this.scx + 90){
             this.scx = (Player.x>>4) - 90;
         }
         // 仮想スクリーン幅 (ピクセルで16倍されてる)
         const maxScrollX = (FIELD_SIZE_W * 30 << 4) - (SCREEN_SIZE_W << 4);
+        // スクロール位置の制限
         if (this.scx < 0) this.scx = 0;
         if (this.scx > maxScrollX) this.scx = maxScrollX;
     }

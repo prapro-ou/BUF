@@ -7,12 +7,12 @@ let can = document.getElementById("can");//描画領域適宜
 let con = can.getContext("2d");//どう描くかを制御 
 
 //仮想キャンバスサイズ宣言
-vcan.width = SCREEN_SIZE_W;
-vcan.height = SCREEN_SIZE_H;
+vcan.width = SCREEN_SIZE_W;     // キャンバスの横幅を480に
+vcan.height = SCREEN_SIZE_H;    // キャンバスの縦幅を270に
 
 //実態キャンバスサイズ宣言
-can.width = SCREEN_SIZE_W*2;
-can.height = SCREEN_SIZE_H*2;
+can.width = SCREEN_SIZE_W*2;    // キャンバスの横幅を960に
+can.height = SCREEN_SIZE_H*2;   // キャンバスの縦幅を540に
 
 //描画のぼやぼやをなくすメソッド
 con.mozimageSmoothingEnabled = false;
@@ -66,7 +66,7 @@ function mainLoop(){
     }
 
     //
-    draw();//画像デaータの出力
+    draw();//画像データの出力
     }
     requestAnimationFrame(mainLoop);
 }
@@ -84,7 +84,6 @@ function drawSprite(snum, x, y){
     let sy = (snum>>4)<<4;//(snum>>4) *16;//16で割って何行目か*ピクセル数
     vcon.drawImage(chImg, sx,sy,16,32, x,y,16,32);//キャラクター表示仮想
 }
-
 
 //描画処理
 function draw(){
