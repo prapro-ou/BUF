@@ -11,22 +11,20 @@ const collision_map = []
 for(let i = 0;  i < collision.length; i+=MAP_WIDTH){
     collision_map.push(collision.slice(i, MAP_WIDTH+i))
 }
-
 const boudaries = []
-collision_map.forEach((row, i) => {
+/*collision_map.forEach((row, i) => {
     row.forEach((symbol, j) => {
         if(symbol  === 1025)
         boudaries.push(
             new col_default({
                 location: {
-                    x: j * TILE_SIZE,
-                    y: i * TILE_SIZE
+                    x: j * TILE_SIZE + offset.x,
+                    y: i * TILE_SIZE + offset.y
                 }
             })
         )
     })    
-})        
-console.log(boudaries)
+})*/
 
 //画像を読み込み
 const image = new Image()
@@ -43,39 +41,60 @@ const playerImg_left = new Image()
 //クラスのインスタンス化
 const Background = new bg_default({
     location: {
-        x:-521,
-        y:-1210
+        x: offset.x,
+        y: offset.y
     },
     iamge: image
 })
 const Hero = new hero({
     location: {
-        x:-521,
-        y:-1210
+        x: offset.x,
+        y: offset.y
     },
     iamge: playerImg_down
 })
+const test_boundary = new col_default({location: {
+        x:400, 
+        y:400
+    }
+    })
+
 
 //画像を読み込んだのちに実行する
 image.onload = () => {
         animate()
 }
+playerImg_down.onload = () =>{
+            Hero.width = Hero.img.width >> 2
+            Hero.height = Hero.img.height
+            console.log(Hero.width);
+            console.log(Hero.height);
+        }
 
 function update(){
     Background.update()
     Hero.update()
 }
 
+
+
 function draw(){
     Background.draw()
+    boudaries.forEach(boundary =>{
+       boundary.draw()
+    })
+    test_boundary.draw();
     Hero.draw()
 }
 
 function animate(){
-    console.log('anime')
     window.requestAnimationFrame(animate)
     update()
     draw()
+    if ((0-Hero.loc.x + Hero.width) >= test_boundary.loc.x){
+        console.log('boundary')
+    }
+
 }
 
 // キーボードが押されたとき
@@ -94,7 +113,7 @@ document.addEventListener("keydown", function(e) {
     }
     if (e.code === "KeyD") {
         keys.d.pressed = true
-        Hero.is_stopping = false
+        Hero.is_stopping = false       
     }
 })
 // キーボードが離されたとき

@@ -7,18 +7,27 @@ class bg_default extends background{
         this.loc = location
         this.img = image 
     }
+
     update(){
         if(keys.w.pressed){
+        test_boundary.loc.y+=3
         this.loc.y+=3
+        Hero.loc.y+=3
         }
         if(keys.a.pressed){
+        test_boundary.loc.x+=3    
         this.loc.x+=3
+        Hero.loc.x+=3
         }
         if(keys.s.pressed){
+        test_boundary.loc.y -=3
         this.loc.y-=3
+        Hero.loc.y-=3
         }
         if(keys.d.pressed){
+        test_boundary.loc.x-=3
         this.loc.x-=3
+        Hero.loc.x-=3
         }
     }w
     draw(){
