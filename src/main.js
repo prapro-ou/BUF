@@ -80,9 +80,9 @@ function update(){
 
 function draw(){
     Background.draw()
-    /*boudaries.forEach(boundary =>{
+    boudaries.forEach(boundary =>{
        boundary.draw()
-    })*/
+    })
     test_boundary.draw();
     Hero.draw()
 }
