@@ -6,11 +6,27 @@ const c = canvas.getContext('2d')
 canvas.width = 1024
 canvas.height = 576
 
-//ゲーム画面の色をわかりやすく白に設定
-c.fillStyle = "white"
+//衝突マップを行ごとに分割
+const collision_map = []
+for(let i = 0;  i < collision.length; i+=MAP_WIDTH){
+    collision_map.push(collision.slice(i, MAP_WIDTH+i))
+}
 
-//画面の描画範囲
-c.fillRect(0, 0, canvas.width, canvas.height)
+const boudaries = []
+collision_map.forEach((row, i) => {
+    row.forEach((symbol, j) => {
+        if(symbol  === 1025)
+        boudaries.push(
+            new col_default({
+                location: {
+                    x: j * TILE_SIZE,
+                    y: i * TILE_SIZE
+                }
+            })
+        )
+    })    
+})        
+console.log(boudaries)
 
 //画像を読み込み
 const image = new Image()
@@ -39,6 +55,7 @@ const Hero = new hero({
     },
     iamge: playerImg_down
 })
+
 //画像を読み込んだのちに実行する
 image.onload = () => {
         animate()

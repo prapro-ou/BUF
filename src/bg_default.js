@@ -9,16 +9,16 @@ class bg_default extends background{
     }
     update(){
         if(keys.w.pressed){
-        this.loc.y++
+        this.loc.y+=3
         }
         if(keys.a.pressed){
-        this.loc.x++
+        this.loc.x+=3
         }
         if(keys.s.pressed){
-        this.loc.y--
+        this.loc.y-=3
         }
         if(keys.d.pressed){
-        this.loc.x--
+        this.loc.x-=3
         }
     }w
     draw(){

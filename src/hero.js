@@ -23,8 +23,6 @@ class hero extends human{
         this.img = playerImg_down
     }
     draw(){
-        console.log(this.is_stopping)
-        console.log(this.frame)
         this.frame++
         if(this.frame > 100000) this.frame = 0;
         if(this.is_stopping){ 
@@ -44,7 +42,7 @@ class hero extends human{
         else if(!this.is_stopping){
         c.drawImage(
         this.img, 
-        48 * ((this.frame>>5)%4),
+        48 * ((this.frame>>4)%4),
         0,
         this.img.width>>2,
         this.img.height,
