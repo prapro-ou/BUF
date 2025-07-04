@@ -9,26 +9,96 @@ class bg_default extends background{
     }
 
     update(){
+        //上キーが押されたとき
         if(keys.w.pressed){
-        test_boundary.loc.y+=MAX_SPEED
+        let mobable = true
+        //衝突判定
+        for(let i = 0; i < boudaries.length; i++){ 
+            const boundary = boudaries[i];
+            if (iscollide({boundary, loc:{
+                x:boundary.loc.x, 
+                y:boundary.loc.y + MAX_SPEED
+                }
+                })) {
+                console.log('衝突してるよ');
+                mobable = false
+            }
+        }
+        if(mobable){
+        boudaries.forEach(boundary => {
+            boundary.loc.y+=MAX_SPEED
+        })
         this.loc.y+=MAX_SPEED
         Hero.loc.y+=MAX_SPEED
         }
-        if(keys.a.pressed){
-        test_boundary.loc.x+=MAX_SPEED    
-        this.loc.x+=MAX_SPEED
-        Hero.loc.x-=MAX_SPEED
         }
+
+        //左キーが押されたとき
+        if(keys.a.pressed){
+        let mobable = true
+        for(let i = 0; i < boudaries.length; i++){ 
+            const boundary = boudaries[i];
+            if (iscollide({boundary, loc:{   
+                    x:boundary.loc.x + MAX_SPEED, 
+                    y:boundary.loc.y
+                }
+                })) {
+                console.log('衝突してるよ');
+                mobable = false
+            }
+        }
+        if(mobable){
+        boudaries.forEach(boundary => {
+            boundary.loc.x+=MAX_SPEED
+        })
+        this.loc.x+=MAX_SPEED
+        Hero.loc.x+=MAX_SPEED
+        }
+        }
+        //下キーが押されたとき
         if(keys.s.pressed){
-        test_boundary.loc.y -=MAX_SPEED
+        let mobable = true
+        for(let i = 0; i < boudaries.length; i++){ 
+            const boundary = boudaries[i];
+            if (iscollide({boundary, loc:{
+                x:boundary.loc.x, 
+                y:boundary.loc.y - MAX_SPEED
+            }
+            })) {
+                console.log('衝突してるよ');
+                mobable = false
+            }
+        }
+        if(mobable){
+            boudaries.forEach(boundary => {
+            boundary.loc.y-=MAX_SPEED
+        })
         this.loc.y-=MAX_SPEED
         Hero.loc.y-=MAX_SPEED
         }
-        if(keys.d.pressed){
-        test_boundary.loc.x-=MAX_SPEED
-        this.loc.x-=MAX_SPEED
-        Hero.loc.x+=MAX_SPEED
         }
+        //右キーが押されたとき   
+        if(keys.d.pressed){
+        let mobable = true
+        for(let i = 0; i < boudaries.length; i++){ 
+            const boundary = boudaries[i];
+            if (iscollide({boundary, loc:{
+                x:boundary.loc.x - MAX_SPEED, 
+                y:boundary.loc.y
+                }
+                })) {
+                console.log('衝突してるよ');
+                mobable = false
+            }
+        }
+        if(mobable){
+        boudaries.forEach(boundary => {
+            boundary.loc.x-=MAX_SPEED
+        })
+        this.loc.x-=MAX_SPEED
+        Hero.loc.x-=MAX_SPEED
+        }
+    }
     }
     draw(){
         c.drawImage(image, this.loc.x, this.loc.y) //プレイヤー初期画面

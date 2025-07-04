@@ -11,19 +11,20 @@ for(let i = 0;  i < collision.length; i+=MAP_WIDTH){
     collision_map.push(collision.slice(i, MAP_WIDTH+i))
 }
 const boudaries = []
-/*collision_map.forEach((row, i) => {
+collision_map.forEach((row, i) => {
     row.forEach((symbol, j) => {
         if(symbol  === 1025)
         boudaries.push(
             new col_default({
+                //衝突マップのずれを調整
                 location: {
                     x: j * TILE_SIZE + offset.x,
-                    y: i * TILE_SIZE + offset.y
+                    y: i * TILE_SIZE + offset.y - 16
                 }
             })
         )
     })    
-})*/
+})
 
 //画像を読み込み
 const image = new Image()
@@ -52,12 +53,6 @@ const Hero = new hero({
     },
     iamge: playerImg_down
 })
-const test_boundary = new col_default({location: {
-        x:400, 
-        y:400
-    }
-    })
-
 
 //画像を読み込んだのちに実行する
 image.onload = () => {
@@ -81,8 +76,10 @@ function draw(){
     Background.draw()
     boudaries.forEach(boundary =>{
        boundary.draw()
+       if(iscollide(boundary)){
+           console.log('衝突してるよ');
+       }
     })
-    test_boundary.draw();
     Hero.draw()
 }
 
@@ -93,9 +90,6 @@ function animate(){
     //console.log('hero_up : ' + ((canvas.height>>1) + (Hero.height)));
     //console.log('Boundary.loc.y : ' + test_boundary.loc.y);    
     //衝突判定
-    if(iscollide(test_boundary)){
-        console.log('衝突してるよ');
-    }
 }
 
 // キーボードが押されたとき
