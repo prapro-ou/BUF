@@ -1,11 +1,12 @@
 //
 //通常ステージの背景子クラス
 //
-class bg_default extends background{
+class bg_default extends ground{
     constructor({location, velocity, image}){//位置 速さ 画像
         super({location, velocity, image})
         this.loc = location
-        this.img = image 
+        this.img = new Image()
+        this.img.src = bgImage.src 
     }
 
     update(){
@@ -28,6 +29,8 @@ class bg_default extends background{
         boudaries.forEach(boundary => {
             boundary.loc.y+=MAX_SPEED
         })
+        //位置を更新
+        Foreground.loc.y+=MAX_SPEED
         this.loc.y+=MAX_SPEED
         Hero.loc.y+=MAX_SPEED
         }
@@ -51,6 +54,7 @@ class bg_default extends background{
         boudaries.forEach(boundary => {
             boundary.loc.x+=MAX_SPEED
         })
+        Foreground.loc.x+=MAX_SPEED
         this.loc.x+=MAX_SPEED
         Hero.loc.x+=MAX_SPEED
         }
@@ -73,6 +77,7 @@ class bg_default extends background{
             boudaries.forEach(boundary => {
             boundary.loc.y-=MAX_SPEED
         })
+        Foreground.loc.y-=MAX_SPEED
         this.loc.y-=MAX_SPEED
         Hero.loc.y-=MAX_SPEED
         }
@@ -95,12 +100,13 @@ class bg_default extends background{
         boudaries.forEach(boundary => {
             boundary.loc.x-=MAX_SPEED
         })
+        Foreground.loc.x-=MAX_SPEED
         this.loc.x-=MAX_SPEED
         Hero.loc.x-=MAX_SPEED
         }
     }
     }
     draw(){
-        c.drawImage(image, this.loc.x, this.loc.y) //プレイヤー初期画面
+        c.drawImage(this.img, this.loc.x, this.loc.y) //プレイヤー初期画面
     }
 }

@@ -7,8 +7,10 @@ canvas.width = 1024
 canvas.height = 576
 
 //画像を読み込み
-const image = new Image()
-image.src = '../img/DemoMap.png'
+const bgImage = new Image()
+bgImage.src = '../img/DemoMap.png'
+const fgImage = new Image()
+fgImage.src = '../img/DemoMapFG.png'
 const playerImg_down = new Image()
       playerImg_down.src = '../img/playerDown.png'
 const playerImg_up = new Image()
@@ -19,13 +21,20 @@ const playerImg_left = new Image()
       playerImg_left.src = '../img/playerLeft.png'
 
 
-        //クラスのインスタンス化
+//クラスのインスタンス化
 const Background = new bg_default({
     location: {
         x: offset.x,
         y: offset.y
     },
-    iamge: image
+    iamge: bgImage
+})
+const Foreground = new fg_default({
+    location: {
+        x: offset.x,
+        y: offset.y
+    },
+    iamge: fgImage
 })
 const Hero = new hero({
     location: {
@@ -56,13 +65,14 @@ collision_map.forEach((row, i) => {
 })
 
 //画像を読み込んだのちに実行する
-image.onload = () => {
+fgImage.onload = () => {
         animate()
 }
 
 function update(){
     Background.update()
     Hero.update()
+    
 }
 
 function draw(){
@@ -71,6 +81,7 @@ function draw(){
         boundary.draw()
     })
     Hero.draw()
+    Foreground.draw()
 }
 
 function animate(){
