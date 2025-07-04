@@ -6,12 +6,10 @@ class col_default extends boudary {
         super({location})
         this.loc = location
     }
-    update(){
-        this.frame++
-        if(this.frame > 100000) this.frame = 0
-    }
+    update(){}
     draw(){
         c.fillStyle = "rgba(0, 0, 0, 0.4)" //半透明の黒色
+        //console.log('col_loc : ' + this.loc.x, this.loc.y);
         c.fillRect(
             this.loc.x ,
             this.loc.y,

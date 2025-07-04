@@ -7,8 +7,6 @@ class background{
         this.loc = location
         this.img = image 
     }
-
-    update () {}
-    
+    update () {} 
     draw () {}
 }

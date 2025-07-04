@@ -7,7 +7,6 @@ class hero extends human{
         this.loc = location
         this.img = image 
         this.frame = 0
-        this.sx = 0
         this.is_stopping = true
         this.width = 0
         this.height =0

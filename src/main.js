@@ -5,7 +5,6 @@ const c = canvas.getContext('2d')
 //ゲーム画像サイズ
 canvas.width = 1024
 canvas.height = 576
-
 //衝突マップを行ごとに分割
 const collision_map = []
 for(let i = 0;  i < collision.length; i+=MAP_WIDTH){
@@ -48,8 +47,8 @@ const Background = new bg_default({
 })
 const Hero = new hero({
     location: {
-        x: offset.x,
-        y: offset.y
+        x: (canvas.width >> 1) - (playerImg_down.width >> 3),
+        y: (canvas.height >> 1)
     },
     iamge: playerImg_down
 })
@@ -65,7 +64,7 @@ image.onload = () => {
         animate()
 }
 playerImg_down.onload = () =>{
-            Hero.width = Hero.img.width >> 2
+            Hero.width = (Hero.img.width) >> 2
             Hero.height = Hero.img.height
             console.log(Hero.width);
             console.log(Hero.height);
@@ -91,10 +90,12 @@ function animate(){
     window.requestAnimationFrame(animate)
     update()
     draw()
-    if ((0-Hero.loc.x + Hero.width) >= test_boundary.loc.x){
-        console.log('boundary')
+    //console.log('hero_up : ' + ((canvas.height>>1) + (Hero.height)));
+    //console.log('Boundary.loc.y : ' + test_boundary.loc.y);    
+    //衝突判定
+    if(iscollide(test_boundary)){
+        console.log('衝突してるよ');
     }
-
 }
 
 // キーボードが押されたとき
