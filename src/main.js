@@ -5,26 +5,6 @@ const c = canvas.getContext('2d')
 //ゲーム画像サイズ
 canvas.width = 1024
 canvas.height = 576
-//衝突マップを行ごとに分割
-const collision_map = []
-for(let i = 0;  i < collision.length; i+=MAP_WIDTH){
-    collision_map.push(collision.slice(i, MAP_WIDTH+i))
-}
-const boudaries = []
-collision_map.forEach((row, i) => {
-    row.forEach((symbol, j) => {
-        if(symbol  === 1025)
-        boudaries.push(
-            new col_default({
-                //衝突マップのずれを調整
-                location: {
-                    x: j * TILE_SIZE + offset.x,
-                    y: i * TILE_SIZE + offset.y - 16
-                }
-            })
-        )
-    })    
-})
 
 //画像を読み込み
 const image = new Image()
@@ -38,7 +18,8 @@ const playerImg_right = new Image()
 const playerImg_left = new Image()
       playerImg_left.src = '../img/playerLeft.png'
 
-//クラスのインスタンス化
+
+        //クラスのインスタンス化
 const Background = new bg_default({
     location: {
         x: offset.x,
@@ -53,32 +34,41 @@ const Hero = new hero({
     },
     iamge: playerImg_down
 })
+//衝突マップを行ごとに分割
+const collision_map = []
+for(let i = 0;  i < collision.length; i+=MAP_WIDTH){
+    collision_map.push(collision.slice(i, MAP_WIDTH+i))
+}
+const boudaries = []
+collision_map.forEach((row, i) => {
+    row.forEach((symbol, j) => {
+        if(symbol  === 1025)
+        boudaries.push(
+            new col_default({
+                //衝突マップのずれを調整
+                location: {
+                    x: j * TILE_SIZE + offset.x /*+16*/,
+                    y: i * TILE_SIZE + offset.y  -16
+                }
+            })
+        )
+    })    
+})
 
 //画像を読み込んだのちに実行する
 image.onload = () => {
         animate()
 }
-playerImg_down.onload = () =>{
-            Hero.width = (Hero.img.width) >> 2
-            Hero.height = Hero.img.height
-            console.log(Hero.width);
-            console.log(Hero.height);
-        }
 
 function update(){
     Background.update()
     Hero.update()
 }
 
-
-
 function draw(){
     Background.draw()
-    boudaries.forEach(boundary =>{
-       boundary.draw()
-       if(iscollide(boundary)){
-           console.log('衝突してるよ');
-       }
+    boudaries.forEach(boundary => {
+        boundary.draw()
     })
     Hero.draw()
 }
@@ -87,9 +77,6 @@ function animate(){
     window.requestAnimationFrame(animate)
     update()
     draw()
-    //console.log('hero_up : ' + ((canvas.height>>1) + (Hero.height)));
-    //console.log('Boundary.loc.y : ' + test_boundary.loc.y);    
-    //衝突判定
 }
 
 // キーボードが押されたとき

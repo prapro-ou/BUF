@@ -8,8 +8,8 @@ class hero extends human{
         this.img = image 
         this.frame = 0
         this.is_stopping = true
-        this.width = 0
-        this.height =0
+        this.width = HERO_W
+        this.height = HERO_H
     }
     update(){
         if(keys.w.pressed){

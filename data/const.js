@@ -1,11 +1,12 @@
 //
 //定数定義用
 //
-
 const MAP_WIDTH = 70; //マップの横幅
 const MAP_HEIGHT = 40; //マップの縦幅
 const TILE_SIZE = 66; //タイルのサイズ
-const MAX_SPEED = 3;
+const MAX_SPEED = 6;
+const HERO_W = 48; //ヒーローの横幅
+const HERO_H = 68; //ヒーローの縦幅
 const offset = {
         x:-521,
         y:-1210
@@ -25,3 +26,4 @@ const keys = {
         pressed: false
     }
 }
+

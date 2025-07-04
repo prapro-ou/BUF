@@ -8,7 +8,7 @@ class col_default extends boudary {
     }
     update(){}
     draw(){
-        c.fillStyle = "rgba(0, 0, 0, 0.4)" //半透明の黒色
+        c.fillStyle = "rgba(0, 0, 0, 0.5)" //半透明の黒色
         //console.log('col_loc : ' + this.loc.x, this.loc.y);
         c.fillRect(
             this.loc.x ,
