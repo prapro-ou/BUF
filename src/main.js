@@ -6,21 +6,6 @@ const c = canvas.getContext('2d')
 canvas.width = 1024
 canvas.height = 576
 
-//画像を読み込み
-const bgImage = new Image()
-bgImage.src = '../img/DemoMap.png'
-const fgImage = new Image()
-fgImage.src = '../img/DemoMapFG.png'
-const playerImg_down = new Image()
-      playerImg_down.src = '../img/playerDown.png'
-const playerImg_up = new Image()
-      playerImg_up.src = '../img/playerUp.png'
-const playerImg_right = new Image()
-      playerImg_right.src = '../img/playerRight.png'
-const playerImg_left = new Image()
-      playerImg_left.src = '../img/playerLeft.png'
-
-
 //クラスのインスタンス化
 const Background = new bg_default({
     location: {
@@ -38,16 +23,18 @@ const Foreground = new fg_default({
 })
 const Hero = new hero({
     location: {
-        x: (canvas.width >> 1) - (playerImg_down.width >> 3),
-        y: (canvas.height >> 1)
+        x: offset.x - canvas.width>>1,
+        y: offset.y - canvas.height>>1
     },
     iamge: playerImg_down
 })
+
 //衝突マップを行ごとに分割
 const collision_map = []
 for(let i = 0;  i < collision.length; i+=MAP_WIDTH){
     collision_map.push(collision.slice(i, MAP_WIDTH+i))
 }
+//衝突タイルマップを衝突ピクセルマップにする
 const boudaries = []
 collision_map.forEach((row, i) => {
     row.forEach((symbol, j) => {
@@ -71,8 +58,7 @@ fgImage.onload = () => {
 
 function update(){
     Background.update()
-    Hero.update()
-    
+    Hero.update() 
 }
 
 function draw(){
@@ -94,37 +80,29 @@ function animate(){
 document.addEventListener("keydown", function(e) {
     if (e.code === "KeyW") {
         keys.w.pressed  = true
-        Hero.is_stopping = false
     }
     if (e.code === "KeyA") {
         keys.a.pressed = true
-        Hero.is_stopping = false
     }
     if (e.code === "KeyS") {
         keys.s.pressed  = true
-        Hero.is_stopping = false
     }
     if (e.code === "KeyD") {
         keys.d.pressed = true
-        Hero.is_stopping = false       
     }
 })
 // キーボードが離されたとき
 document.addEventListener("keyup", function(e) {
     if (e.code === "KeyW") {
         keys.w.pressed  = false
-        Hero.is_stopping = true
     }
     if (e.code === "KeyA") {
         keys.a.pressed = false
-        Hero.is_stopping = true
     }
     if (e.code === "KeyS") {
         keys.s.pressed  = false
-        Hero.is_stopping = true
     }
     if (e.code === "KeyD") {
         keys.d.pressed = false
-        Hero.is_stopping = true
     }
   })

@@ -7,6 +7,8 @@ const TILE_SIZE = 66; //タイルのサイズ
 const MAX_SPEED = 3;
 const HERO_W = 48; //ヒーローの横幅
 const HERO_H = 68; //ヒーローの縦幅
+const YOKO = 0
+const TATE = 1
 const offset = {
         x:-521,
         y:-1210

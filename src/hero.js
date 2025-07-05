@@ -34,7 +34,7 @@ class hero extends human{
         this.img.width>>2,
         this.img.height,
         //プレイヤーを画面の中心に
-        canvas.width>>1, 
+        (canvas.width>>1), 
         canvas.height>>1,
         this.img.width>>2,
         this.img.height
