@@ -35,11 +35,11 @@ for(let i = 0;  i < collision.length; i+=MAP_WIDTH){
     collision_map.push(collision.slice(i, MAP_WIDTH+i))
 }
 //衝突タイルマップを衝突ピクセルマップにする
-const boudaries = []
+const boundaries = []
 collision_map.forEach((row, i) => {
     row.forEach((symbol, j) => {
         if(symbol  === 1025)
-        boudaries.push(
+        boundaries.push(
             new col_default({
                 //衝突マップのずれを調整
                 location: {
@@ -63,7 +63,7 @@ function update(){
 
 function draw(){
     Background.draw()
-    boudaries.forEach(boundary => {
+    boundaries.forEach(boundary => {
         boundary.draw()
     })
     Hero.draw()

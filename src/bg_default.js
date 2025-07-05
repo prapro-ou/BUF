@@ -14,14 +14,14 @@ class bg_default extends ground{
         this.movable = true
     }
     move(){
-            boudaries.forEach(boundary => {
+            boundaries.forEach(boundary => {
                 boundary.loc.x+=this.velocity.x
             })
             Foreground.loc.x+=this.velocity.x
             this.loc.x+=this.velocity.x
             Hero.loc.x+=this.velocity.x
 
-            boudaries.forEach(boundary => {
+            boundaries.forEach(boundary => {
                 boundary.loc.y+=this.velocity.y
             })
             Foreground.loc.y+=this.velocity.y
@@ -31,8 +31,8 @@ class bg_default extends ground{
     }
     check_collide(vx, vy){
         //衝突判定
-        for(let i = 0; i < boudaries.length; i++){ 
-            const boundary = boudaries[i];
+        for(let i = 0; i < boundaries.length; i++){ 
+            const boundary = boundaries[i];
             if (iscollide({boundary, loc:{
                 x:boundary.loc.x + vx, 
                 y:boundary.loc.y + vy
@@ -44,41 +44,41 @@ class bg_default extends ground{
         }
         return true
     }
-    update_move(){
-        this.velocity.x=0
-        this.velocity.y=0
-        //上キーが押されたとき
-        if(keys.w.pressed){
-        this.movable = this.check_collide(0, MAX_SPEED)
-        this.velocity.y += MAX_SPEED
+    update_move() {
+        let nextX = 0;
+        let nextY = 0;
+
+        if (keys.w.pressed) nextY += MAX_SPEED;
+        if (keys.s.pressed) nextY -= MAX_SPEED;
+        if (keys.a.pressed) nextX += MAX_SPEED;
+        if (keys.d.pressed) nextX -= MAX_SPEED;
+
+        // 斜め移動の速度補正
+        if (nextX !== 0 && nextY !== 0) {
+            
+            nextX /= SQRT2;
+            nextY /= SQRT2;
         }
 
-        //左キーが押されたとき
-        if(keys.a.pressed){
-        this.movable = this.check_collide(MAX_SPEED, 0)
-        this.velocity.x += MAX_SPEED
+        // まず斜めの衝突をチェック
+        if (this.check_collide(nextX, nextY)) {
+            this.velocity.x = nextX;
+            this.velocity.y = nextY;
+        } 
+        // 斜めでダメなら個別に軸ごとにチェック
+        else if (this.check_collide(nextX, 0)) {
+            this.velocity.x = nextX;
+            this.velocity.y = 0;
+        } 
+        else if (this.check_collide(0, nextY)) {
+            this.velocity.x = 0;
+            this.velocity.y = nextY;
+        } 
+        else {
+            this.velocity.x = 0;
+            this.velocity.y = 0;
         }
-
-        //下キーが押されたとき
-        if(keys.s.pressed){
-        this.movable = this.check_collide(0, -MAX_SPEED)
-        this.velocity.y -= MAX_SPEED
-        }
-
-        //右キーが押されたとき   
-        if(keys.d.pressed){
-        this.movable = this.check_collide(-MAX_SPEED, 0)
-            this.velocity.x -= MAX_SPEED
-        }
-
-        if(this.velocity.x != 0&&this.velocity.y != 0) {
-            let a = Math.sqrt(2)
-            console.log(a)
-            this.velocity.x /= a
-            this.velocity.y /= a
-        }
-    
-}
+    }
     update(){
         this.update_move()
         if(this.movable)this.move()
