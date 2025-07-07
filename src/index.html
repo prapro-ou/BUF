@@ -1,24 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="inventory.css">
 </head>
-<style>
-    body {
-        background-color: black; 
-    }
-</style>
-<canvas></canvas>
-<script src = "../class/human.js"></script>
-<script src = "../class/ground.js"></script>
-<script src = "../class/boundary.js"></script>
-<script src = "bg_default.js"></script>
-<script src = "fg_default.js"></script>
-<script src = "col_default.js"></script>
-<script src = "hero.js"></script>
-<script src = "../data/img.js"></script>
-<script src = "../data/collision.js"></script>
-<script src = "../data/const.js"></script>
-<script src = "../data/function.js"></script>
-<script src = "main.js"></script>
+
+<body>
+  <canvas></canvas>
+
+  <!-- ✅ ここがインベントリUI -->
+  <div id="inventory">
+    <h2>🎒 持ちもの</h2>
+    <ul id="inventory-list">
+      <li>ポーション ×3</li>
+      <li>木の剣</li>
+      <li>革のよろい</li>
+    </ul>
+  </div>
+
+  <!-- JavaScriptファイルの読み込み -->
+  <script src="../class/human.js"></script>
+  <script src="../class/ground.js"></script>
+  <script src="../class/boundary.js"></script>
+  <script src="bg_default.js"></script>
+  <script src="fg_default.js"></script>
+  <script src="col_default.js"></script>
+  <script src="hero.js"></script>
+  <script src="../data/img.js"></script>
+  <script src="../data/collision.js"></script>
+  <script src="../data/const.js"></script>
+  <script src="../data/function.js"></script>
+  <script src="main.js"></script>
+</body>
 </html>
