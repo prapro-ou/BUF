@@ -25,6 +25,9 @@ const keys = {
     },
     d:{
         pressed: false
+    },
+    tab:{
+        pressed: false
     }
 }
 

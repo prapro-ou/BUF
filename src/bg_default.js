@@ -38,7 +38,6 @@ class bg_default extends ground{
                 y:boundary.loc.y + vy
                 }
                 })) {
-                console.log('衝突してるよ');
                 return false
             }
         }

@@ -11,6 +11,7 @@ class hero extends human{
         this.is_stopping = true
         this.width = HERO_W
         this.height = HERO_H
+        this.inv = new inventory()
     }
     update_state(){
         if(Background.velocity.x !== 0 || Background.velocity.y !== 0){
@@ -18,6 +19,9 @@ class hero extends human{
         }else{
             this.is_stopping = true
         }
+        if(keys.tab.pressed){
+            keys.tab.pressed = false
+            this.inv.inventoryVisible = !this.inv.inventoryVisible        }
     }
     update_image(){
         if(this.is_stopping){
@@ -46,6 +50,8 @@ class hero extends human{
         if(this.frame > 1000000) this.frame = 0;
         this.update_state()
         this.update_image()
+        this.inv.updateInventoryUI()
+        this.inv.display() //持ち物を表示
     }
     draw(){
         c.drawImage(

@@ -75,13 +75,12 @@ function animate(){
     update()
     draw()
 }
-let inventoryVisible = false
+
 // キーボードが押されたとき
 document.addEventListener("keydown", function(e) {
     if (e.code === "Tab") {
         e.preventDefault() // ブラウザのタブ切り替えを防ぐ
-        inventoryVisible = !inventoryVisible
-        document.getElementById("inventory").style.display = inventoryVisible ? "block" : "none"
+        keys.tab.pressed = true
     }
     if (e.code === "KeyW") {
         keys.w.pressed  = true
