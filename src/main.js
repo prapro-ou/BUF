@@ -74,8 +74,8 @@ function update(){
 function draw() {
     Background.draw();
     boundaries.forEach(boundary => boundary.draw());
-    console.log('Hero : ' + Hero.loc.y)
-    console.log('Demo : ' + entities[0].loc.y)
+    //console.log('Hero : ' + Hero.loc.y)
+    //console.log('Demo : ' + entities[0].loc.y)
     // キャラクターをまとめて配列に
     const EandH = [...entities, Hero];
 
