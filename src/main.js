@@ -10,14 +10,14 @@ canvas.height = 576
 
 const Background = new bg_default({
     location: {
-        x: offset.x,
+        x: offset.x,//マップ画像データの左上を基準にする座標
         y: offset.y
     },
     iamge: bgImage
 })
 const Foreground = new fg_default({
     location: {
-        x: offset.x,
+        x: offset.x,//マップ画像データの左上を基準にする座標
         y: offset.y
     },
     iamge: fgImage
@@ -25,15 +25,15 @@ const Foreground = new fg_default({
 const entities = []
 const Hero = new hero({
     location: {
-        x: offset.x - canvas.width>>1,
-        y: offset.y - 288+112//canvas.height>>1
+        x:  624, //初期画面の左上を基準にする相対座標
+        y:  175//初期画面の左上を基準にする相対座標
     },
     iamge: playerImg_down
 })
 const Demo = new npc01({
     location: {
-        x: offset.x - 400,
-        y: offset.y - 400
+        x: 400,//初期画面の左上を基準にする相対座標
+        y: 400//初期画面の左上を基準にする相対座標
     },
     iamge: playerImg_down
 })
@@ -75,12 +75,12 @@ function draw() {
     Background.draw();
     boundaries.forEach(boundary => boundary.draw());
     console.log('Hero : ' + Hero.loc.y)
-    console.log('Demo' + entities[0].loc.y)
+    console.log('Demo : ' + entities[0].loc.y)
     // キャラクターをまとめて配列に
     const EandH = [...entities, Hero];
 
     // Y座標で昇順に並び替え（奥→手前）
-    EandH.sort((a, b) => b.loc.y - a.loc.y);
+    EandH.sort((a, b) => a.loc.y - b.loc.y);
 
     // 並び替えた順に描画
     EandH.forEach(entity => entity.draw());

@@ -18,8 +18,8 @@ class npc01 extends human {
         HERO_H,//画像の切り取り高さ
 
         //プレイヤーを画面の中心に
-        -(this.loc.x - offset.x), 
-        -(this.loc.y - offset.y), //画面の中心からの位置
+        this.loc.x, 
+        this.loc.y, //画面の中心からの位置
         HERO_W, //プレイヤーの横幅
         HERO_H //プレイヤーの縦幅
         ) 
