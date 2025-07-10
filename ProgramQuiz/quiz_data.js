@@ -26,26 +26,27 @@ int main(void) {
 }
         `,
         blanks: [
-            {
-                idx: 1,
-                choices: ["a", "pi", "c"],
-                answer: 0
-            },
-            {
-                idx: 2,
-                choices: ["a", "pi", "s"],
-                answer: 1
-            },
-            {
-                idx: 3,
-                choices: ["c", "s", "a"],
-                answer: 0
-            },
-            {
-                idx: 4,
-                choices: ["c", "s", "pi"],
-                answer: 1
-            }
+            { idx: 1, choices: ["a", "pi", "c"], answer: 0 },
+            { idx: 2, choices: ["a", "pi", "s"], answer: 1 },
+            { idx: 3, choices: ["c", "s", "a"], answer: 0 },
+            { idx: 4, choices: ["c", "s", "pi"], answer: 1 }
+        ]
+    }),
+    // 2問目（例題）
+    new Quiz({
+        question: "2問目：printfで整数bを表示する正しい変数名を選んでください。",
+        code: `
+#include <stdio.h>
+
+int main(void) {
+    int b = 20;
+    // Q1: 整数 b を表示
+    printf("変数 b の値：%d\\n", _____1);
+    return 0;
+}
+        `,
+        blanks: [
+            { idx: 1, choices: ["b", "a", "c"], answer: 0 }
         ]
     })
 ];

@@ -6,7 +6,8 @@ const c = canvas.getContext('2d')
 canvas.width = 1024
 canvas.height = 576
 
-let currentQuiz = quizList[0];
+let quizIndex = 0;
+let currentQuiz = quizList[quizIndex];
 let selectedBlank = null; // 今選択中の穴番号
 let userAnswers = Array(currentQuiz.blanks.length).fill(null); // 各穴の回答
 let result = null;
@@ -56,13 +57,18 @@ function drawQuiz() {
             const blankTag = `_____${blank.idx}`;
             const x = line.indexOf(blankTag);
             if (x !== -1) {
-                // 穴の矩形を描画（デバッグ用なら色をつけてもOK）
-                const px = codeX + c.measureText(line.slice(0, x)).width;
-                const py = codeY + 40 + i * 22 - 16;
-                c.strokeStyle = (selectedBlank === bidx) ? "#ff0" : "#fff";
-                c.strokeRect(px, py, 80, 20);
-                // 穴の位置を保存（クリック判定用）
-                blank.rect = {x: px, y: py, w: 80, h: 20};
+                // 穴が未選択（未回答）の場合だけ枠を描画
+                if (userAnswers[bidx] === null) {
+                    const px = codeX + c.measureText(line.slice(0, x)).width;
+                    const py = codeY + 40 + i * 22 - 16;
+                    c.strokeStyle = (selectedBlank === bidx) ? "#ff0" : "#fff";
+                    c.strokeRect(px, py, 80, 20);
+                    // 穴の位置を保存（クリック判定用）
+                    blank.rect = {x: px, y: py, w: 80, h: 20};
+                } else {
+                    // 穴が埋まっている場合はクリック枠を消す
+                    blank.rect = null;
+                }
             }
         });
     });
@@ -81,17 +87,24 @@ function drawQuiz() {
     // 答え合わせボタン
     if (userAnswers.every(ans => ans !== null)) {
         c.fillStyle = "#444";
-        c.fillRect(choiceX, 480, 200, 48); // 500→480
+        c.fillRect(choiceX, 480, 200, 48);
         c.fillStyle = "white";
         c.font = "24px sans-serif";
-        c.fillText("答え合わせ", choiceX + 30, 512); // 532→512
+        c.fillText("答え合わせ", choiceX + 30, 512);
     }
+
+    // ★やり直しボタン（常に表示）
+    c.fillStyle = "#444";
+    c.fillRect(choiceX, 540, 200, 40);
+    c.fillStyle = "white";
+    c.font = "20px sans-serif";
+    c.fillText("やり直し", choiceX + 60, 567);
 
     // 正誤判定
     if (result !== null) {
         c.font = "28px sans-serif";
         c.fillStyle = result ? "lime" : "red";
-        c.fillText(result ? "全問正解！" : "間違いがあります", choiceX, 80); // 100→80
+        c.fillText(result ? "全問正解！" : "間違いがあります", choiceX, 80);
     }
 }
 
@@ -123,8 +136,42 @@ canvas.addEventListener("click", function(e) {
     // 答え合わせボタン
     if (userAnswers.every(ans => ans !== null) &&
         mx >= choiceX && mx <= choiceX + 200 && my >= 480 && my <= 528) {
-        // 判定
         result = currentQuiz.blanks.every((blank, i) => userAnswers[i] === blank.answer);
+        drawQuiz();
+        if (result && quizIndex < quizList.length - 1) {
+            setTimeout(() => {
+                quizIndex++;
+                currentQuiz = quizList[quizIndex];
+                userAnswers = Array(currentQuiz.blanks.length).fill(null);
+                selectedBlank = null;
+                result = null;
+                drawQuiz();
+            }, 1200);
+        }
+        return;
+    }
+
+    // ★やり直しボタン
+    if (mx >= choiceX && mx <= choiceX + 200 && my >= 540 && my <= 580) {
+        userAnswers = Array(currentQuiz.blanks.length).fill(null);
+        selectedBlank = null;
+        result = null;
+        drawQuiz();
+        return;
+    }
+
+    // ★穴クリック（どんな状態でも最初に判定）
+    let clickedBlank = null;
+    currentQuiz.blanks.forEach((blank, bidx) => {
+        if (blank.rect &&
+            mx >= blank.rect.x && mx <= blank.rect.x + blank.rect.w &&
+            my >= blank.rect.y && my <= blank.rect.y + blank.rect.h
+        ) {
+            clickedBlank = bidx;
+        }
+    });
+    if (clickedBlank !== null) {
+        selectedBlank = clickedBlank;
         drawQuiz();
         return;
     }
@@ -143,17 +190,6 @@ canvas.addEventListener("click", function(e) {
         });
         return;
     }
-
-    // 穴クリック
-    currentQuiz.blanks.forEach((blank, bidx) => {
-        if (blank.rect &&
-            mx >= blank.rect.x && mx <= blank.rect.x + blank.rect.w &&
-            my >= blank.rect.y && my <= blank.rect.y + blank.rect.h
-        ) {
-            selectedBlank = bidx;
-            drawQuiz();
-        }
-    });
 });
 
 drawQuiz();
