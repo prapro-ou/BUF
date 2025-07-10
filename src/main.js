@@ -7,6 +7,7 @@ canvas.width = 1024
 canvas.height = 576
 
 //クラスのインスタンス化
+
 const Background = new bg_default({
     location: {
         x: offset.x,
@@ -21,13 +22,22 @@ const Foreground = new fg_default({
     },
     iamge: fgImage
 })
+const entities = []
 const Hero = new hero({
     location: {
         x: offset.x - canvas.width>>1,
-        y: offset.y - canvas.height>>1
+        y: offset.y - 288+112//canvas.height>>1
     },
     iamge: playerImg_down
 })
+const Demo = new npc01({
+    location: {
+        x: offset.x - 400,
+        y: offset.y - 400
+    },
+    iamge: playerImg_down
+})
+entities.push(Demo)
 
 //衝突マップを行ごとに分割
 const collision_map = []
@@ -61,13 +71,21 @@ function update(){
     Hero.update() 
 }
 
-function draw(){
-    Background.draw()
-    boundaries.forEach(boundary => {
-        boundary.draw()
-    })
-    Hero.draw()
-    Foreground.draw()
+function draw() {
+    Background.draw();
+    boundaries.forEach(boundary => boundary.draw());
+    console.log('Hero : ' + Hero.loc.y)
+    console.log('Demo' + entities[0].loc.y)
+    // キャラクターをまとめて配列に
+    const EandH = [...entities, Hero];
+
+    // Y座標で昇順に並び替え（奥→手前）
+    EandH.sort((a, b) => b.loc.y - a.loc.y);
+
+    // 並び替えた順に描画
+    EandH.forEach(entity => entity.draw());
+
+    Foreground.draw();
 }
 
 function animate(){

@@ -9,8 +9,8 @@ const HERO_W = 96; //ヒーローの横幅
 const HERO_H = 96; //ヒーローの縦幅
 const SQRT2 = Math.sqrt(2);
 const offset = {
-        x:-521,
-        y:-1210
+        x:-495,
+        y:-1180
     }
 //キー入力の状態を管理するオブジェクト
 const keys = {

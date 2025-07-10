@@ -64,8 +64,6 @@ class hero extends human{
         canvas.height>>1,
         HERO_W, //プレイヤーの横幅
         HERO_H //プレイヤーの縦幅
-        )
-
-        
+        ) 
     }
 }

@@ -14,20 +14,34 @@ class bg_default extends ground{
         this.movable = true
     }
     move(){
+        //移動する
+            //X座標の更新
             boundaries.forEach(boundary => {
                 boundary.loc.x+=this.velocity.x
             })
+            //背景のX座標を更新
             Foreground.loc.x+=this.velocity.x
             this.loc.x+=this.velocity.x
+            //NPCのX座標を更新
+            entities.forEach(npc => {
+                npc.loc.x-=this.velocity.x
+            })
+            //HeroのX座標を更新
             Hero.loc.x+=this.velocity.x
 
+            //Y座標の更新
+            //背景のY座標を更新
             boundaries.forEach(boundary => {
                 boundary.loc.y+=this.velocity.y
             })
             Foreground.loc.y+=this.velocity.y
             this.loc.y+=this.velocity.y
+            //NPCのY座標を更新
+            entities.forEach(npc => {
+                npc.loc.y-=this.velocity.y
+            })
+            //HeroのY座標を更新
             Hero.loc.y+=this.velocity.y
-        
     }
     check_collide(vx, vy){
         //衝突判定
@@ -38,13 +52,13 @@ class bg_default extends ground{
                 y:boundary.loc.y + vy
                 }
                 })) {
-                /*
+                
                 Hero.inv.addItem({
                 name: '衝突',
                 count: 1,
                 description: '衝突してるよ'
                 })
-                */
+                
                 return false
             }
         }
