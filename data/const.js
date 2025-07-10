@@ -3,14 +3,14 @@
 //
 const MAP_WIDTH = 70; //マップの横幅
 const MAP_HEIGHT = 40; //マップの縦幅
-const TILE_SIZE = 66; //タイルのサイズ
-const MAX_SPEED = 8; //最大移動速度
+const TILE_SIZE = 64; //タイルのサイズ
+const MAX_SPEED = 20; //最大移動速度
 const HERO_W = 96; //ヒーローの横幅
 const HERO_H = 96; //ヒーローの縦幅
 const SQRT2 = Math.sqrt(2);
 const offset = {
-        x:-495,
-        y:-1180
+        x:-600,
+        y:-2500
     }
 //キー入力の状態を管理するオブジェクト
 const keys = {

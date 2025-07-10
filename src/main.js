@@ -48,13 +48,13 @@ for(let i = 0;  i < collision.length; i+=MAP_WIDTH){
 const boundaries = []
 collision_map.forEach((row, i) => {
     row.forEach((symbol, j) => {
-        if(symbol  === 1025)
+        if(symbol  === 19723)
         boundaries.push(
             new col_default({
                 //衝突マップのずれを調整
                 location: {
-                    x: j * TILE_SIZE + offset.x /*+16*/,
-                    y: i * TILE_SIZE + offset.y  -16
+                    x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
+                    y: i * TILE_SIZE + offset.y 
                 }
             })
         )
@@ -85,7 +85,7 @@ function draw() {
     // 並び替えた順に描画
     EandH.forEach(entity => entity.draw());
 
-    Foreground.draw();
+    //Foreground.draw();
 }
 
 function animate(){
