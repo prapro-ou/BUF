@@ -38,13 +38,20 @@ class bg_default extends ground{
                 y:boundary.loc.y + vy
                 }
                 })) {
+                /*
+                Hero.inv.addItem({
+                name: '衝突',
+                count: 1,
+                description: '衝突してるよ'
+                })
+                */
                 return false
             }
         }
         return true
     }
     update_move() {
-        let nextX = 0;
+        let nextX = 0;  
         let nextY = 0;
 
         if (keys.w.pressed) nextY += MAX_SPEED;

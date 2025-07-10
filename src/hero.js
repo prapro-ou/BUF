@@ -9,8 +9,6 @@ class hero extends human{
         this.img_num = 0
         this.frame = 0
         this.is_stopping = true
-        this.width = HERO_W
-        this.height = HERO_H
         this.inv = new inventory()
     }
     update_state(){
@@ -29,7 +27,7 @@ class hero extends human{
             this.img.src = playerImg_down.src
         }
         else if(!this.is_stopping){
-            this.img_num = (this.frame>>4)%4
+            this.img_num = (this.frame>>4)%2 + 1//フレーム数を4で割った余りを2で割ることで0,1,のいずれかを取得
             //プレイヤーの向きに応じて画像を切り替える
             if(Background.velocity.x < 0){
                 this.img.src = playerImg_right.src
