@@ -3,11 +3,23 @@
 //
 
 class npc01 extends human {
-    constructor({location, image}){
+    constructor({namae, location, image}){
         super({location, image})
+        this.name = namae
         this.loc = location
         this.img = new Image()
         this.img.src = playerImg_down.src
+        this.is_nearest = false
+        this.state = 0
+    }
+    can_talk(){
+        if(!this.is_nearest) return false
+        let dis = distance(this.loc, Hero.loc) 
+        console.log(this.name + ' : '+ dis)
+        if(dis < 4900) true; else false
+    }
+    talk(){
+        console.log('Hello')
     }
     draw(){
         c.drawImage(

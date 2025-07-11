@@ -23,7 +23,7 @@ class bg_default extends ground{
             Foreground.loc.x+=this.velocity.x
             this.loc.x+=this.velocity.x
             //NPCのX座標を更新
-            entities.forEach(npc => {
+            Npcs.forEach(npc => {
                 npc.loc.x+=this.velocity.x
             })
             //HeroのX座標を更新
@@ -37,7 +37,7 @@ class bg_default extends ground{
             Foreground.loc.y+=this.velocity.y
             this.loc.y+=this.velocity.y
             //NPCのY座標を更新
-            entities.forEach(npc => {
+            Npcs.forEach(npc => {
                 npc.loc.y+=this.velocity.y
             })
             //HeroのY座標を更新

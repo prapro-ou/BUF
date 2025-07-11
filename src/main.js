@@ -22,23 +22,32 @@ const Foreground = new fg_default({
     },
     iamge: fgImage
 })
-const entities = []
+const Npcs = []
 const Hero = new hero({
     location: {
-        x:  624, //初期画面の左上を基準にする相対座標
-        y:  175//初期画面の左上を基準にする相対座標
+        x:  500, //初期画面の左上を基準にする相対座標
+        y:  100//初期画面の左上を基準にする相対座標
     },
     iamge: playerImg_down
 })
 const Demo = new npc01({
+    namae: "Demo",
     location: {
         x: 400,//初期画面の左上を基準にする相対座標
         y: 400//初期画面の左上を基準にする相対座標
     },
     iamge: playerImg_down
 })
-entities.push(Demo)
-
+const Demo2 = new npc01({
+    namae: "Demo2",
+    location: {
+        x:  400, //初期画面の左上を基準にする相対座標
+        y:  500//初期画面の左上を基準にする相対座標
+    },
+    iamge: playerImg_down
+})
+Npcs.push(Demo)
+Npcs.push(Demo2)
 //衝突マップを行ごとに分割
 const collision_map = []
 for(let i = 0;  i < collision.length; i+=MAP_WIDTH){
@@ -67,24 +76,23 @@ fgImage.onload = () => {
 }
 
 function update(){
+    findNearestNPC(Hero, Npcs) 
+    console.log('Demo' + Demo.is_nearest)  
+    if(keys.e.pressed = true) Npcs.forEach(npc => {
+        if(npc.can_talk()) npc.talk()
+    })
     Background.update()
-    Hero.update() 
+    Hero.update()
 }
 
 function draw() {
     Background.draw();
-    //boundaries.forEach(boundary => boundary.draw());
-    //console.log('Hero : ' + Hero.loc.y)
-    //console.log('Demo : ' + entities[0].loc.y)
     // キャラクターをまとめて配列に
-    const EandH = [...entities, Hero];
-
+    const EandH = [...Npcs, Hero];
     // Y座標で昇順に並び替え（奥→手前）
     EandH.sort((a, b) => a.loc.y - b.loc.y);
-
     // 並び替えた順に描画
     EandH.forEach(entity => entity.draw());
-
     //Foreground.draw();
 }
 
@@ -112,6 +120,9 @@ document.addEventListener("keydown", function(e) {
     if (e.code === "KeyD") {
         keys.d.pressed = true
     }
+    if (e.code === "KeyE") {
+        keys.e.pressed = true
+    }
 })
 // キーボードが離されたとき
 document.addEventListener("keyup", function(e) {
@@ -126,5 +137,8 @@ document.addEventListener("keyup", function(e) {
     }
     if (e.code === "KeyD") {
         keys.d.pressed = false
+    }
+    if (e.code === "KeyE") {
+        keys.e.pressed = false
     }
   })
