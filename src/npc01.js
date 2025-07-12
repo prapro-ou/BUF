@@ -13,10 +13,11 @@ class npc01 extends human {
         this.state = 0
     }
     can_talk(){
+        console.log("近い？" + this.is_nearest)
         if(!this.is_nearest) return false
         let dis = distance(this.loc, Hero.loc) 
         console.log(this.name + ' : '+ dis)
-        if(dis < 4900) true; else false
+        if(dis < 64) return true; else return false
     }
     talk(){
         console.log('Hello')

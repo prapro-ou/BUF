@@ -26,9 +26,7 @@ class bg_default extends ground{
             Npcs.forEach(npc => {
                 npc.loc.x+=this.velocity.x
             })
-            //HeroのX座標を更新
-            Hero.loc.x-=this.velocity.x
-
+            
             //Y座標の更新
             //背景のY座標を更新
             boundaries.forEach(boundary => {
@@ -40,8 +38,6 @@ class bg_default extends ground{
             Npcs.forEach(npc => {
                 npc.loc.y+=this.velocity.y
             })
-            //HeroのY座標を更新
-            Hero.loc.y-=this.velocity.y
     }
     check_collide(vx, vy){
         //衝突判定

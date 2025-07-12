@@ -16,8 +16,8 @@ function findNearestNPC(hero, npcList) {
     let minDist = Infinity;
 
     npcList.forEach(npc => {
-        const dx = npc.loc.x - hero.loc.x;
-        const dy = npc.loc.y - hero.loc.y;
+        const dx = npc.loc.x - hero.x;
+        const dy = npc.loc.y - hero.y;
         const distSquared = dx * dx + dy * dy;
 
         if (distSquared < minDist) {

@@ -25,8 +25,8 @@ const Foreground = new fg_default({
 const Npcs = []
 const Hero = new hero({
     location: {
-        x:  500, //初期画面の左上を基準にする相対座標
-        y:  100//初期画面の左上を基準にする相対座標
+        x:  canvas.width/2, //初期画面の左上を基準にする相対座標
+        y:  canvas.height/2//初期画面の左上を基準にする相対座標
     },
     iamge: playerImg_down
 })
@@ -47,7 +47,7 @@ const Demo2 = new npc01({
     iamge: playerImg_down
 })
 Npcs.push(Demo)
-Npcs.push(Demo2)
+// Npcs.push(Demo2)
 //衝突マップを行ごとに分割
 const collision_map = []
 for(let i = 0;  i < collision.length; i+=MAP_WIDTH){
@@ -76,11 +76,10 @@ fgImage.onload = () => {
 }
 
 function update(){
-    findNearestNPC(Hero, Npcs) 
-    console.log('Demo' + Demo.is_nearest)  
-    if(keys.e.pressed = true) Npcs.forEach(npc => {
+    findNearestNPC(Hero.loc, Npcs) 
+    if(keys.e.pressed == true) Npcs.forEach(npc => {
         if(npc.can_talk()) npc.talk()
-    })
+    })      
     Background.update()
     Hero.update()
 }
