@@ -22,7 +22,6 @@ const Foreground = new fg_default({
     },
     iamge: fgImage
 })
-const Npcs = []
 const Hero = new hero({
     location: {
         x:  canvas.width/2, //初期画面の左上を基準にする相対座標
@@ -53,16 +52,33 @@ collision_map.forEach((row, i) => {
     })    
 })
 
+const npc_map = []
+for(let i = 0;  i < npc_loc.length; i+=MAP_WIDTH){
+    npc_map.push(npc_loc.slice(i, MAP_WIDTH+i))
+}
+const npcs = []
+npc_map.forEach((row, i) => {
+    row.forEach((symbol, j) => {
+        if(symbol  === 375)
+        npcs.push(
+            new npc01({
+                npc_num: symbol,
+                //衝突マップのずれを調整
+                location: {
+                    x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
+                    y: i * TILE_SIZE + offset.y 
+                }
+            })
+        )
+    })    
+})
+
 //画像を読み込んだのちに実行する
 fgImage.onload = () => {
         animate()
 }
 
 function update(){
-    findNearestNPC(Hero.loc, Npcs) 
-    if(keys.e.pressed == true) Npcs.forEach(npc => {
-        if(npc.can_talk()) npc.talk()
-    })      
     Background.update()
     Hero.update()
 }
@@ -70,12 +86,18 @@ function update(){
 function draw() {
     Background.draw();
     // キャラクターをまとめて配列に
-    const EandH = [...Npcs, Hero];
-    // Y座標で昇順に並び替え（奥→手前）
-    EandH.sort((a, b) => a.loc.y - b.loc.y);
-    // 並び替えた順に描画
-    EandH.forEach(entity => entity.draw());
-    
+    // const EandH = [...npcs, Hero];
+    // // Y座標で昇順に並び替え（奥→手前）
+    // EandH.sort((a, b) => a.loc.y - b.loc.y);
+    // // 並び替えた順に描画
+    // EandH.forEach(entity => entity.draw());
+    // boundaries.forEach(boundary => {
+    //     boundary.draw()
+    // })
+    npcs.forEach(npc => {
+        npc.draw()
+    })
+    Hero.draw();
     Foreground.draw();
 }
 

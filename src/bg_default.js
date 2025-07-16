@@ -23,7 +23,7 @@ class bg_default extends ground{
             Foreground.loc.x+=this.velocity.x
             this.loc.x+=this.velocity.x
             //NPCのX座標を更新
-            Npcs.forEach(npc => {
+            npcs.forEach(npc => {
                 npc.loc.x+=this.velocity.x
             })
             
@@ -35,7 +35,7 @@ class bg_default extends ground{
             Foreground.loc.y+=this.velocity.y
             this.loc.y+=this.velocity.y
             //NPCのY座標を更新
-            Npcs.forEach(npc => {
+            npcs.forEach(npc => {
                 npc.loc.y+=this.velocity.y
             })
     }
@@ -95,8 +95,26 @@ class bg_default extends ground{
             this.velocity.y = 0;
         }
     }
+    talknpc(){
+    for(let i = 0; i < npcs.length; i++){ 
+        const npc = npcs[i];
+        console.log('check')
+        if (iscollide({npc, loc:{
+            x:npc.loc.x + this.velocity.x, 
+            y:npc.loc.y + this.velocity.y
+            }})) {
+                console.log('can talk to` npc')
+                if(keys.e.pressed == true){
+                if(npc.can_talk()) {npc.talk()
+                this.movable = false}
+        }              
+    }
+    }
+    }
     update(){
+        this.movable = true
         this.update_move()
+        this.talknpc()
         if(this.movable)this.move()
     }
     draw(){

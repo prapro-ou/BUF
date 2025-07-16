@@ -3,26 +3,23 @@
 //
 
 class npc01 {
-    constructor({namae, location, image}){
-    this.name = namae;
+    constructor({npc_num, location, image}){
+    this.num = npc_num;
     this.loc = location;
     this.img = new Image();
     this.img_loaded = false;
     this.img.onload = () => {
         this.img_loaded = true;
     };
-    this.img.src = image;
-    this.is_nearest = false;
+    if(this.num == 375)
+    this.img.src = npc375.src;
+    //
     this.state = 0;
     this.dialog = "";
     this.dialog_timer = 0;
 }
     can_talk(){
-        console.log("近い？" + this.is_nearest)
-        if(!this.is_nearest) return false
-        let dis = distance(this.loc, Hero.loc) 
-        console.log(this.name + ' : '+ dis)
-        if(dis < 64) return true; else return false
+        return true
     }
     talk(){
     this.dialog = "こんにちは！"; // 表示するセリフ
@@ -36,11 +33,11 @@ draw(){
     // NPCの画像を描画
     c.drawImage(
         this.img, 
-        0, 0, HERO_W, HERO_H,
+        0, 0, NPC_W, NPC_H,
         this.loc.x, this.loc.y,
-        HERO_W, HERO_H
+        NPC_W, NPC_H
     );
-
+    
     // 吹き出しの描画（セリフがある場合）
     if(this.dialog_timer > 0){
         const padding = 6;
