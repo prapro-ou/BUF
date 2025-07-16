@@ -30,23 +30,6 @@ const Hero = new hero({
     },
     iamge: playerImg_down
 })
-const Demo = new npc01({
-    namae: "Demo",
-    location: {
-        x: 400,//初期画面の左上を基準にする相対座標
-        y: 400//初期画面の左上を基準にする相対座標
-    },
-    iamge: playerImg_down
-})
-const Demo2 = new npc01({
-    namae: "Demo2",
-    location: {
-        x:  400, //初期画面の左上を基準にする相対座標
-        y:  500//初期画面の左上を基準にする相対座標
-    },
-    iamge: playerImg_down
-})
-Npcs.push(Demo)
 // Npcs.push(Demo2)
 //衝突マップを行ごとに分割
 const collision_map = []
@@ -57,7 +40,7 @@ for(let i = 0;  i < collision.length; i+=MAP_WIDTH){
 const boundaries = []
 collision_map.forEach((row, i) => {
     row.forEach((symbol, j) => {
-        if(symbol  === 19723)
+        if(symbol  === 374)
         boundaries.push(
             new col_default({
                 //衝突マップのずれを調整
@@ -92,7 +75,8 @@ function draw() {
     EandH.sort((a, b) => a.loc.y - b.loc.y);
     // 並び替えた順に描画
     EandH.forEach(entity => entity.draw());
-    //Foreground.draw();
+    
+    Foreground.draw();
 }
 
 function animate(){
