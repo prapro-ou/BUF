@@ -22,6 +22,12 @@ const choiceX = 600;
 // 20pxずつ上げる
 const choiceY = [160, 240, 320, 400]; // 180,260,340,420 → 160,240,320,400
 
+// BGM再生
+const bgm = new Audio('../sound/BUF_opening_final_demo.wav');
+bgm.loop = true; // ループ再生
+bgm.volume = 0.5; // 音量（0.0～1.0）
+bgm.play();
+
 function drawQuiz() {
     // 背景をグレーで塗りつぶす
     c.fillStyle = "#888";
@@ -129,6 +135,8 @@ function wrapText(text, x, y, maxWidth, lineHeight) {
 
 // 穴クリック・選択肢クリック・答え合わせクリック
 canvas.addEventListener("click", function(e) {
+    if (bgm.paused) bgm.play();
+
     const rect = canvas.getBoundingClientRect();
     const mx = e.clientX - rect.left;
     const my = e.clientY - rect.top;
