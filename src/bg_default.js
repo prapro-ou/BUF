@@ -39,7 +39,23 @@ class bg_default extends ground{
                 npc.loc.y+=this.velocity.y
             })
     }
-    check_collide(vx, vy){
+    check_collide(vx, vy){ 
+        if(keys.e.pressed == true){
+        for(let i = 0; i < npcs.length; i++){ 
+            const npc = npcs[i];
+            console.log('check')
+            if (iscollide({npc, loc:{
+            x:npc.loc.x + vx, 
+            y:npc.loc.y + vy
+            }})) {
+                console.log('can talk to` npc')  
+                if(npc.can_talk()) {
+                    npc.talk()
+                    this.movable = false
+                }
+        }              
+    }
+    }
         //衝突判定
         for(let i = 0; i < boundaries.length; i++){ 
             const boundary = boundaries[i];
@@ -96,20 +112,7 @@ class bg_default extends ground{
         }
     }
     talknpc(){
-    for(let i = 0; i < npcs.length; i++){ 
-        const npc = npcs[i];
-        console.log('check')
-        if (iscollide({npc, loc:{
-            x:npc.loc.x + this.velocity.x, 
-            y:npc.loc.y + this.velocity.y
-            }})) {
-                console.log('can talk to` npc')
-                if(keys.e.pressed == true){
-                if(npc.can_talk()) {npc.talk()
-                this.movable = false}
-        }              
-    }
-    }
+    
     }
     update(){
         this.movable = true

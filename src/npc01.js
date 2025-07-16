@@ -31,12 +31,20 @@ draw(){
     if (!this.img_loaded) return; // 読み込み前なら描画しない
 
     // NPCの画像を描画
-    c.drawImage(
-        this.img, 
-        0, 0, NPC_W, NPC_H,
-        this.loc.x, this.loc.y,
-        NPC_W, NPC_H
-    );
+        c.fillStyle = "rgba(145, 255, 0, 0.5)" //半透明の黒色
+        //console.log('col_loc : ' + this.loc.x, this.loc.y);
+        c.fillRect(
+            this.loc.x ,
+            this.loc.y,
+            TILE_SIZE,
+            TILE_SIZE*2,
+        )
+    // c.drawImage(
+    //     this.img, 
+    //     0, 0, NPC_W, NPC_H,
+    //     this.loc.x, this.loc.y,
+    //     NPC_W, NPC_H
+    // );
     
     // 吹き出しの描画（セリフがある場合）
     if(this.dialog_timer > 0){
