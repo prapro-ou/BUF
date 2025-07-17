@@ -39,38 +39,19 @@ class bg_default extends ground{
                 npc.loc.y+=this.velocity.y
             })
     }
-    check_collide(vx, vy){ 
-        if(keys.e.pressed == true){
-        for(let i = 0; i < npcs.length; i++){ 
-            const npc = npcs[i];
-            console.log('check')
-            if (iscollide({npc, loc:{
-            x:npc.loc.x + vx, 
-            y:npc.loc.y + vy
-            }})) {
-                console.log('can talk to` npc')  
-                if(npc.can_talk()) {
-                    npc.talk()
-                    this.movable = false
-                }
-        }              
-    }
-    }
+    check_collide(vx, vy){         
         //衝突判定
         for(let i = 0; i < boundaries.length; i++){ 
             const boundary = boundaries[i];
             if (iscollide({boundary, loc:{
-                x:boundary.loc.x + vx, 
-                y:boundary.loc.y + vy
-                }
-                })) {
-                
+                    x:boundary.loc.x + vx, 
+                    y:boundary.loc.y + vy
+                }})) {
                 Hero.inv.addItem({
                 name: '衝突',
                 count: 1,
                 description: '衝突してるよ'
                 })
-                
                 return false
             }
         }
@@ -111,13 +92,9 @@ class bg_default extends ground{
             this.velocity.y = 0;
         }
     }
-    talknpc(){
-    
-    }
     update(){
         this.movable = true
         this.update_move()
-        this.talknpc()
         if(this.movable)this.move()
     }
     draw(){
