@@ -103,7 +103,8 @@ function update(){
     Hero.update()
     }
 
-} 
+}
+
 function draw() {
     Background.draw();
     // キャラクターをまとめて配列に
