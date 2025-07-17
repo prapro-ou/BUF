@@ -12,7 +12,7 @@ const NPC_H = 128
 const SQRT2 = Math.sqrt(2);
 const offset = {
         x:-1200,
-        y:-2500
+        y:-2000
     }
 // const canvas_heroloc = {loc: {
 //         x: 512,

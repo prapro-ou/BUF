@@ -6,6 +6,7 @@ class npc01 {
     constructor({npc_num, location, image}){
     this.num = npc_num;
     this.loc = location;
+    this.is_nearest = false
     this.img = new Image();
     this.img_loaded = false;
     this.img.onload = () => {
@@ -19,7 +20,8 @@ class npc01 {
     this.dialog_timer = 0;
 }
     can_talk(){
-        return true
+        console.log(this.is_nearest)
+        return this.is_nearest
     }
     talk(){
     this.dialog = "こんにちは！"; // 表示するセリフ

@@ -27,8 +27,8 @@ function findNearestNPC(hero, npcList) {
     let minDist = Infinity;
 
     npcList.forEach(npc => {
-        const dx = npc.loc.x - hero.x;
-        const dy = npc.loc.y - hero.y;
+        const dx = npc.loc.x - hero.loc.x;
+        const dy = npc.loc.y - hero.loc.y;
         const distSquared = dx * dx + dy * dy;
 
         if (distSquared < minDist) {
@@ -43,6 +43,7 @@ function findNearestNPC(hero, npcList) {
         nearestNPC.is_nearest = true; // 最も近い NPC に true
     }
 }
+
 
 //二つの座標構造体をふけ取り２エンティティの距離を計算
 function distance(locA, locB){
