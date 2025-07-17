@@ -92,9 +92,6 @@ class bg_default extends ground{
             this.velocity.y = 0;
         }
     }
-    talknpc(){
-    
-    }
     update(){
         this.movable = true
         this.update_move()

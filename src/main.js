@@ -78,9 +78,8 @@ fgImage.onload = () => {
         animate()
 }
 
-function update(){
-    if(keys.e.pressed){
-        for(let i = 0; i < npcs.length; i++){ 
+function invoke_talk(){
+    for(let i = 0; i < npcs.length; i++){ 
             const npc = npcs[i];
             if(nearNpc({npc, loc:{
                 x:npc.loc.x , 
@@ -92,6 +91,12 @@ function update(){
                 }
             }    
         }
+}
+
+function update(){
+    findNearestNPC(Hero, npcs) 
+    if(keys.e.pressed){
+        invoke_talk()
     }  
     if(!Hero.is_talking){
     Background.update()
@@ -102,17 +107,17 @@ function update(){
 function draw() {
     Background.draw();
     // キャラクターをまとめて配列に
-    // const EandH = [...npcs, Hero];
+    const EandH = [...npcs, Hero];
     // // Y座標で昇順に並び替え（奥→手前）
-    // EandH.sort((a, b) => a.loc.y - b.loc.y);
+    EandH.sort((a, b) => a.loc.y - b.loc.y);
     // // 並び替えた順に描画
-    // EandH.forEach(entity => entity.draw());
+    EandH.forEach(entity => entity.draw());
     // boundaries.forEach(boundary => {
     //     boundary.draw()
     // })
-    npcs.forEach(npc => {
-        npc.draw()
-    })
+    // npcs.forEach(npc => {
+    //     npc.draw()
+    // })
     Hero.draw();
     Foreground.draw();
 }
