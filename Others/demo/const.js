@@ -13,10 +13,10 @@ const BLOCK_PIXEL = 32;//１ブロックの辺のピクセル数
 const TILE_COLS = 16;//横に何フレーム連続で画像データが作られているのか
 
 const DEFAULT_STAGE = 0;//通常ステージ
-const GRAVITY = 8;//重力
 
 //エンティティの定数群
 const RIGHT = 1;
 const LEFT = 0;
 const STOPING = 0;
 const WALKING = 1;
+const MAX_SPEED = 3; //最大速度

@@ -6,25 +6,50 @@ const c = canvas.getContext('2d')
 canvas.width = 1024
 canvas.height = 576
 
+//クラスのインスタンス化
+
+const Background = new bg_default({
+    location: {
+        x: offset.x,//マップ画像データの左上を基準にする座標
+        y: offset.y
+    },
+    iamge: bgImage
+})
+const Foreground = new fg_default({
+    location: {
+        x: offset.x,//マップ画像データの左上を基準にする座標
+        y: offset.y
+    },
+    iamge: fgImage
+})
+const Hero = new hero({
+    location: {
+        x:  canvas.width/2, //初期画面の左上を基準にする相対座標
+        y:  canvas.height/2//初期画面の左上を基準にする相対座標
+    },
+    iamge: playerImg_down
+})
+// Npcs.push(Demo2)
 //衝突マップを行ごとに分割
 const collision_map = []
 for(let i = 0;  i < collision.length; i+=MAP_WIDTH){
     collision_map.push(collision.slice(i, MAP_WIDTH+i))
 }
 const boudaries = []
-collision_map.forEach((row, i) => {
+/*collision_map.forEach((row, i) => {
     row.forEach((symbol, j) => {
-        if(symbol  === 1025)
-        boudaries.push(
+        if(symbol  === 374)
+        boundaries.push(
             new col_default({
+                //衝突マップのずれを調整
                 location: {
-                    x: j * TILE_SIZE + offset.x,
-                    y: i * TILE_SIZE + offset.y
+                    x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
+                    y: i * TILE_SIZE + offset.y 
                 }
             })
         )
     })    
-})
+})*/
 
 //画像を読み込み
 const image = new Image()
@@ -61,77 +86,76 @@ const test_boundary = new col_default({location: {
 
 
 //画像を読み込んだのちに実行する
-image.onload = () => {
+fgImage.onload = () => {
         animate()
 }
-playerImg_down.onload = () =>{
-            Hero.width = Hero.img.width >> 2
-            Hero.height = Hero.img.height
-            console.log(Hero.width);
-            console.log(Hero.height);
-        }
 
 function update(){
     Background.update()
     Hero.update()
 }
 
-
-
-function draw(){
-    Background.draw()
-    boudaries.forEach(boundary =>{
-       boundary.draw()
+function draw() {
+    Background.draw();
+    // キャラクターをまとめて配列に
+    // const EandH = [...npcs, Hero];
+    // // Y座標で昇順に並び替え（奥→手前）
+    // EandH.sort((a, b) => a.loc.y - b.loc.y);
+    // // 並び替えた順に描画
+    // EandH.forEach(entity => entity.draw());
+    // boundaries.forEach(boundary => {
+    //     boundary.draw()
+    // })
+    npcs.forEach(npc => {
+        npc.draw()
     })
-    test_boundary.draw();
-    Hero.draw()
+    Hero.draw();
+    Foreground.draw();
 }
 
 function animate(){
     window.requestAnimationFrame(animate)
     update()
     draw()
-    if ((0-Hero.loc.x + Hero.width) >= test_boundary.loc.x){
-        console.log('boundary')
-    }
-
 }
 
 // キーボードが押されたとき
 document.addEventListener("keydown", function(e) {
+    if (e.code === "Tab") {
+        e.preventDefault() // ブラウザのタブ切り替えを防ぐ
+        keys.tab.pressed = true
+    }
     if (e.code === "KeyW") {
         keys.w.pressed  = true
-        Hero.is_stopping = false
     }
     if (e.code === "KeyA") {
         keys.a.pressed = true
-        Hero.is_stopping = false
     }
     if (e.code === "KeyS") {
         keys.s.pressed  = true
-        Hero.is_stopping = false
     }
     if (e.code === "KeyD") {
         keys.d.pressed = true
-        Hero.is_stopping = false       
+    }
+    if (e.code === "KeyE") {
+        keys.e.pressed = true
     }
 })
 // キーボードが離されたとき
 document.addEventListener("keyup", function(e) {
     if (e.code === "KeyW") {
         keys.w.pressed  = false
-        Hero.is_stopping = true
     }
     if (e.code === "KeyA") {
         keys.a.pressed = false
-        Hero.is_stopping = true
     }
     if (e.code === "KeyS") {
         keys.s.pressed  = false
-        Hero.is_stopping = true
     }
     if (e.code === "KeyD") {
         keys.d.pressed = false
-        Hero.is_stopping = true
+    }
+    if (e.code === "KeyE") {
+        keys.e.pressed = false
     }
   })
