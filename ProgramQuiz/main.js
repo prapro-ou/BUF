@@ -28,10 +28,21 @@ bgm.loop = true; // ループ再生
 bgm.volume = 0.5; // 音量（0.0～1.0）
 bgm.play();
 
+const bgImage = new Image();
+bgImage.src = '../gazo/quiz_wood.png';
+bgImage.onload = function() {
+    drawQuiz();
+};
+
 function drawQuiz() {
-    // 背景をグレーで塗りつぶす
-    c.fillStyle = "#888";
-    c.fillRect(0, 0, canvas.width, canvas.height);
+    // 画像が読み込まれていれば背景に描画
+    if (bgImage.complete) {
+        c.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
+    } else {
+        // 読み込み前はグレーで塗りつぶし
+        c.fillStyle = "#888";
+        c.fillRect(0, 0, canvas.width, canvas.height);
+    }
 
     // 問題文（上部に表示、長い場合は折り返し）
     c.fillStyle = "white";
