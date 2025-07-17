@@ -35,8 +35,9 @@ const collision_map = []
 for(let i = 0;  i < collision.length; i+=MAP_WIDTH){
     collision_map.push(collision.slice(i, MAP_WIDTH+i))
 }
-const boudaries = []
-/*collision_map.forEach((row, i) => {
+//衝突タイルマップを衝突ピクセルマップにする
+const boundaries = []
+collision_map.forEach((row, i) => {
     row.forEach((symbol, j) => {
         if(symbol  === 374)
         boundaries.push(
@@ -49,41 +50,28 @@ const boudaries = []
             })
         )
     })    
-})*/
-
-//画像を読み込み
-const image = new Image()
-image.src = '../img/DemoMap.png'
-const playerImg_down = new Image()
-      playerImg_down.src = '../img/playerDown.png'
-const playerImg_up = new Image()
-      playerImg_up.src = '../img/playerUp.png'
-const playerImg_right = new Image()
-      playerImg_right.src = '../img/playerRight.png'
-const playerImg_left = new Image()
-      playerImg_left.src = '../img/playerLeft.png'
-
-//クラスのインスタンス化
-const Background = new bg_default({
-    location: {
-        x: offset.x,
-        y: offset.y
-    },
-    iamge: image
 })
-const Hero = new hero({
-    location: {
-        x: offset.x,
-        y: offset.y
-    },
-    iamge: playerImg_down
-})
-const test_boundary = new col_default({location: {
-        x:400, 
-        y:400
-    }
-    })
 
+const npc_map = []
+for(let i = 0;  i < npc_loc.length; i+=MAP_WIDTH){
+    npc_map.push(npc_loc.slice(i, MAP_WIDTH+i))
+}
+const npcs = []
+npc_map.forEach((row, i) => {
+    row.forEach((symbol, j) => {
+        if(symbol  === 375)
+        npcs.push(
+            new npc01({
+                npc_num: symbol,
+                //衝突マップのずれを調整
+                location: {
+                    x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
+                    y: i * TILE_SIZE + offset.y 
+                }
+            })
+        )
+    })    
+})
 
 //画像を読み込んだのちに実行する
 fgImage.onload = () => {
