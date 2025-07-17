@@ -10,6 +10,7 @@ class hero extends human{
         this.frame = 0
         this.is_stopping = true
         this.inv = new inventory()
+        this.is_talking = false
     }
     update_state(){
         if(Background.velocity.x !== 0 || Background.velocity.y !== 0){

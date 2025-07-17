@@ -79,10 +79,26 @@ fgImage.onload = () => {
 }
 
 function update(){
+    if(keys.e.pressed){
+        for(let i = 0; i < npcs.length; i++){ 
+            const npc = npcs[i];
+            if(nearNpc({npc, loc:{
+                x:npc.loc.x , 
+                y:npc.loc.y
+            }})){
+                if(npc.can_talk()) {
+                    Hero.is_talking = true
+                    npc.talk()
+                }
+            }    
+        }
+    }  
+    if(!Hero.is_talking){
     Background.update()
     Hero.update()
-}
+    }
 
+}
 function draw() {
     Background.draw();
     // キャラクターをまとめて配列に
