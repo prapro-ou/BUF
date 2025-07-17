@@ -55,10 +55,10 @@ class hero extends human{
     draw(){
         c.drawImage(
         this.img, 
-        HERO_W * this.img_num, //画像の切り取り位置
+        96 * this.img_num, //画像の切り取り位置
         0,
-        HERO_W,//画像の切り取り幅
-        HERO_H,//画像の切り取り高さ
+        96,//画像の切り取り幅
+        96,//画像の切り取り高さ
 
         //プレイヤーを画面の中心に
         canvas.width>>1, 
