@@ -116,9 +116,6 @@ function draw() {
     // boundaries.forEach(boundary => {
     //     boundary.draw()
     // })
-    // npcs.forEach(npc => {
-    //     npc.draw()
-    // })
     Hero.draw();
     Foreground.draw();
 }
