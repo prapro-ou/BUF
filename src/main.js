@@ -59,17 +59,37 @@ for(let i = 0;  i < npc_loc.length; i+=MAP_WIDTH){
 const npcs = []
 npc_map.forEach((row, i) => {
     row.forEach((symbol, j) => {
-        if(symbol  === 375)
-        npcs.push(
-            new npc01({
-                npc_num: symbol,
+        switch (symbol) {
+            case 375 : npcs.push(new npc375({
+                    npc_num: symbol,
                 //衝突マップのずれを調整
-                location: {
-                    x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
-                    y: i * TILE_SIZE + offset.y 
-                }
-            })
-        )
+                    location: {
+                        x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
+                        y: i * TILE_SIZE + offset.y 
+                    }
+                }));
+                break;
+            case 377 : npcs.push(new npc377({
+                    npc_num: symbol,
+                //衝突マップのずれを調整
+                    location: {
+                        x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
+                        y: i * TILE_SIZE + offset.y 
+                    }
+                }));
+                break;
+            case 378 : npcs.push(new npc378({
+                    npc_num: symbol,
+                //衝突マップのずれを調整
+                    location: {
+                        x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
+                        y: i * TILE_SIZE + offset.y 
+                    }
+                }));
+                break;
+            default : break;
+        }
+        
     })    
 })
 
@@ -103,7 +123,6 @@ function update(){
     Background.update()
     Hero.update()
     }
-
 }
 
 function draw() {
