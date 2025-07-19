@@ -29,7 +29,6 @@ const Hero = new hero({
     },
     iamge: playerImg_down
 })
-// Npcs.push(Demo2)
 //衝突マップを行ごとに分割
 const collision_map = []
 for(let i = 0;  i < collision.length; i+=MAP_WIDTH){
@@ -52,6 +51,7 @@ collision_map.forEach((row, i) => {
     })    
 })
 
+//NPCの位置をマップデータから解析
 const npc_map = []
 for(let i = 0;  i < npc_loc.length; i+=MAP_WIDTH){
     npc_map.push(npc_loc.slice(i, MAP_WIDTH+i))
@@ -78,6 +78,7 @@ fgImage.onload = () => {
         animate()
 }
 
+//eでインタラクトして，NPCの会話に関する関数フックとする
 function invoke_talk(){
     for(let i = 0; i < npcs.length; i++){ 
             const npc = npcs[i];
@@ -94,7 +95,7 @@ function invoke_talk(){
 }
 
 function update(){
-    findNearestNPC(Hero, npcs) 
+    findNearestNPC(Hero, npcs) //一番近くのNPCを割り出す
     if(keys.e.pressed){
         invoke_talk()
     }  
