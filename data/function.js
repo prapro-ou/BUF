@@ -18,7 +18,7 @@ function nearNpc(npc) {
         x: npc.loc.x + NPC_W / 2,
         y: npc.loc.y + NPC_H / 2
     };
-    return distance(heroCenter, npcCenter) < 64;
+    return distance(heroCenter, npcCenter) < 96;
 }
 
 //プレイヤーから一番近いNPCを探索

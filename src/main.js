@@ -29,7 +29,6 @@ const Hero = new hero({
     },
     iamge: playerImg_down
 })
-// Npcs.push(Demo2)
 //衝突マップを行ごとに分割
 const collision_map = []
 for(let i = 0;  i < collision.length; i+=MAP_WIDTH){
@@ -52,6 +51,7 @@ collision_map.forEach((row, i) => {
     })    
 })
 
+//NPCの位置をマップデータから解析
 const npc_map = []
 for(let i = 0;  i < npc_loc.length; i+=MAP_WIDTH){
     npc_map.push(npc_loc.slice(i, MAP_WIDTH+i))
@@ -59,17 +59,37 @@ for(let i = 0;  i < npc_loc.length; i+=MAP_WIDTH){
 const npcs = []
 npc_map.forEach((row, i) => {
     row.forEach((symbol, j) => {
-        if(symbol  === 375)
-        npcs.push(
-            new npc01({
-                npc_num: symbol,
+        switch (symbol) {
+            case 375 : npcs.push(new npc375({
+                    npc_num: symbol,
                 //衝突マップのずれを調整
-                location: {
-                    x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
-                    y: i * TILE_SIZE + offset.y 
-                }
-            })
-        )
+                    location: {
+                        x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
+                        y: i * TILE_SIZE + offset.y 
+                    }
+                }));
+                break;
+            // case 377 : npcs.push(new npc377({
+            //         npc_num: symbol,
+            //     //衝突マップのずれを調整
+            //         location: {
+            //             x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
+            //             y: i * TILE_SIZE + offset.y 
+            //         }
+            //     }));
+            //     break;
+            // case 378 : npcs.push(new npc378({
+            //         npc_num: symbol,
+            //     //衝突マップのずれを調整
+            //         location: {
+            //             x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
+            //             y: i * TILE_SIZE + offset.y 
+            //         }
+            //     }));
+            //     break;
+            default : break;
+        }
+        
     })    
 })
 
@@ -78,6 +98,7 @@ fgImage.onload = () => {
         animate()
 }
 
+//eでインタラクトして，NPCの会話に関する関数フックとする
 function invoke_talk(){
     for(let i = 0; i < npcs.length; i++){ 
             const npc = npcs[i];
@@ -94,15 +115,17 @@ function invoke_talk(){
 }
 
 function update(){
-    findNearestNPC(Hero, npcs) 
+    findNearestNPC(Hero, npcs) //一番近くのNPCを割り出す
     if(keys.e.pressed){
         invoke_talk()
     }  
+    npcs.forEach(npc => {
+        npc.update()
+    })
     if(!Hero.is_talking){
     Background.update()
     Hero.update()
     }
-
 }
 
 function draw() {
@@ -115,9 +138,6 @@ function draw() {
     EandH.forEach(entity => entity.draw());
     // boundaries.forEach(boundary => {
     //     boundary.draw()
-    // })
-    // npcs.forEach(npc => {
-    //     npc.draw()
     // })
     Hero.draw();
     Foreground.draw();
@@ -150,6 +170,9 @@ document.addEventListener("keydown", function(e) {
     if (e.code === "KeyE") {
         keys.e.pressed = true
     }
+    if (e.code === "Space") {
+        keys.space.pressed = true
+    }
 })
 // キーボードが離されたとき
 document.addEventListener("keyup", function(e) {
@@ -167,5 +190,8 @@ document.addEventListener("keyup", function(e) {
     }
     if (e.code === "KeyE") {
         keys.e.pressed = false
+    }
+    if (e.code === "Space") {
+        keys.space.pressed = false
     }
   })

@@ -7,18 +7,13 @@ const TILE_SIZE = 64; //タイルのサイズ
 const MAX_SPEED = 3; //最大移動速度
 const HERO_W = 64; //ヒーローの横幅
 const HERO_H = 64; //ヒーローの縦幅
-const NPC_W = 64
-const NPC_H = 128
+const NPC_W = 32
+const NPC_H = 64
 const SQRT2 = Math.sqrt(2);
 const offset = {
-        x:-1200,
-        y:-2000
-    }
-// const canvas_heroloc = {loc: {
-//         x: 512,
-//         y: 288
-//     }
-    
+        x:-960,
+        y:-2100
+    }    
 
 //キー入力の状態を管理するオブジェクト
 const keys = {
@@ -39,6 +34,10 @@ const keys = {
     },
     e:{
         pressed: false
+    },
+    space:{
+        pressed: false,
+        wasPressed: false
     }
 }
 
