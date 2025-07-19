@@ -69,24 +69,24 @@ npc_map.forEach((row, i) => {
                     }
                 }));
                 break;
-            case 377 : npcs.push(new npc377({
-                    npc_num: symbol,
-                //衝突マップのずれを調整
-                    location: {
-                        x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
-                        y: i * TILE_SIZE + offset.y 
-                    }
-                }));
-                break;
-            case 378 : npcs.push(new npc378({
-                    npc_num: symbol,
-                //衝突マップのずれを調整
-                    location: {
-                        x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
-                        y: i * TILE_SIZE + offset.y 
-                    }
-                }));
-                break;
+            // case 377 : npcs.push(new npc377({
+            //         npc_num: symbol,
+            //     //衝突マップのずれを調整
+            //         location: {
+            //             x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
+            //             y: i * TILE_SIZE + offset.y 
+            //         }
+            //     }));
+            //     break;
+            // case 378 : npcs.push(new npc378({
+            //         npc_num: symbol,
+            //     //衝突マップのずれを調整
+            //         location: {
+            //             x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
+            //             y: i * TILE_SIZE + offset.y 
+            //         }
+            //     }));
+            //     break;
             default : break;
         }
         
@@ -119,6 +119,9 @@ function update(){
     if(keys.e.pressed){
         invoke_talk()
     }  
+    npcs.forEach(npc => {
+        npc.update()
+    })
     if(!Hero.is_talking){
     Background.update()
     Hero.update()
@@ -167,6 +170,9 @@ document.addEventListener("keydown", function(e) {
     if (e.code === "KeyE") {
         keys.e.pressed = true
     }
+    if (e.code === "Space") {
+        keys.space.pressed = true
+    }
 })
 // キーボードが離されたとき
 document.addEventListener("keyup", function(e) {
@@ -184,5 +190,8 @@ document.addEventListener("keyup", function(e) {
     }
     if (e.code === "KeyE") {
         keys.e.pressed = false
+    }
+    if (e.code === "Space") {
+        keys.space.pressed = false
     }
   })

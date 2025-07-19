@@ -34,6 +34,10 @@ const keys = {
     },
     e:{
         pressed: false
+    },
+    space:{
+        pressed: false,
+        wasPressed: false
     }
 }
 

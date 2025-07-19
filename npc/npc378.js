@@ -14,6 +14,7 @@ class npc378 extends npc01 {
     };
     this.img.src = npc378Img.src;
     this.state = 0
+    this.conv_num = 0
     this.frame = 0
     }
     can_talk(){
@@ -35,14 +36,26 @@ draw00(){
         this.loc.x+16, this.loc.y,
         32, 64 
     )}
-
-draw(){
+draw01(){
+    c.drawImage(
+        this.img, 
+        96, 0, NPC_W, NPC_H,
+        this.loc.x, this.loc.y,
+        NPC_W<<1, NPC_H<<1
+    );
+    draw_conv(this.conv_num)
+}
+update(){
     this.frame++
+}
+draw(){
     if (!this.img_loaded) return; // 読み込み前なら描画しない
     //NPCの画像を描画
     switch (this.state){
         case 0 : this.draw00();
                  break; 
+        case 1 : this.draw01();
+                 break;
     }
     }
     
