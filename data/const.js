@@ -13,12 +13,7 @@ const SQRT2 = Math.sqrt(2);
 const offset = {
         x:-1200,
         y:-2000
-    }
-// const canvas_heroloc = {loc: {
-//         x: 512,
-//         y: 288
-//     }
-    
+    }    
 
 //キー入力の状態を管理するオブジェクト
 const keys = {

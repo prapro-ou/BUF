@@ -18,7 +18,8 @@ class npc01 {
     this.state = 0;
     this.dialog = "";
     this.dialog_timer = 0;
-}
+    this.frame = 0
+    }
     can_talk(){
         console.log(this.is_nearest)
         return this.is_nearest
@@ -30,15 +31,23 @@ class npc01 {
 }
 
 draw(){
+    this.frame++
     if (!this.img_loaded) return; // 読み込み前なら描画しない
 
-    // NPCの画像を描画
+    //NPCの画像を描画
     c.drawImage(
         this.img, 
         0, 0, NPC_W, NPC_H,
         this.loc.x, this.loc.y,
         NPC_W, NPC_H
     );
+    if(this.state ==  0){  
+    c.drawImage(
+        wait_icon, 
+        32*((this.frame >> 4) % 4) , 0, 32, 64,
+        this.loc.x+16, this.loc.y,
+        32, 64 
+    )}
     
     // 吹き出しの描画（セリフがある場合）
     if(this.dialog_timer > 0){
