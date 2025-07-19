@@ -53,6 +53,10 @@ class hero extends human{
         this.inv.display() //持ち物を表示
     }
     draw(){
+        if(this.is_talking){
+            this.img_num = 0
+            this.img.src = playerImg_down.src
+        }
         c.drawImage(
         this.img, 
         96 * this.img_num, //画像の切り取り位置
