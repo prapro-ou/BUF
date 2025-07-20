@@ -16,12 +16,18 @@ class npc375 extends npc01 {
     this.conv_num = 0
     this.state = 0
     this.frame = 0
+    this.choice = null  
     }
     can_talk(){
         return this.is_nearest
     }
     talk(){
-        this.state = 1
+        switch (this.state){
+            case 0 : this.state = 1;
+                     break;
+            case 3 : this.state = 4;
+                     break;
+        }
     }
 draw_conv(c_num){
     if (this.state === 1) {
@@ -32,9 +38,8 @@ draw_conv(c_num){
 
         // 会話が終わったら状態遷移（例：state = 2）
         if (this.conv_num >= npc375dialog_1.length) {
-            this.state = 0; // 会話終了状態などに遷移
+            this.state = 2; // 会話終了状態などに遷移
             this.conv_num = 0
-            Hero.is_talking = false
         }
     }
 }
@@ -73,16 +78,48 @@ update(){
     if (!keys.space.pressed) {
         keys.space.wasPressed = false;
     }
+
+    if (this.state === 2) {
+    if (keys.a.pressed && !keys.a.wasPressed) {
+        this.choice = "yes";
+        keys.a.wasPressed = true;
+    }
+    if (keys.d.pressed && !keys.d.wasPressed) {
+        this.choice = "no";
+        keys.d.wasPressed = true;
+    }
+    if (keys.space.pressed && !keys.space.wasPressed && this.choice !== null) {
+        keys.space.wasPressed = true;
+        this.state = 0; // 選択完了→終了 or クエスト受注へ
+        Hero.is_talking = false;
+        console.log(this.choice)
+        // クエスト受注ロジック
+        if (this.choice === "yes") {
+            console.log("承諾された")
+            console.log("こいつのクエストに関するプログラムに遷移")
+            //this.startQuest();
+        } else {
+            console.log("断られた！");
+            this.state = 0;
+        }
+    }
+
+    if (!keys.a.pressed) keys.a.wasPressed = false;
+    if (!keys.d.pressed) keys.d.wasPressed = false;
+}
 }
 draw(){
     if (!this.img_loaded) return; // 読み込み前なら描画しない
     //NPCの画像を描画
-    console.log(this.state  )
+    console.log(this.state)
     switch (this.state){
         case 0 : this.draw00();
                  break; 
         case 1 : this.draw01();
                  break;
+        case 2 : this.draw00();//todo後でクエストを承諾するかどうかの選択中の描画について考える
+                 break;
+        case 3 : this.draw00()
     }
     }
     
