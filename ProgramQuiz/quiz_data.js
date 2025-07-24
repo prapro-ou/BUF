@@ -1,38 +1,25 @@
+const commonChoices = ["a", "pi", "c", "s", "b"];
+
 const quizList = [
     new Quiz({
-        question: "C言語の穴埋め問題です。各_____をクリックして正しい選択肢を選んでください。",
+        question: "正しい選択肢を選んで，看板を完成させよう！",
         code: `
-#include <stdio.h>
+整数型：distance
+文字列型：where
+distance ← 3
+where ← "green island"
 
-int main(void) {
-    int a = 10;
-    double pi = 3.14;
-    char c = 'Z';
-    char s[] = "XYZ";
-
-    // Q1: Hello を表示
-    printf("Hello, printf チュートリアル!\\n");
-
-    // Q2: 整数 a を表示
-    printf("変数 a の値：%d\\n", _____1);
-
-    // Q3: 小数 pi を小数点以下2桁で表示
-    printf("変数 pi の値：%.2f\\n", _____2);
-
-    // Q4: 文字 c と文字列 s を表示
-    printf("文字：%c, 文字列：%s\\n", _____3, _____4);
-
-    return 0;
-}
-        `,
-        blanks: [
-            { idx: 1, choices: ["a", "pi", "c"], answer: 0 },
-            { idx: 2, choices: ["a", "pi", "s"], answer: 1 },
-            { idx: 3, choices: ["c", "s", "a"], answer: 0 },
-            { idx: 4, choices: ["c", "s", "pi"], answer: 1 }
-        ]
-    }),
-    // 2問目（例題）
+_________(_________まで_________キロ)
+    `.trim(),
+    // 選択肢の配列（インデックス 0～3）
+    choices: ["printf","scanf","distance","where"],
+  // idx プロパティをなくして answer のみ
+    blanks: [
+    { answer: 0 },  // 1つめの「_____」の正解は choices[0]（"printf"）
+    { answer: 3 },  // 2つめの「_____」は choices[3]（"where"）
+    { answer: 2 }   // 3つめの「_____」は choices[2]（"distance"）
+    ]
+  }),
     new Quiz({
         question: "2問目：printfで整数bを表示する正しい変数名を選んでください。",
         code: `
@@ -45,8 +32,9 @@ int main(void) {
     return 0;
 }
         `,
+        choices: commonChoices,
         blanks: [
-            { idx: 1, choices: ["b", "a", "c"], answer: 0 }
+            { idx: 1, answer: 4 } // "b"
         ]
     })
 ];
