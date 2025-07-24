@@ -11,8 +11,8 @@ const NPC_W = 32
 const NPC_H = 64
 const SQRT2 = Math.sqrt(2);
 const offset = {
-        x:-960,
-        y:-2100
+        x:-2525 ,
+        y:-2040 
     }    
 
 //キー入力の状態を管理するオブジェクト
