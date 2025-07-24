@@ -116,7 +116,7 @@ draw(){
                  break; 
         case 1 : this.draw01();
                  break;
-        case 2 : this.draw00();//todo後でクエストを承諾するかどうかの選択中の描画について考える
+        case 2 : this.draw01();//todo後でクエストを承諾するかどうかの選択中の描画について考える
                  break;
         case 3 : this.draw00()
     }
