@@ -164,6 +164,8 @@ function animate(){
 
 // キーボードが押されたとき
 document.addEventListener("keydown", function(e) {
+    if (bgm.paused) bgm.play();
+    
     if (e.code === "Tab") {
         e.preventDefault() // ブラウザのタブ切り替えを防ぐ
         keys.tab.pressed = true
