@@ -1,0 +1,25 @@
+# OSファイル
+.DS_Store
+Thumbs.db
+
+# ログファイル
+*.log
+
+# ビルド成果物
+/dist/
+/build/
+/out/
+
+# IDE・エディタ関連
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+
+# Node.js
+node_modules/
+
+# ADSやZone.Identifier対策
+*Zone.Identifier
