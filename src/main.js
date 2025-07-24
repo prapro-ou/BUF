@@ -6,6 +6,12 @@ const c = canvas.getContext('2d')
 canvas.width = 1024
 canvas.height = 576
 
+// BGM再生
+const bgm = new Audio('../sound/BUF_opening_final_demo.wav');
+bgm.loop = true; // ループ再生
+bgm.volume = 0.5; // 音量（0.0～1.0）
+bgm.play();
+
 //クラスのインスタンス化
 
 const Background = new bg_default({
