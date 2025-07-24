@@ -22,7 +22,7 @@ const choiceBaseY  = 120;
 const choiceGap    = 60;
 
 // ———— BGM & 背景 ————
-const bgm = new Audio('../sound/BUF_opening_final_demo.wav');
+const bgm = new Audio('../sound/BUF_quiz.wav');
 bgm.loop   = true;
 bgm.volume = 0.5;
 bgm.play();

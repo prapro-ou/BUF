@@ -22,7 +22,7 @@ const choiceBaseY  = 120;
 const choiceGap    = 60;
 
 // ———— BGM & 背景 ————
-const bgm = new Audio('../sound/BUF_opening_final_demo.wav');
+const bgm = new Audio('../sound/BUF_quiz.wav');
 bgm.loop   = true;
 bgm.volume = 0.5;
 bgm.play();
@@ -52,11 +52,6 @@ function wrapText(text, x, y, maxWidth, lineHeight) {
   }
   c.fillText(line, x, y);
   return lines + 1;
-}
-
-// ———— 形判定ヘルパー ————
-function isFunctionName(name) {
-  return name === 'printf' || name === 'scanf';
 }
 
 // ———— メイン描画ルーチン ————
@@ -93,7 +88,7 @@ function drawQuiz() {
   });
 
   // — 空欄（_____）処理 —
-  const tag      = '_____';
+  const tag = currentQuiz.code.match(/_{2,}/)[0];
   const tagWidth = c.measureText(tag).width;
 
   currentQuiz.blanks.forEach((blank, bidx) => {
@@ -101,67 +96,52 @@ function drawQuiz() {
       const pos = codeLines[i].indexOf(tag);
       if (pos === -1) continue;
 
-      // 描画基準座標
+      // 幅測定は rawCodeLines から
       const prefix = rawCodeLines[i].slice(0, pos);
       const px     = codeX + c.measureText(prefix).width;
       const py     = codeYStart + i * 22 - 10;
 
-      // 形状判定は正答の文字列で
-      const label = currentQuiz.choices[blank.answer];
-      const shape = isFunctionName(label) ? 'oval' : 'rect';
-
-      // 楕円用／矩形用のサイズ
-      const radiusX = tagWidth/2 + 6;
+      const radiusX = tagWidth / 2;
       const radiusY = 14;
-      const rectW   = tagWidth + 12;
-      const rectH   = radiusY * 2;
+      const centerX = px + tagWidth / 2;
+      const centerY = py + radiusY;  // ← 修正：楕円の縦半径を使って中央に
 
-      // 中心
-      const centerX = px + tagWidth/2;
-      const centerY = py + radiusY;
-
+      // ■ 回答前のみ枠線を描く
       if (userAnswers[bidx] === null) {
-        // ■ 回答前：枠線だけ
         c.save();
+        c.beginPath();
+        c.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, 2 * Math.PI);
         c.strokeStyle = '#fff';
         c.lineWidth   = 2;
-        if (shape === 'oval') {
-          c.beginPath();
-          c.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, 2*Math.PI);
-          c.stroke();
-        } else {
-          c.strokeRect(px-6, py, rectW, rectH);
-        }
-        c.restore();
-      } else {
-        // ■ 回答後：背景で隠して文字のみ
-        c.save();
-        c.fillStyle = '#A0522D';
-        if (shape === 'oval') {
-          c.beginPath();
-          c.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, 2*Math.PI);
-          c.fill();
-        } else {
-          c.fillRect(px-6, py, rectW, rectH);
-        }
-        // 文字
-        c.fillStyle    = '#fff';
-        c.font         = '18px monospace';
-        c.textAlign    = 'center';
-        c.textBaseline = 'middle';
-        c.fillText(currentQuiz.choices[userAnswers[bidx]], centerX, centerY);
+        c.stroke();
         c.restore();
       }
 
-      // ■ クリック判定領域
+      // ■ 回答済みなら文字だけ中央に描画
+      if (userAnswers[bidx] !== null) {
+        c.save();
+        c.fillStyle    = '#fff';
+        c.font         = '18px monospace';
+        c.textAlign    = 'center';
+        c.textBaseline = 'middle';   // ← 確実に中央揃え
+        c.fillText(
+          currentQuiz.choices[userAnswers[bidx]],
+          centerX, centerY
+        );
+        c.restore();
+      }
+
+      // ■ クリック判定用矩形をセット
       blank.rect = {
-        x: px-6, y: py,
-        w: shape==='oval'? radiusX*2 : rectW,
-        h: shape==='oval'? radiusY*2 : rectH,
-        cx: centerX, cy: centerY
+        x:  px,
+        y:  py,
+        w:  tagWidth,
+        h:  radiusY * 2,
+        cx: centerX,
+        cy: centerY
       };
 
-      // 次の空欄と混ざらないよう置換
+      // ■ 次の空欄検索と混ざらないよう置換
       codeLines[i] = codeLines[i].replace(tag, ' '.repeat(tag.length));
       break;
     }
@@ -172,38 +152,35 @@ function drawQuiz() {
   c.textAlign    = 'center';
   c.textBaseline = 'middle';
   if (!currentQuiz.choiceRects) currentQuiz.choiceRects = [];
-  currentQuiz.choices.forEach((choice,i) => {
+  currentQuiz.choices.forEach((choice, i) => {
     if (userAnswers.includes(i)) return;
-    const cx    = choiceX;
-    const cy    = choiceBaseY + i*choiceGap;
-    const shape = isFunctionName(choice)? 'oval' : 'rect';
+    const cx = choiceX;
+    const cy = choiceBaseY + i * choiceGap;
     c.save();
+    c.beginPath();
+    c.ellipse(cx, cy, 70, 28, 0, 0, 2 * Math.PI);
     c.fillStyle   = '#A0522D';
+    c.fill();
     c.strokeStyle = '#fff';
     c.lineWidth   = 2;
-    if (shape==='oval') {
-      c.beginPath();
-      c.ellipse(cx, cy, 70, 28, 0, 0, 2*Math.PI);
-      c.fill(); c.stroke();
-    } else {
-      c.fillRect(cx-80, cy-20, 160, 40);
-      c.strokeRect(cx-80, cy-20, 160, 40);
-    }
-    // テキスト
+    c.stroke();
     c.fillStyle = '#fff';
     c.fillText(choice, cx, cy);
     c.restore();
-    // 判定領域
-    currentQuiz.choiceRects[i] = shape==='oval'
-      ? { x: cx-70,  y: cy-28, w:140, h:56,  cx, cy }
-      : { x: cx-80,  y: cy-20, w:160, h:40,  cx, cy };
+    currentQuiz.choiceRects[i] = {
+      x:  cx - 70,
+      y:  cy - 28,
+      w:  140,
+      h:  56,
+      cx, cy
+    };
   });
 
   // — ドラッグ中プレビュー —
   if (dragging) {
     c.save();
     c.beginPath();
-    c.ellipse(dragging.x, dragging.y, 70, 28, 0, 0, 2*Math.PI);
+    c.ellipse(dragging.x, dragging.y, 70, 28, 0, 0, 2 * Math.PI);
     c.fillStyle   = '#66f';
     c.fill();
     c.strokeStyle = '#fff';
@@ -213,136 +190,163 @@ function drawQuiz() {
     c.font        = '22px sans-serif';
     c.textAlign   = 'center';
     c.textBaseline= 'middle';
-    c.fillText(currentQuiz.choices[dragging.choiceIdx], dragging.x, dragging.y);
+    c.fillText(
+      currentQuiz.choices[dragging.choiceIdx],
+      dragging.x, dragging.y
+    );
     c.restore();
   }
 
   // — 答え合わせボタン —
-  if (userAnswers.every(a=>a!==null)) {
+  if (userAnswers.every(a => a !== null)) {
     c.fillStyle = '#444';
-    c.fillRect(choiceX,480,200,48);
+    c.fillRect(choiceX, 480, 200, 48);
     c.fillStyle = 'white';
     c.font       = '24px sans-serif';
-    c.fillText('答え合わせ', choiceX+30,512);
+    c.fillText('答え合わせ', choiceX + 30, 512);
   }
 
   // — やり直しボタン —
   c.fillStyle = '#444';
-  c.fillRect(choiceX,540,200,40);
+  c.fillRect(choiceX, 540, 200, 40);
   c.fillStyle = 'white';
   c.font       = '20px sans-serif';
-  c.fillText('やり直し', choiceX+60,567);
+  c.fillText('やり直し', choiceX + 60, 567);
 
-  // — 結果表示 —
-  if (result!==null) {
+  // — 正誤表示 —
+  if (result !== null) {
     c.font      = '28px sans-serif';
-    c.fillStyle = result?'lime':'red';
-    c.fillText(result?'全問正解！':'間違いがあります', choiceX,80);
+    c.fillStyle = result ? 'lime' : 'red';
+    c.fillText(
+      result ? '全問正解！' : '間違いがあります',
+      choiceX, 80
+    );
   }
 }
 
-// — イベント: クリック — 
-canvas.addEventListener('click', e=>{
+// — クリックイベント — 
+canvas.addEventListener('click', e => {
   if (bgm.paused) bgm.play();
-  const { left, top } = canvas.getBoundingClientRect();
-  const mx = e.clientX-left, my = e.clientY-top;
+  const rect = canvas.getBoundingClientRect();
+  const mx   = e.clientX - rect.left;
+  const my   = e.clientY - rect.top;
 
   // 答え合わせ
-  if (userAnswers.every(a=>a!==null)
-      && mx>=choiceX && mx<=choiceX+200
-      && my>=480     && my<=528) {
-    result = currentQuiz.blanks.every((b,i)=>userAnswers[i]===b.answer);
+  if (
+    userAnswers.every(a => a !== null) &&
+    mx >= choiceX && mx <= choiceX + 200 &&
+    my >= 480    && my <= 528
+  ) {
+    result = currentQuiz.blanks.every((b, i) =>
+      userAnswers[i] === b.answer
+    );
     drawQuiz();
-    if (result && quizIndex<quizList.length-1) {
-      setTimeout(()=>{
+    if (result && quizIndex < quizList.length - 1) {
+      setTimeout(() => {
         quizIndex++;
         currentQuiz = quizList[quizIndex];
         userAnswers = Array(currentQuiz.blanks.length).fill(null);
         selectedBlank = null;
-        result = null;
+        result        = null;
         drawQuiz();
-      },1200);
+      }, 1200);
     }
     return;
   }
 
   // やり直し
-  if (mx>=choiceX && mx<=choiceX+200
-      && my>=540 && my<=580) {
-    userAnswers = Array(currentQuiz.blanks.length).fill(null);
+  if (
+    mx >= choiceX && mx <= choiceX + 200 &&
+    my >= 540    && my <= 580
+  ) {
+    userAnswers   = Array(currentQuiz.blanks.length).fill(null);
     selectedBlank = null;
-    result = null;
+    result        = null;
     drawQuiz();
     return;
   }
 
   // 穴クリック
   let clicked = null;
-  currentQuiz.blanks.forEach((b,i)=>{
-    const r=b.rect;
-    if (r && mx>=r.x && mx<=r.x+r.w
-          && my>=r.y && my<=r.y+r.h) {
+  currentQuiz.blanks.forEach((b, i) => {
+    const r = b.rect;
+    if (
+      r && mx >= r.x && mx <= r.x + r.w &&
+      my >= r.y && my <= r.y + r.h
+    ) {
       clicked = i;
     }
   });
-  if (clicked!==null) {
+  if (clicked !== null) {
     selectedBlank = clicked;
     drawQuiz();
     return;
   }
 
-  // 直接選択肢をはめ込む
-  if (selectedBlank!==null) {
-    currentQuiz.choiceRects.forEach((r,i)=>{
-      if (r && mx>=r.x && mx<=r.x+r.w
-            && my>=r.y && my<=r.y+r.h
-            && !userAnswers.includes(i)) {
+  // 選択肢クリックで直接はめ込む
+  if (selectedBlank !== null) {
+    currentQuiz.choiceRects.forEach((r, i) => {
+      if (
+        r && mx >= r.x && mx <= r.x + r.w &&
+        my >= r.y && my <= r.y + r.h &&
+        !userAnswers.includes(i)
+      ) {
         userAnswers[selectedBlank] = i;
         selectedBlank = null;
         drawQuiz();
       }
     });
+    return;
   }
 });
 
-// — イベント: ドラッグ＆ドロップ — 
-canvas.addEventListener('mousedown', e=>{
-  const { left, top } = canvas.getBoundingClientRect();
-  const mx = e.clientX-left, my = e.clientY-top;
-  currentQuiz.choiceRects.forEach((r,i)=>{
-    if (r && mx>=r.x && mx<=r.x+r.w
-          && my>=r.y && my<=r.y+r.h
-          && !userAnswers.includes(i)) {
+// — ドラッグ＆ドロップ — 
+canvas.addEventListener('mousedown', e => {
+  const rect = canvas.getBoundingClientRect();
+  const mx   = e.clientX - rect.left;
+  const my   = e.clientY - rect.top;
+  currentQuiz.choiceRects.forEach((r, i) => {
+    if (
+      r && mx >= r.x && mx <= r.x + r.w &&
+      my >= r.y && my <= r.y + r.h &&
+      !userAnswers.includes(i)
+    ) {
       dragging = {
         choiceIdx: i,
-        x: mx, y: my,
-        offsetX: mx-r.cx,
-        offsetY: my-r.cy
+        x: mx,
+        y: my,
+        offsetX: mx - r.cx,
+        offsetY: my - r.cy
       };
-      dragOrigin = { x:r.cx, y:r.cy };
+      dragOrigin = { x: r.cx, y: r.cy };
       drawQuiz();
     }
   });
 });
-canvas.addEventListener('mousemove', e=>{
+
+canvas.addEventListener('mousemove', e => {
   if (!dragging) return;
-  const { left, top } = canvas.getBoundingClientRect();
-  dragging.x = e.clientX-left;
-  dragging.y = e.clientY-top;
+  const rect = canvas.getBoundingClientRect();
+  dragging.x = e.clientX - rect.left;
+  dragging.y = e.clientY - rect.top;
   drawQuiz();
 });
-canvas.addEventListener('mouseup', e=>{
+
+canvas.addEventListener('mouseup', e => {
   if (!dragging) return;
-  const { left, top } = canvas.getBoundingClientRect();
-  const mx = e.clientX-left, my = e.clientY-top;
-  currentQuiz.blanks.forEach((b,i)=>{
-    const r=b.rect;
-    if (r && mx>=r.x && mx<=r.x+r.w
-          && my>=r.y && my<=r.y+r.h) {
+  const rect = canvas.getBoundingClientRect();
+  const mx   = e.clientX - rect.left;
+  const my   = e.clientY - rect.top;
+  currentQuiz.blanks.forEach((b, i) => {
+    const r = b.rect;
+    if (
+      r && mx >= r.x && mx <= r.x + r.w &&
+      my >= r.y && my <= r.y + r.h
+    ) {
       userAnswers[i] = dragging.choiceIdx;
     }
   });
-  dragging = null;
+  dragging   = null;
   dragOrigin = null;
   drawQuiz();
 });
