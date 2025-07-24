@@ -93,10 +93,6 @@ npc_map.forEach((row, i) => {
     })    
 })
 
-//画像を読み込んだのちに実行する
-fgImage.onload = () => {
-        animate()
-}
 
 //eでインタラクトして，NPCの会話に関する関数フックとする
 function invoke_talk(){
@@ -141,6 +137,17 @@ function draw() {
     // })
     Hero.draw();
     Foreground.draw();
+}
+
+function startGame() {
+  // 画像がすでに読み込まれていれば即開始
+  if (fgImage.complete) {
+    animate();
+  } else {
+    fgImage.onload = () => {
+      animate();
+    };
+  }
 }
 
 function animate(){

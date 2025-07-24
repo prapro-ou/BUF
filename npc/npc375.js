@@ -88,12 +88,11 @@ update(){
         this.choice = "no";
         keys.d.wasPressed = true;
     }
-    console.log(this.choice)
+    if(this.choice !== null)console.log(this.choice)
     if (keys.space.pressed && !keys.space.wasPressed && this.choice !== null) {
         keys.space.wasPressed = true;
         this.state = 0; // 選択完了→終了 or クエスト受注へ
         Hero.is_talking = false;
-        console.log(this.choice)
         // クエスト受注ロジック
         if (this.choice === "yes") {
             console.log("承諾された")
@@ -112,7 +111,6 @@ update(){
 draw(){
     if (!this.img_loaded) return; // 読み込み前なら描画しない
     //NPCの画像を描画
-    console.log(this.state)
     switch (this.state){
         case 0 : this.draw00();
                  break; 
