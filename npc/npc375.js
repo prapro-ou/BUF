@@ -88,6 +88,7 @@ update(){
         this.choice = "no";
         keys.d.wasPressed = true;
     }
+    console.log(this.choice)
     if (keys.space.pressed && !keys.space.wasPressed && this.choice !== null) {
         keys.space.wasPressed = true;
         this.state = 0; // 選択完了→終了 or クエスト受注へ
