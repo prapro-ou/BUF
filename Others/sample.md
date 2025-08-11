@@ -94,7 +94,7 @@ int main() {
 
 int main() {
     int i,hit;
-    for (i = ①; i <= 30; i++) {
+    for (i = 0; i <= 30; i++) {
         hit = 0; 
 
         if (i % 2 == 0) { // 頭部の弱点
