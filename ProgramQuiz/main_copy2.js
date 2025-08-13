@@ -22,16 +22,6 @@ const buttonX      = 750; // ボタンの位置（元の位置に戻す）
 const choiceBaseY  = 120;
 const choiceGap    = 60;
 
-const extendButtonX = buttonX - 220; // やり直しボタンの左に配置
-const extendButtonY = 524;
-const extendButtonW = 200;
-const extendButtonH = 48;
-
-const reduceButtonX = extendButtonX - 220; // 時間延長ボタンの左
-const reduceButtonY = extendButtonY;
-const reduceButtonW = 200;
-const reduceButtonH = 48;
-
 // ———— BGM & 背景 ————
 const bgm = new Audio('../sound/BUF_quiz.wav');
 bgm.loop   = true;
@@ -103,26 +93,11 @@ function drawQuiz() {
   c.font         = '24px sans-serif';
   c.textAlign    = 'left';
   c.textBaseline = 'top';
-  // 問題文の行数取得
   const qLines = wrapText(
     currentQuiz.question,
     codeX, codeY,
     codeMaxWidth, 28
   );
-
-  // クリッピング範囲を先に定義（4問目以外でも使えるように）
-  const clipX = codeX;
-  const clipY = codeY + qLines * 28 + 10;
-  const clipW = 420;
-  const clipH = 450; // 必要に応じて調整
-
-  // プログラム描画エリアのクリッピング（4問目のみ）
-  if (quizIndex === 3) {
-    c.save();
-    c.beginPath();
-    c.rect(clipX, clipY, clipW, clipH);
-    c.clip();
-  }
 
   // コード描画
   c.font         = "18px monospace";
@@ -131,17 +106,12 @@ function drawQuiz() {
   c.textBaseline = 'top';
   const rawCodeLines = currentQuiz.code.trim().split('\n');
   let codeLines = rawCodeLines.slice();
-  const codeYStart = codeY + qLines * 28 + 10 - (quizIndex === 3 ? codeScrollY : 0);
+  const codeYStart = codeY + qLines * 28 + 10;
   codeLines.forEach((line, i) => {
     // \\n を \n に変換して表示
     const displayLine = line.replace(/\\\\n/g, '\\n');
     c.fillText(displayLine, codeX, codeYStart + i * 22);
   });
-
-  // クリッピング解除
-  if (quizIndex === 3) {
-    c.restore();
-  }
 
   // — 空欄（_____）処理 —
   const tag = currentQuiz.code.match(/_{2,}/)[0];
@@ -160,42 +130,34 @@ function drawQuiz() {
       const radiusX = tagWidth / 2;
       const radiusY = 14;
       const centerX = px + tagWidth / 2;
-      const centerY = py + radiusY;
+      const centerY = py + radiusY;  // ← 修正：楕円の縦半径を使って中央に
 
-      // ★ 4問目のclip範囲外なら描画しない
-      if (
-        quizIndex === 3 &&
-        (centerY < clipY || centerY > clipY + clipH)
-      ) {
-        // clip範囲外なので何も描画しない
-      } else {
-        // ■ 回答前のみ枠線を描く
-        if (userAnswers[bidx] === null) {
-          c.save();
-          c.beginPath();
-          c.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, 2 * Math.PI);
-          c.strokeStyle = '#fff';
-          c.lineWidth   = 2;
-          c.stroke();
-          c.restore();
-        }
-
-        // ■ 回答済みなら文字だけ中央に描画
-        if (userAnswers[bidx] !== null) {
-          c.save();
-          c.fillStyle    = '#fff';
-          c.font         = '18px monospace';
-          c.textAlign    = 'center';
-          c.textBaseline = 'middle';
-          c.fillText(
-            currentQuiz.choices[userAnswers[bidx]],
-            centerX, centerY
-          );
-          c.restore();
-        }
+      // ■ 回答前のみ枠線を描く
+      if (userAnswers[bidx] === null) {
+        c.save();
+        c.beginPath();
+        c.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, 2 * Math.PI);
+        c.strokeStyle = '#fff';
+        c.lineWidth   = 2;
+        c.stroke();
+        c.restore();
       }
 
-      // クリック判定用矩形をセット
+      // ■ 回答済みなら文字だけ中央に描画
+      if (userAnswers[bidx] !== null) {
+        c.save();
+        c.fillStyle    = '#fff';
+        c.font         = '18px monospace';
+        c.textAlign    = 'center';
+        c.textBaseline = 'middle';   // ← 確実に中央揃え
+        c.fillText(
+          currentQuiz.choices[userAnswers[bidx]],
+          centerX, centerY
+        );
+        c.restore();
+      }
+
+      // ■ クリック判定用矩形をセット
       blank.rect = {
         x:  px,
         y:  py,
@@ -205,6 +167,7 @@ function drawQuiz() {
         cy: centerY
       };
 
+      // ■ 次の空欄検索と混ざらないよう置換
       codeLines[i] = codeLines[i].replace(tag, ' '.repeat(tag.length));
       break;
     }
@@ -270,24 +233,6 @@ function drawQuiz() {
     c.fillText('答え合わせ', buttonX + 100, 470 + 24);
   }
 
-  // — 時間延長ボタン —
-  c.fillStyle = '#444';
-  c.fillRect(extendButtonX, extendButtonY, extendButtonW, extendButtonH);
-  c.fillStyle = 'white';
-  c.font       = '24px sans-serif';
-  c.textAlign  = 'center';
-  c.textBaseline = 'middle';
-  c.fillText('時間延長', extendButtonX + extendButtonW / 2, extendButtonY + extendButtonH / 2);
-
-  // — 選択肢削減ボタン —
-  c.fillStyle = '#444';
-  c.fillRect(reduceButtonX, reduceButtonY, reduceButtonW, reduceButtonH);
-  c.fillStyle = 'white';
-  c.font       = '24px sans-serif';
-  c.textAlign  = 'center';
-  c.textBaseline = 'middle';
-  c.fillText('選択肢削減', reduceButtonX + reduceButtonW / 2, reduceButtonY + reduceButtonH / 2);
-
   // — やり直しボタン —
   c.fillStyle = '#444';
   c.fillRect(buttonX, 524, 200, 48);
@@ -308,12 +253,10 @@ function drawQuiz() {
   }
 
   // — タイマー表示 —
-  const min = Math.floor(timeLeft / 60);
-  const sec = timeLeft % 60;
   c.font = '24px sans-serif';
   c.fillStyle = isTimeout ? 'red' : 'yellow';
   c.textAlign = 'right';
-  c.fillText(`残り時間: ${min}分${sec}秒`, canvas.width - 40, 40);
+  c.fillText(`残り時間: ${timeLeft}秒`, canvas.width - 40, 40);
 
   // — 時間切れ表示 —
   if (isTimeout) {
@@ -368,10 +311,13 @@ canvas.addEventListener('click', e => {
 
   // やり直し
   if (
-    mx >= extendButtonX && mx <= extendButtonX + extendButtonW &&
-    my >= extendButtonY && my <= extendButtonY + extendButtonH
+    mx >= buttonX && mx <= buttonX + 200 &&
+    my >= 524    && my <= 572
   ) {
-    timeLeft += 30;
+    userAnswers   = Array(currentQuiz.blanks.length).fill(null);
+    selectedBlank = null;
+    result        = null;
+    currentQuiz.choiceRects = null;
     drawQuiz();
     return;
   }
@@ -435,23 +381,6 @@ canvas.addEventListener('mouseup', e => {
   drawQuiz();
 });
 
-// — スクロールイベント —
-canvas.addEventListener('wheel', e => {
-  if (quizIndex !== 3) {
-    codeScrollY = 0;
-    return; // 4問目だけ有効（0始まりなので3）
-  }
-  const rawCodeLines = currentQuiz.code.trim().split('\n');
-  const visibleLines = 20; // 表示できる行数（調整可）
-  const maxScroll = Math.max(0, rawCodeLines.length * 22 - visibleLines * 22);
-
-  codeScrollY += e.deltaY;
-  if (codeScrollY < 0) codeScrollY = 0;
-  if (codeScrollY > maxScroll) codeScrollY = maxScroll;
-  drawQuiz();
-  e.preventDefault();
-}, { passive: false });
-
 // — 初回描画 — 
 drawQuiz();
 startTimer();
@@ -461,5 +390,3 @@ const seWrong     = new Audio('../sound/クイズ不正解1.mp3');
 const seTimeout   = new Audio('../sound/試合終了のゴング.mp3');
 const seClick     = new Audio('../sound/クリック.mp3');      // ←追加
 const seKeyboard2 = new Audio('../sound/キーボード2.mp3');   // ←追加
-
-let codeScrollY = 0;
