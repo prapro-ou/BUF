@@ -110,28 +110,29 @@
   <script src="../data/npc.js"></script>
   <script src="../data/const.js"></script>
   <script src="../data/function.js"></script>
-  <script src="../npc/npc375.js"></script>
+  <!-- <script src="../npc/npc375.js"></script>
   <script src="../npc/npc377.js"></script>
-  <script src="../npc/npc378.js"></script>
+  <script src="../npc/npc378.js"></script> -->
   <script src="bg_default.js"></script>
   <script src="fg_default.js"></script>
   <script src="col_default.js"></script>
   <script src="hero.js"></script>
-  <script src="main.js"></script>
+  <script src="main.js" defer></script>
 
-  <!-- ✅ ゲーム開始処理 -->
-  <script>
-    let gameStarted = false;
+
+ <!-- ✅ ゲーム開始処理 -->
+<script>
+  let gameStarted = false;
 
   document.addEventListener('keydown', (e) => {
     if ((e.key === 'Enter' || e.key === ' ') && !gameStarted) {
-      gameStarted = true; // ✅ これで二度と再起動しない
+      gameStarted = true;
       document.getElementById('start-screen').style.display = 'none';
       document.getElementById('inventory').style.display = 'block';
       startGame();
     }
   });
+</script>
 
-  </script>
 </body>
 </html>

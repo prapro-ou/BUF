@@ -1,10 +1,10 @@
 //
 //定数定義用
 //
-const MAP_WIDTH = 80; //マップの横幅
-const MAP_HEIGHT = 80; //マップの縦幅
-const TILE_SIZE = 96; //タイルのサイズ
-const MAX_SPEED = 2; //最大移動速度
+const MAP_WIDTH = 150; //マップの横幅
+const MAP_HEIGHT = 150; //マップの縦幅
+const TILE_SIZE = 32; //タイルのサイズ
+const MAX_SPEED = 3; //最大移動速度
 const HERO_W = 96; //ヒーローの横幅
 const HERO_H = 96; //ヒーローの縦幅
 const NPC_W = 32

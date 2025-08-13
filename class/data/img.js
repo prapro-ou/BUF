@@ -17,15 +17,3 @@ const playerImg_right = new Image()
       playerImg_right.src = '../img/Character/heroRight.png'
 const playerImg_left = new Image()
       playerImg_left.src = '../img/Character/heroLeft.png'
-
-const playerImages = {
-  down: new Image(),
-  up: new Image(),
-  left: new Image(),
-  right: new Image()
-};
-
-playerImages.down.src = playerImg_down.src;
-playerImages.up.src = playerImg_up.src;
-playerImages.left.src = playerImg_left.src;
-playerImages.right.src = playerImg_right.src;
