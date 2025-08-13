@@ -66,7 +66,25 @@ const npcs = []
 npc_map.forEach((row, i) => {
     row.forEach((symbol, j) => {
         switch (symbol) {
-            // case 375 : npcs.push(new npc375({
+            case 500 : npcs.push(new kanbanNpc({
+                    npc_num: symbol,
+                //衝突マップのずれを調整
+                    location: {
+                        x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
+                        y: i * TILE_SIZE + offset.y 
+                    }
+                }));
+                break;
+            // case 377 : npcs.push(new npc377({
+            //         npc_num: symbol,
+            //     //衝突マップのずれを調整
+            //         location: {
+            //             x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
+            //             y: i * TILE_SIZE + offset.y 
+            //         }
+            //     }));
+            //     break;
+            // case 378 : npcs.push(new npc378({
             //         npc_num: symbol,
             //     //衝突マップのずれを調整
             //         location: {
@@ -110,7 +128,6 @@ function update(){
     Background.update()
     Hero.update()
     }
-
 }
 
 function draw() {
@@ -121,39 +138,33 @@ function draw() {
     EandH.sort((a, b) => a.loc.y - b.loc.y);
     // // 並び替えた順に描画
     EandH.forEach(entity => entity.draw());
-    boundaries.forEach(boundary => {
-        boundary.draw()
-    })
+    // boundaries.forEach(boundary => {
+    //     boundary.draw()
+    // })
     Hero.draw();
     Foreground.draw();
 }
 
-
-
-let lastTime = 0;
-const targetFPS = 60;
-const frameDuration = 1000 / targetFPS; // 約16.67ms
-
-function animate(currentTime) {
-  window.requestAnimationFrame(animate);
-
-  const deltaTime = currentTime - lastTime;
-  if (deltaTime < frameDuration) return;
-
-  lastTime = currentTime;
-
-  console.log('animate frame');
-
-  try {
-    update();
-    draw();
-  } catch (err) {
-    console.error('animate error:', err);
+function startGame() {
+  // 画像がすでに読み込まれていれば即開始
+  if (fgImage.complete) {
+    animate();
+  } else {
+    fgImage.onload = () => {
+      animate();
+    };
   }
 }
+
+function animate(){
+    window.requestAnimationFrame(animate)
+    update()
+    draw()
+}
+
 // キーボードが押されたとき
 document.addEventListener("keydown", function(e) {
-    
+    if (bgm.paused) bgm.play();
     
     if (e.code === "Tab") {
         e.preventDefault() // ブラウザのタブ切り替えを防ぐ
@@ -199,15 +210,3 @@ document.addEventListener("keyup", function(e) {
         keys.space.pressed = false
     }
   })
-
-  function startGame() {
-    
-  // 画像がすでに読み込まれていれば即開始
-  if (fgImage.complete) {
-    animate();
-  } else {
-    fgImage.onload = () => {
-      animate();
-    };
-  }
-}

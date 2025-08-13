@@ -29,3 +29,6 @@ playerImages.down.src = playerImg_down.src;
 playerImages.up.src = playerImg_up.src;
 playerImages.left.src = playerImg_left.src;
 playerImages.right.src = playerImg_right.src;
+
+const kanbanNpcImage = new Image()
+      kanbanNpcImage.src = '../img/Character/kanbanNpc.png'

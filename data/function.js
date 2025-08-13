@@ -51,3 +51,61 @@ function distance(locA, locB){
     const dy = locA.y - locB.y;
     return Math.sqrt(dx * dx + dy * dy); // ユークリッド距離
 }
+
+function drawSpeechBubbleMultiline(text, x, y, progress) {
+  const padding = 12;
+  const maxWidth = 320;
+  const lineHeight = 24;
+  const maxCharsPerLine = 15; // 1行あたりの最大文字数（フォントサイズに応じて調整）
+
+  // 表示する文字列（progress に応じて切り取る）
+  const visibleText = text.slice(0, progress);
+
+  // 改行処理：一定文字数ごとに改行
+  const lines = [];
+  for (let i = 0; i < visibleText.length; i += maxCharsPerLine) {
+    lines.push(visibleText.slice(i, i + maxCharsPerLine));
+  }
+
+  const bubbleHeight = lines.length * lineHeight + padding * 2;
+  const bubbleWidth = maxWidth;
+
+  // 吹き出しの背景
+  c.fillStyle = "black";
+  c.fillRect(x, y - bubbleHeight, bubbleWidth, bubbleHeight);
+
+  // 枠線
+  c.strokeStyle = "#00ffcc";
+  c.lineWidth = 2;
+  c.strokeRect(x, y - bubbleHeight, bubbleWidth, bubbleHeight);
+
+  // テキスト描画
+  c.fillStyle = "white";
+  c.font = "20px 'M PLUS 1p'"; // ✅ レトロ風フォント
+  lines.forEach((line, index) => {
+    c.fillText(line, x + padding, y - bubbleHeight + padding + lineHeight * (index + 1) - 6);
+  });
+}
+
+function drawChoiceUI(x, y, selected) {
+  const fontSize = 20;
+  const spacing = 100;
+
+  c.font = `${fontSize}px 'M PLUS 1p'`;
+  c.fillStyle = "white";
+
+  const yesX = x;
+  const noX = x + spacing;
+  const baseY = y;
+
+  // カーソル
+  if (selected === "yes") {
+    c.fillText("▶", yesX - 24, baseY);
+  } else {
+    c.fillText("▶", noX - 24, baseY);
+  }
+
+  // 選択肢
+  c.fillText("yes", yesX, baseY);
+  c.fillText("no", noX, baseY);
+}

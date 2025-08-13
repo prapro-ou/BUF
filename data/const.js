@@ -4,11 +4,11 @@
 const MAP_WIDTH = 80; //マップの横幅
 const MAP_HEIGHT = 80; //マップの縦幅
 const TILE_SIZE = 96; //タイルのサイズ
-const MAX_SPEED = 2; //最大移動速度
+const MAX_SPEED = 4; //最大移動速度
 const HERO_W = 96; //ヒーローの横幅
 const HERO_H = 96; //ヒーローの縦幅
 const NPC_W = 32
-const NPC_H = 64
+const NPC_H = 32
 const SQRT2 = Math.sqrt(2);
 const offset = {
         x:-580,

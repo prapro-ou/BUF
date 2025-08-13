@@ -5,6 +5,7 @@
   <title>My RPG Game</title>
   <link rel="stylesheet" href="inventory.css">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@400&display=swap" rel="stylesheet">
   <style>
     body {
   margin: 0;
@@ -110,29 +111,28 @@
   <script src="../data/npc.js"></script>
   <script src="../data/const.js"></script>
   <script src="../data/function.js"></script>
-  <!-- <script src="../npc/npc375.js"></script>
-  <script src="../npc/npc377.js"></script>
+  <script src="../npc/kanbanNpc.js"></script>
+  <!-- <script src="../npc/npc377.js"></script>
   <script src="../npc/npc378.js"></script> -->
   <script src="bg_default.js"></script>
   <script src="fg_default.js"></script>
   <script src="col_default.js"></script>
   <script src="hero.js"></script>
-  <script src="main.js" defer></script>
+  <script src="main.js"></script>
 
-
- <!-- ✅ ゲーム開始処理 -->
-<script>
-  let gameStarted = false;
+  <!-- ✅ ゲーム開始処理 -->
+  <script>
+    let gameStarted = false;
 
   document.addEventListener('keydown', (e) => {
     if ((e.key === 'Enter' || e.key === ' ') && !gameStarted) {
-      gameStarted = true;
+      gameStarted = true; // ✅ これで二度と再起動しない
       document.getElementById('start-screen').style.display = 'none';
       document.getElementById('inventory').style.display = 'block';
       startGame();
     }
   });
-</script>
 
+  </script>
 </body>
 </html>
