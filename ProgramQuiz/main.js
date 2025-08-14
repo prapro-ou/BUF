@@ -38,8 +38,24 @@ bgm.loop   = true;
 bgm.volume = 0.5;
 bgm.play();
 
+const bgImageKanban    = new Image();
+bgImageKanban.src      = '../gazo/scenery2_kanban.png';      // 1問目
+
+const bgImageKusa      = new Image();
+bgImageKusa.src        = '../gazo/scenery1_kusa.png';        // 2問目
+
+const bgImageHasi      = new Image();
+bgImageHasi.src        = '../gazo/scenery3_hasi.png';        // 3,4問目
+
+const bgImageKuromaku  = new Image();
+bgImageKuromaku.src    = '../gazo/scenery4_kuromaku.png';    // 5問目
+
+const bgImageTakarabako= new Image();
+bgImageTakarabako.src  = '../gazo/scenery5_takarabako.png';  // 6問目
+
 const bgImage = new Image();
-bgImage.src = '../gazo/quiz_wood.png';
+bgImage.src = '../gazo/quiz_wood.png'; // デフォルト
+
 bgImage.onload = () => drawQuiz();
 
 // ———— ドラッグ用変数 ————
@@ -90,12 +106,43 @@ function startTimer() {
 
 // ———— メイン描画ルーチン ————
 function drawQuiz() {
-  // 背景
-  if (bgImage.complete) {
-    c.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
+  // 問題ごとに背景画像を切り替え
+  if (quizIndex === 0) {
+    if (bgImageKanban.complete) {
+      c.drawImage(bgImageKanban, 0, 0, canvas.width, canvas.height);
+    } else {
+      c.fillStyle = '#888'; c.fillRect(0, 0, canvas.width, canvas.height);
+    }
+  } else if (quizIndex === 1) {
+    if (bgImageKusa.complete) {
+      c.drawImage(bgImageKusa, 0, 0, canvas.width, canvas.height);
+    } else {
+      c.fillStyle = '#888'; c.fillRect(0, 0, canvas.width, canvas.height);
+    }
+  } else if (quizIndex === 2 || quizIndex === 3) {
+    if (bgImageHasi.complete) {
+      c.drawImage(bgImageHasi, 0, 0, canvas.width, canvas.height);
+    } else {
+      c.fillStyle = '#888'; c.fillRect(0, 0, canvas.width, canvas.height);
+    }
+  } else if (quizIndex === 4) {
+    if (bgImageKuromaku.complete) {
+      c.drawImage(bgImageKuromaku, 0, 0, canvas.width, canvas.height);
+    } else {
+      c.fillStyle = '#888'; c.fillRect(0, 0, canvas.width, canvas.height);
+    }
+  } else if (quizIndex === 5) {
+    if (bgImageTakarabako.complete) {
+      c.drawImage(bgImageTakarabako, 0, 0, canvas.width, canvas.height);
+    } else {
+      c.fillStyle = '#888'; c.fillRect(0, 0, canvas.width, canvas.height);
+    }
   } else {
-    c.fillStyle = '#888';
-    c.fillRect(0, 0, canvas.width, canvas.height);
+    if (bgImage.complete) {
+      c.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
+    } else {
+      c.fillStyle = '#888'; c.fillRect(0, 0, canvas.width, canvas.height);
+    }
   }
 
   // 問題文
@@ -116,8 +163,8 @@ function drawQuiz() {
   const clipW = 420;
   const clipH = 450; // 必要に応じて調整
 
-  // プログラム描画エリアのクリッピング（4問目のみ）
-  if (quizIndex === 3) {
+  // プログラム描画エリアのクリッピング（4問目と5問目のみ）
+  if (quizIndex === 3 || quizIndex === 4) {
     c.save();
     c.beginPath();
     c.rect(clipX, clipY, clipW, clipH);
@@ -139,7 +186,7 @@ function drawQuiz() {
   });
 
   // クリッピング解除
-  if (quizIndex === 3) {
+  if (quizIndex === 3 || quizIndex === 4) {
     c.restore();
   }
 
@@ -372,6 +419,8 @@ canvas.addEventListener('click', e => {
     my >= extendButtonY && my <= extendButtonY + extendButtonH
   ) {
     timeLeft += 30;
+    seGauge.currentTime = 0; // ←追加
+    seGauge.play();          // ←追加
     drawQuiz();
     return;
   }
@@ -437,9 +486,10 @@ canvas.addEventListener('mouseup', e => {
 
 // — スクロールイベント —
 canvas.addEventListener('wheel', e => {
-  if (quizIndex !== 3) {
+  // 4問目(3)と5問目(4)だけスクロール有効
+  if (quizIndex !== 3 && quizIndex !== 4) {
     codeScrollY = 0;
-    return; // 4問目だけ有効（0始まりなので3）
+    return;
   }
   const rawCodeLines = currentQuiz.code.trim().split('\n');
   const visibleLines = 20; // 表示できる行数（調整可）
@@ -461,5 +511,6 @@ const seWrong     = new Audio('../sound/クイズ不正解1.mp3');
 const seTimeout   = new Audio('../sound/試合終了のゴング.mp3');
 const seClick     = new Audio('../sound/クリック.mp3');      // ←追加
 const seKeyboard2 = new Audio('../sound/キーボード2.mp3');   // ←追加
+const seGauge     = new Audio('../sound/ゲージ回復1.mp3');
 
 let codeScrollY = 0;

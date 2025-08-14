@@ -129,7 +129,53 @@ int main() {
         reduceIdx: [0] // 例: "printf"（インデックス0）を削減
     }),
     new Quiz({
-        question: "5問目:暗証番号を総当たりで探すプログラムを完成させよう!",
+        question: "5問目:黒幕を倒すためのプログラムを完成させよう!",
+        code: `
+#include <stdio.h>
+
+int main() {
+    int i,hit;
+    _________ (i = 0; i <= 30; i++) {
+        hit = 0; 
+
+        _________ (i % 2 == 0) { // 頭部の弱点
+            printf("%d: 頭部に命中！\\n", i);
+            hit = 1;
+        }
+        _________ (i % 3 == 0) { // 胴体の弱点
+            printf("%d: 胴体に命中！\\n", i);
+            hit = 1;
+        }
+        _________ (i % 4 == 0) { // 手の弱点
+            printf("%d: 手に命中！\\n", i);
+            hit = 1;
+        }
+        _________ (i % 5 == 0) { // 足の弱点
+            printf("%d: 足に命中！\\n", i);
+            hit = 1;
+        }
+
+        if (hit == 0) {
+            printf("%d: 攻撃は外れた...\\n", i);
+        }
+    }
+
+    printf("黒幕を倒した！\\n");
+    return 0;
+}
+        `.trim(),
+        choices: ["printf","for","if","else if",],
+        blanks: [
+            { answer: 1 }, // "for"
+            { answer: 2 }, // "if"
+            { answer: 2 }, // "if"
+            { answer: 2 }, // "if"
+            { answer: 2 }, // "if"
+        ],
+        reduceIdx: [3] // 例: "else if"（インデックス3）を削減
+    }),
+    new Quiz({
+        question: "6問目:暗証番号を総当たりで探すプログラムを完成させよう!",
         code: `
 #include <stdio.h>
 

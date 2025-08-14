@@ -437,9 +437,10 @@ canvas.addEventListener('mouseup', e => {
 
 // — スクロールイベント —
 canvas.addEventListener('wheel', e => {
-  if (quizIndex !== 3) {
+  // 4問目(3)と5問目(4)だけスクロール有効
+  if (quizIndex !== 3 && quizIndex !== 4) {
     codeScrollY = 0;
-    return; // 4問目だけ有効（0始まりなので3）
+    return;
   }
   const rawCodeLines = currentQuiz.code.trim().split('\n');
   const visibleLines = 20; // 表示できる行数（調整可）
