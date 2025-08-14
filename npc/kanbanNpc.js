@@ -93,8 +93,8 @@ draw_conv(c_num) {
     //新しい衝突マップにする
     collision_map.length = 0;
     boundaries.length = 0;
-    for(let i = 0;  i < collision2.length; i+=MAP_WIDTH){
-    collision_map.push(collision2.slice(i, MAP_WIDTH+i))
+    for(let i = 0;  i < collision3.length; i+=MAP_WIDTH){
+    collision_map.push(collision3.slice(i, MAP_WIDTH+i))
     }
     collision_map.forEach((row, i) => {
     row.forEach((symbol, j) => {

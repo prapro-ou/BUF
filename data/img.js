@@ -5,7 +5,8 @@ const bgImage = new Image()
 bgImage.src = '../img/Maps/bg_default.png'
 const fgImage = new Image()
 fgImage.src = '../img/Maps/fg_default.png'
-
+const shopImage = new Image()
+shopImage.src = '../img/Maps/douguya.png'
 const wait_icon = new Image()
 wait_icon.src = '../img/effect/!.png'
 
@@ -32,3 +33,6 @@ playerImages.right.src = playerImg_right.src;
 
 const kanbanNpcImage = new Image()
       kanbanNpcImage.src = '../img/Character/kanbanNpc.png'
+
+const kaziya = new Image();
+kaziya.src = '../img/Character/blacksmith.png'

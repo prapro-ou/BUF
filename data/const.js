@@ -17,27 +17,13 @@ const offset = {
 
 //キー入力の状態を管理するオブジェクト
 const keys = {
-    w:{
-        pressed: false
-    },
-    a:{
-        pressed: false
-    },
-    s:{
-        pressed: false
-    },
-    d:{
-        pressed: false
-    },
-    tab:{
-        pressed: false
-    },
-    e:{
-        pressed: false
-    },
-    space:{
-        pressed: false,
-        wasPressed: false
-    }
-}
+  w: { pressed: false },
+  a: { pressed: false },
+  s: { pressed: false },
+  d: { pressed: false },
+  e: { pressed: false, wasPressed: false },
+  tab: { pressed: false },
+  space: { pressed: false }
+};
+
 

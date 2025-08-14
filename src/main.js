@@ -1,7 +1,7 @@
 //htmlのキャンバスを操作するための宣言
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
-
+let isInShop = false;
 //ゲーム画像サイズ
 canvas.width = 1024
 canvas.height = 576
@@ -56,7 +56,26 @@ collision_map.forEach((row, i) => {
         )
     })    
 })
-
+const shop_map = []
+for(let i = 0;  i < shop_data.length; i+=MAP_WIDTH){
+    shop_map.push(shop_data.slice(i, MAP_WIDTH+i))
+}
+//衝突タイルマップを衝突ピクセルマップにする
+const shops = []
+shop_map.forEach((row, i) => {
+    row.forEach((symbol, j) => {
+        if(symbol  === 472)
+        shops.push(
+            new col_default({
+                //衝突マップのずれを調整
+                location: {
+                    x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
+                    y: i * TILE_SIZE + offset.y 
+                }
+            })
+        )
+    })    
+})
 //NPCの位置をマップデータから解析
 const npc_map = []
 for(let i = 0;  i < npc_loc.length; i+=MAP_WIDTH){
@@ -115,34 +134,82 @@ function invoke_talk(){
             }    
         }
 }
-
-function update(){
-    findNearestNPC(Hero, npcs) //一番近くのNPCを割り出す
-    if(keys.e.pressed){
-        invoke_talk()
-    }  
-    npcs.forEach(npc => {
-        npc.update()
-    })
-    if(!Hero.is_talking){
-    Background.update()
-    Hero.update()
+function go_shop() {
+  for (let i = 0; i < shops.length; i++) {
+    const shopBlock = shops[i];
+    if (nearShopEntrance(shopBlock)) {
+      isInShop = true;
+      console.log("🛒 ショップに入りました！");
+      break;
     }
+  }
+}
+
+
+function update() {
+  findNearestNPC(Hero, npcs);
+
+  // Eキーが押された瞬間だけ反応
+  if (keys.e.pressed && !keys.e.wasPressed) {
+    keys.e.wasPressed = true;
+
+    if (isInShop) {
+      // ショップから退出
+      isInShop = false;
+      console.log("🚪 ショップから出ました");
+    } else {
+      // NPC会話 or ショップ入店
+      invoke_talk();
+      go_shop();
+    }
+  }
+
+  npcs.forEach(npc => npc.update());
+
+  if (!Hero.is_talking) {
+    Background.update();
+    Hero.update();
+  }
+}
+
+let canBuy = true;
+
+function drawShopUI() {
+  // 背景
+  c.drawImage(shopImage, 0, 0, canvas.width, canvas.height);
+
+  // 鍛冶屋キャラ（左側）
+  c.drawImage(kaziya, 50, 200, 450, 450); // 位置とサイズは調整
+
+  // 吹き出し
+  drawSpeechBubbleMultiline("いらっしゃい！何を買うんだい？", 100, 180, 999); // 固定表示
+
+  // アイテムボタン（右側）
+  drawItemButton("ポーション", 700, 200, () => {
+    Hero.inv.addItem({ name: "ポーション", count: 1, description: "HPを回復する" });
+    console.log("🧪 ポーション購入！");
+  });
+
+  drawItemButton("剣", 700, 300, () => {
+    Hero.inv.addItem({ name: "鉄の剣", count: 1, description: "攻撃力+10" });
+    console.log("⚔️ 剣購入！");
+  });
 }
 
 function draw() {
-    Background.draw();
-    // キャラクターをまとめて配列に
-    const EandH = [...npcs, Hero];
-    // // Y座標で昇順に並び替え（奥→手前）
-    EandH.sort((a, b) => a.loc.y - b.loc.y);
-    // // 並び替えた順に描画
-    EandH.forEach(entity => entity.draw());
-    boundaries.forEach(boundary => {
-        boundary.draw()
-    })
-    Hero.draw();
-    Foreground.draw();
+  if (isInShop) {
+    drawShopUI();
+    return;
+  }
+
+  // 通常描画
+  Background.draw();
+  const EandH = [...npcs, Hero];
+  EandH.sort((a, b) => a.loc.y - b.loc.y);
+  EandH.forEach(entity => entity.draw());
+  boundaries.forEach(boundary => boundary.draw());
+  Hero.draw();
+  Foreground.draw();
 }
 
 function startGame() {
@@ -205,8 +272,17 @@ document.addEventListener("keyup", function(e) {
     }
     if (e.code === "KeyE") {
         keys.e.pressed = false
+         keys.e.wasPressed = false; // ← これが重要！
     }
     if (e.code === "Space") {
         keys.space.pressed = false
     }
   })
+  document.addEventListener("keyup", function(e) {
+  if (e.code === "KeyE") {
+    keys.e.pressed = false;
+    keys.e.wasPressed = false; // ← これが重要！
+  }
+
+  // 他キーも同様に
+});

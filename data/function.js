@@ -160,3 +160,50 @@ function logBoundaryAtTile(tileX, tileY) {
     }
 }
 
+function nearShopEntrance(shop) {
+    const heroCenter = {
+        x: canvas.width / 2 + HERO_W / 2,
+        y: canvas.height / 2 + HERO_H / 2
+    };
+    const shopCenter = {
+        x: shop.loc.x,
+        y: shop.loc.y
+    };
+    return distance(heroCenter, shopCenter) < 96;
+}
+function enterShop(){
+    return
+}
+function drawItemButton(label, x, y, onClick) {
+  // ボタン描画
+  c.fillStyle = "black";
+  c.fillRect(x, y, 200, 40);
+  c.strokeStyle = "#00ffcc";
+  c.strokeRect(x, y, 200, 40);
+  c.fillStyle = "white";
+  c.font = "20px 'M PLUS 1p'";
+  c.fillText(label, x + 10, y + 28);
+
+  // クリック判定（購入制限付き）
+  canvas.addEventListener("mousedown", function handler(e) {
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+
+    if (
+      mx >= x && mx <= x + 200 &&
+      my >= y && my <= y + 40 &&
+      canBuy
+    ) {
+      canBuy = false;
+      onClick();
+
+      // 一定時間後に再購入可能に
+      setTimeout(() => {
+        canBuy = true;
+      }, 300); // 300msロック
+    }
+
+    canvas.removeEventListener("mousedown", handler); // 一度だけ反応
+  });
+}

@@ -30,7 +30,10 @@ class bg_default extends ground{
             npcs.forEach(npc => {
                 npc.loc.x+=this.velocity.x
             })
-            
+            shops.forEach(shop => {
+                shop.loc.x+=this.velocity.x
+            })
+
             //Y座標の更新
             //背景のY座標を更新
             boundaries.forEach(boundary => {
@@ -41,6 +44,9 @@ class bg_default extends ground{
             //NPCのY座標を更新
             npcs.forEach(npc => {
                 npc.loc.y+=this.velocity.y
+            })
+            shops.forEach(shop => {
+                shop.loc.y+=this.velocity.y
             })
             this.totalOffset.x += this.velocity.x;
             this.totalOffset.y += this.velocity.y;
