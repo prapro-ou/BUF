@@ -90,22 +90,44 @@ function drawSpeechBubbleMultiline(text, x, y, progress) {
 function drawChoiceUI(x, y, selected) {
   const fontSize = 20;
   const spacing = 100;
-
-  c.font = `${fontSize}px 'M PLUS 1p'`;
-  c.fillStyle = "white";
+  const paddingX = 20;
+  const paddingY = 10;
 
   const yesX = x;
   const noX = x + spacing;
   const baseY = y;
 
+  // 背景ボックスのサイズと位置
+  const boxX = yesX - paddingX;
+  const boxY = baseY - fontSize - paddingY;
+  const boxWidth = spacing + fontSize * 2 + paddingX * 2+3;
+  const boxHeight = fontSize + paddingY * 2;
+
+  // 背景
+  c.fillStyle = "black";
+  c.fillRect(boxX, boxY, boxWidth, boxHeight);
+
+  // 枠線
+  c.strokeStyle = "#00ffcc";
+  c.lineWidth = 2;
+  c.strokeRect(boxX, boxY, boxWidth, boxHeight);
+
+  // テキスト
+  c.font = `${fontSize}px 'M PLUS 1p'`;
+  c.fillStyle = "white";
+  c.font = `${fontSize}px 'Press Start 2P'`;
+
   // カーソル
+  const cursorOffset = 12;
   if (selected === "yes") {
-    c.fillText("▶", yesX - 24, baseY);
+    c.fillText("▶", yesX - cursorOffset, baseY-2);
   } else {
-    c.fillText("▶", noX - 24, baseY);
+    c.fillText("▶", noX - cursorOffset, baseY-2);
   }
 
   // 選択肢
-  c.fillText("yes", yesX, baseY);
-  c.fillText("no", noX, baseY);
+  c.fillText("YES", yesX+14, baseY+1);
+  c.fillText("NO", noX+14, baseY+1);
 }
+
+

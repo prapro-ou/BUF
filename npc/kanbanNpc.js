@@ -81,6 +81,7 @@ draw01(){
     );
     this.draw_conv(this.conv_num)
 }
+
 update(){
     this.frame++;
 
@@ -119,6 +120,7 @@ if (this.state === 2) {
   if (!keys.d.pressed) keys.d.wasPressed = false;
 }
 }
+
 draw(){
     if (!this.img_loaded) return; // 読み込み前なら描画しない
     //NPCの画像を描画
@@ -127,8 +129,7 @@ draw(){
                  break; 
         case 1 : this.draw01();
                  break;
-        case 2:
-                 this.draw01(); // 会話文の表示（選択前）
+        case 2:  this.draw01(); // 会話文の表示（選択前）
                  drawChoiceUI(this.loc.x + 20, this.loc.y + 100, this.choice);
                  break;
         case 3 : this.draw00();
