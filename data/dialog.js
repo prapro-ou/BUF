@@ -12,3 +12,9 @@ const kanbanNpcdialog_yes = [
 const kanbanNpcdialog_no = [
   "解決できそうならまた来てね！"
 ];
+
+const kanbanNpcdialog_lose = ["あきらめないで！"]
+const kanbanNpcdialog_clear = ["ありがとうございます！",
+                                "お礼に1000コインをあげる！",
+                                "他の困っている人も助けてあげてください！"
+]

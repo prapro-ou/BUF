@@ -138,9 +138,9 @@ function draw() {
     EandH.sort((a, b) => a.loc.y - b.loc.y);
     // // 並び替えた順に描画
     EandH.forEach(entity => entity.draw());
-    // boundaries.forEach(boundary => {
-    //     boundary.draw()
-    // })
+    boundaries.forEach(boundary => {
+        boundary.draw()
+    })
     Hero.draw();
     Foreground.draw();
 }

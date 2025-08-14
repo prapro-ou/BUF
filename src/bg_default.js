@@ -12,6 +12,10 @@ class bg_default extends ground{
         this.img = new Image()
         this.img.src = bgImage.src
         this.movable = true
+        this.totalOffset = {
+            x: 0,
+            y: 0
+        };
     }
     move(){
         //移動する
@@ -38,6 +42,8 @@ class bg_default extends ground{
             npcs.forEach(npc => {
                 npc.loc.y+=this.velocity.y
             })
+            this.totalOffset.x += this.velocity.x;
+            this.totalOffset.y += this.velocity.y;
     }
     check_collide(vx, vy){         
         //衝突判定
@@ -47,11 +53,7 @@ class bg_default extends ground{
                     x:boundary.loc.x + vx, 
                     y:boundary.loc.y + vy
                 }})) {
-                Hero.inv.addItem({
-                name: '衝突',
-                count: 1,
-                description: '衝突してるよ'
-                })
+                
                 return false
             }
         }

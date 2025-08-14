@@ -34,8 +34,18 @@ class kanbanNpc extends npc01 {
         }
     }
 draw_conv(c_num) {
-  if (this.state === 1 && c_num < kanbanNpcdialog_1.length) {
-    const text = kanbanNpcdialog_1[c_num];
+  let dialog = null;
+
+  // 会話データの選択
+  if (this.state === 1) {
+    dialog = kanbanNpcdialog_1;
+  } else if (this.state === 4 || this.state === 6) {
+  dialog = this.postChoiceDialog;
+}
+
+  // 会話が存在する場合のみ描画
+  if (dialog && this.conv_num < dialog.length) {
+    const text = dialog[this.conv_num];
     drawSpeechBubbleMultiline(text, this.loc.x, this.loc.y, this.textProgress);
 
     // テキスト進行
@@ -51,12 +61,65 @@ draw_conv(c_num) {
     }
   }
 
-  if (this.conv_num >= kanbanNpcdialog_1.length) {
-    this.state = 2;
+  // 会話終了処理
+  if (dialog && this.conv_num >= dialog.length) {
+    if (this.state === 1) {
+      this.state = 2; // 選択肢表示へ
+    } else if (this.state === 4) {
+      // ✅ 選択後の分岐処理
+      if (this.postChoiceDialog === kanbanNpcdialog_yes) {
+        this.state = 5; // YES選択 → クイズ開始
+      } else if (this.postChoiceDialog === kanbanNpcdialog_no) {
+        this.state = 0; // NO選択 → 状態リセット
+        Hero.is_talking = false;
+      }
+    } else if (this.state === 6) {
+  if (this.postChoiceDialog === kanbanNpcdialog_lose) {
+    this.state = 0;
+    Hero.is_talking = false;
+  } else if (this.postChoiceDialog === kanbanNpcdialog_clear) {
+    Hero.is_talking = false;
+    Hero.inv.addItem({
+                name: 'coin',
+                count: 1000,
+                description: 'ゲーム内通貨'
+                })
+    // ✅ 自分自身を npcs 配列から削除
+    const index = npcs.indexOf(this);
+    if (index !== -1) {
+      npcs.splice(index, 1);
+    }
+
+    //新しい衝突マップにする
+    collision_map.length = 0;
+    boundaries.length = 0;
+    for(let i = 0;  i < collision2.length; i+=MAP_WIDTH){
+    collision_map.push(collision2.slice(i, MAP_WIDTH+i))
+    }
+    collision_map.forEach((row, i) => {
+    row.forEach((symbol, j) => {
+        if(symbol  === 472)
+        boundaries.push(
+            new col_default({
+                //衝突マップのずれを調整
+                location: {
+                    x: j * TILE_SIZE + offset.x + Background.totalOffset.x, //タイルのサイズを基準にする座標
+                    y: i * TILE_SIZE + offset.y + Background.totalOffset.y
+                }
+            })
+        )
+    })    
+})
+  }
+}
+
+
     this.conv_num = 0;
     this.textProgress = 0;
   }
 }
+
+
 
 
 draw00(){
@@ -82,59 +145,68 @@ draw01(){
     this.draw_conv(this.conv_num)
 }
 
-update(){
-    this.frame++;
+update() {
+  this.frame++;
 
-    // スペースキーが「今回押された」場合のみ conv_num++
-    if(this.state === 1 && keys.space.pressed && !keys.space.wasPressed){
-        this.conv_num++;
-        keys.space.wasPressed = true;
-    }
-
-    // 毎フレーム最後に押下状態の更新を行う
-    if (!keys.space.pressed) {
-        keys.space.wasPressed = false;
-    }
-
-if (this.state === 2) {
-  if (keys.a.pressed && !keys.a.wasPressed) {
-    this.choice = "yes";
-    keys.a.wasPressed = true;
-  }
-  if (keys.d.pressed && !keys.d.wasPressed) {
-    this.choice = "no";
-    keys.d.wasPressed = true;
-  }
-
-  if (keys.space.pressed && !keys.space.wasPressed) {
+  // スペースキーが「今回押された」場合のみ conv_num++
+  if (this.state === 1 && keys.space.pressed && !keys.space.wasPressed) {
+    this.conv_num++;
     keys.space.wasPressed = true;
-    Hero.is_talking = false;
+  }
 
-    this.postChoiceDialog = this.choice === "yes" ? kanbanNpcdialog_yes : kanbanNpcdialog_no;
-    this.state = 4;
-    this.postChoiceIndex = 0;
+  // 選択肢処理
+  if (this.state === 2) {
+    if (keys.a.pressed && !keys.a.wasPressed) {
+      this.choice = "yes";
+      keys.a.wasPressed = true;
+    }
+    if (keys.d.pressed && !keys.d.wasPressed) {
+      this.choice = "no";
+      keys.d.wasPressed = true;
+    }
+
+    if (keys.space.pressed && !keys.space.wasPressed) {
+      keys.space.wasPressed = true;
+      this.postChoiceDialog = this.choice === "yes" ? kanbanNpcdialog_yes : kanbanNpcdialog_no;
+      this.state = 4;
+      this.postChoiceIndex = 0;
+      this.textProgress = 0;
+    }
+
+    if (!keys.a.pressed) keys.a.wasPressed = false;
+    if (!keys.d.pressed) keys.d.wasPressed = false;
+  }
+
+  // クイズ処理（状態5）
+  if (this.state === 5) {
+    const result = Quiz(); // クイズ実行
+    this.postChoiceDialog = result ? kanbanNpcdialog_clear : kanbanNpcdialog_lose;
+    this.state = 6;
+    this.conv_num = 0;
     this.textProgress = 0;
   }
 
-  if (!keys.a.pressed) keys.a.wasPressed = false;
-  if (!keys.d.pressed) keys.d.wasPressed = false;
-}
+  // 毎フレーム最後に押下状態の更新
+  if (!keys.space.pressed) {
+    keys.space.wasPressed = false;
+  }
 }
 
-draw(){
-    if (!this.img_loaded) return; // 読み込み前なら描画しない
-    //NPCの画像を描画
-    switch (this.state){
-        case 0 : this.draw00();
-                 break; 
-        case 1 : this.draw01();
-                 break;
-        case 2:  this.draw01(); // 会話文の表示（選択前）
-                 drawChoiceUI(this.loc.x + 20, this.loc.y + 100, this.choice);
-                 break;
-        case 3 : this.draw00();
-                 break;
-    }
-    }
+
+draw() {
+  if (!this.img_loaded) return;
+
+  switch (this.state) {
+    case 0: this.draw00(); break;
+    case 1: this.draw01(); break;
+    case 2:
+      this.draw01();
+      drawChoiceUI(this.loc.x + 20, this.loc.y + 100, this.choice);
+      break;
+    case 4: this.draw01(); break;
+    case 6: this.draw01(); break;
+  }
+}
+
     
 }

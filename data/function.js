@@ -129,5 +129,34 @@ function drawChoiceUI(x, y, selected) {
   c.fillText("YES", yesX+14, baseY+1);
   c.fillText("NO", noX+14, baseY+1);
 }
+ function Quiz(){
+    return true;
+ }
+function removeBoundaryAt(x, y) {
+    const index = boundaries.findIndex(boundary => 
+        boundary.loc.x === x && boundary.loc.y === y
+    );
+    if (index !== -1) boundaries.splice(index, 1);
+}
+function removeBoundaryAtTile(tileX, tileY) {
+    collision_map[tileY][tileX] = 0;
+    const x = tileX * TILE_SIZE + offset.x;
+    const y = tileY * TILE_SIZE + offset.y;
+    removeBoundaryAt(x, y);
+}
+function logBoundaryAtTile(tileX, tileY) {
+    const x = tileX * TILE_SIZE + offset.x;
+    const y = tileY * TILE_SIZE + offset.y;
 
+    const exists = boundaries.some(boundary =>
+        Math.floor(boundary.loc.x) === Math.floor(x) &&
+        Math.floor(boundary.loc.y) === Math.floor(y)
+    );
+
+    if (exists) {
+        console.log(`🧱 タイル(${tileX}, ${tileY})に対応する衝突ブロックが boundaries に存在します。`);
+    } else {
+        console.log(`🚫 タイル(${tileX}, ${tileY})に対応する衝突ブロックは boundaries に存在しません。`);
+    }
+}
 
