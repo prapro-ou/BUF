@@ -11,6 +11,7 @@ class hero extends human {
     this.inv = new inventory();
     this.is_talking = false;
     this.currentImage = playerImages.down; // 初期画像
+    this.coin = 0
   }
     update_state(){
         if(Background.velocity.x !== 0 || Background.velocity.y !== 0){
@@ -18,9 +19,11 @@ class hero extends human {
         }else{
             this.is_stopping = true
         }
-        if(keys.tab.pressed){
-            keys.tab.pressed = false
-            this.inv.inventoryVisible = !this.inv.inventoryVisible}
+            if(keys.tab.pressed){
+                keys.tab.pressed = false
+                this.inv.inventoryVisible = !this.inv.inventoryVisible
+                this.is_talking = !this.is_talking
+              }
     }
     update_image() {
     if (this.is_talking || this.is_stopping) {
@@ -39,14 +42,24 @@ class hero extends human {
       }
     }
   }
-    update(){
-        this.frame++
-        if(this.frame > 1000000) this.frame = 0;
-        this.update_state()
-        this.update_image()
-        this.inv.updateInventoryUI()
-        this.inv.display() //持ち物を表示
-    }
+    update() {
+  this.frame++;
+  if (this.frame > 1000000) this.frame = 0;
+
+  // UI表示中は移動処理だけ止める
+  const isUIBlocking = this.inv.inventoryVisible || isInShop || this.is_talking;
+
+  if (!isUIBlocking) {
+    this.update_state(); // ← 移動状態更新
+  } else {
+    resetMovementKeys(); // ← 強制的に移動を止める
+    this.is_stopping = true;
+  }
+
+  this.update_image(); // ← 画像は常に更新
+  this.inv.updateInventoryUI();
+  this.inv.display();
+}
     draw(){
         // if(this.is_talking){
         //     this.img_num = 0

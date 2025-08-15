@@ -207,3 +207,26 @@ function drawItemButton(label, x, y, onClick) {
     canvas.removeEventListener("mousedown", handler); // 一度だけ反応
   });
 }
+
+function onQuestClear(npcId) {
+  switch (npcId) {
+    case "kanbanNpc":
+      shopItems.push({
+        name: "FOR",
+        price: 0,
+        zaiko: 1,
+        description: "一度使えば、同じ行動を何度でも繰り返せるようになる…かもしれない。",
+        onBuy: () => {
+          Hero.inv.addItem({ name: "FOR", count: 1, description: "一度使えば、同じ行動を何度でも繰り返せるようになる…かもしれない。" });
+        }
+      });
+      break;
+}
+}
+
+function resetMovementKeys() {
+  keys.w.pressed = false;
+  keys.a.pressed = false;
+  keys.s.pressed = false;
+  keys.d.pressed = false;
+}

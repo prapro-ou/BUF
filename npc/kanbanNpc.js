@@ -79,17 +79,14 @@ draw_conv(c_num) {
     Hero.is_talking = false;
   } else if (this.postChoiceDialog === kanbanNpcdialog_clear) {
     Hero.is_talking = false;
-    Hero.inv.addItem({
-                name: 'coin',
-                count: 1000,
-                description: 'ゲーム内通貨'
-                })
+    console.log("a")
+    Hero.coin += 1000
     // ✅ 自分自身を npcs 配列から削除
     const index = npcs.indexOf(this);
     if (index !== -1) {
       npcs.splice(index, 1);
     }
-
+    onQuestClear("kanbanNpc")
     //新しい衝突マップにする
     collision_map.length = 0;
     boundaries.length = 0;

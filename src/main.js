@@ -2,6 +2,7 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 let isInShop = false;
+
 //ゲーム画像サイズ
 canvas.width = 1024
 canvas.height = 576
@@ -149,16 +150,18 @@ function go_shop() {
 function update() {
   findNearestNPC(Hero, npcs);
 
-  // Eキーが押された瞬間だけ反応
+  if (keys.tab.pressed) {
+    keys.tab.pressed = false;
+    Hero.inv.inventoryVisible = !Hero.inv.inventoryVisible;
+  }
+
   if (keys.e.pressed && !keys.e.wasPressed) {
     keys.e.wasPressed = true;
 
     if (isInShop) {
-      // ショップから退出
       isInShop = false;
       console.log("🚪 ショップから出ました");
     } else {
-      // NPC会話 or ショップ入店
       invoke_talk();
       go_shop();
     }
@@ -166,35 +169,53 @@ function update() {
 
   npcs.forEach(npc => npc.update());
 
-  if (!Hero.is_talking) {
+  // Hero.update() は常に呼び出す
+  Hero.update();
+
+  // 背景移動は UIが出ていないときだけ
+  if (!Hero.inv.inventoryVisible && !isInShop && !Hero.is_talking) {
     Background.update();
-    Hero.update();
   }
 }
+
 
 let canBuy = true;
 
 function drawShopUI() {
-  // 背景
   c.drawImage(shopImage, 0, 0, canvas.width, canvas.height);
+  c.drawImage(kaziya, 50, 200, 450, 450);
+  drawSpeechBubbleMultiline("いらっしゃい！何を買うんだい？", 100, 180, 999);
 
-  // 鍛冶屋キャラ（左側）
-  c.drawImage(kaziya, 50, 200, 450, 450); // 位置とサイズは調整
+  c.font = "24px Arial";
+  c.fillStyle = "gold";
+  c.fillText(`🪙 所持コイン: ${Hero.coin}`, 700, 150);
 
-  // 吹き出し
-  drawSpeechBubbleMultiline("いらっしゃい！何を買うんだい？", 100, 180, 999); // 固定表示
+  shopItems.forEach((item, index) => {
+  drawItemButton(item.name, 700, 200 + index * 100, () => {
+    if (Hero.coin >= item.price) {
+      if (item.zaiko > 0) {
+        item.onBuy();
+        Hero.coin -= item.price;
+        item.zaiko--;
 
-  // アイテムボタン（右側）
-  drawItemButton("ポーション", 700, 200, () => {
-    Hero.inv.addItem({ name: "ポーション", count: 1, description: "HPを回復する" });
-    console.log("🧪 ポーション購入！");
+        console.log(`🛒 ${item.name}購入！残りコイン: ${Hero.coin} / 在庫: ${item.zaiko}`);
+
+        // 在庫が0になったら商品を削除
+        if (item.zaiko <= 0) {
+          console.log(`❌ ${item.name}は売り切れました`);
+          shopItems.splice(index, 1);
+        }
+      } else {
+        console.log(`⚠️ ${item.name}は売り切れです`);
+      }
+    } else {
+      console.log("💸 コインが足りません！");
+    }
   });
+});
 
-  drawItemButton("剣", 700, 300, () => {
-    Hero.inv.addItem({ name: "鉄の剣", count: 1, description: "攻撃力+10" });
-    console.log("⚔️ 剣購入！");
-  });
 }
+
 
 function draw() {
   if (isInShop) {

@@ -84,7 +84,15 @@
 </head>
 
 <body>
-  <canvas></canvas>
+  <div id="game-container">
+    <canvas></canvas>
+
+    <!-- ✅ インベントリUIを canvas に対して相対配置 -->
+    <div id="inventory">
+      <h2>🎒 持ちもの</h2>
+      <ul id="inventory-list"></ul>
+    </div>
+  </div>
 
   <!-- ✅ ゲーム開始画面 -->
   <div id="start-screen">
@@ -92,12 +100,6 @@
     <p id="press-start">Press Space to Start</p>
   </div>
 
-  <!-- ✅ インベントリUI -->
-  <div id="inventory">
-    <h2>🎒 持ちもの</h2>
-    <ul id="inventory-list">
-    </ul>
-  </div>
 
   <!-- ✅ JavaScriptファイルの読み込み -->
   <script src="../class/human.js"></script>

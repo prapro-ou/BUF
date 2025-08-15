@@ -26,4 +26,15 @@ const keys = {
   space: { pressed: false }
 };
 
+const shopItems = [
+  {
+    name: "砂時計",
+    price: 500,
+    zaiko: 1000,
+    description: "プログラミング制限時間を延長",
+    onBuy: () => {
+      Hero.inv.addItem({ name: "砂時計", count: 1, description: "プログラミング制限時間を延長" });
+    }
+  }
+];
 
