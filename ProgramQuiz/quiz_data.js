@@ -4,12 +4,16 @@ const quizList = [
     new Quiz({
         question: "正しい選択肢を選んで，看板を完成させよう！",
         code: `
-整数型：distance
-文字列型：where
-distance ← 3
-where ← "green island"
+#include <stdio.h>
 
-_________(_________まで_________キロ)
+int main() {
+    int distance = 3;
+    char where[] = "green island";
+    // 看板に文字を表示する
+    _________("%sまで%dキロ\\n", _________, _________);
+
+    return 0;
+}
     `.trim(),
     // 選択肢の配列（インデックス 0～3）
     choices: ["printf","scanf","distance","where"],

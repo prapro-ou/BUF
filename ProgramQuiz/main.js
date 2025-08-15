@@ -280,8 +280,14 @@ function drawQuiz() {
     c.save();
     c.beginPath();
     c.ellipse(cx, cy, 70, 28, 0, 0, 2 * Math.PI);
-    // ★ 5問目だけ濃い赤色、それ以外は茶色
-    c.fillStyle = (quizIndex === 4) ? '#8B0000' : '#A0522D';
+    // ★ 1問目:クリーム色, 2問目:#C9DFEC, 5問目:濃い赤, その他:茶色
+    c.fillStyle = (quizIndex === 0) ? '#FFFFF0'
+      : (quizIndex === 1) ? '#63768D'
+      : (quizIndex === 2) ? '#FFFFF0'
+      : (quizIndex === 3) ? '#FFFFF0'
+      : (quizIndex === 4) ? '#8B0000'
+      : (quizIndex === 5) ? '#BA8448'
+      : '#A0522D';
     c.fill();
     c.strokeStyle = '#fff';
     c.lineWidth   = 2;
