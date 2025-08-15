@@ -145,8 +145,14 @@ function drawQuiz() {
     }
   }
 
-  // 問題文
-  c.fillStyle    = 'white';
+  // 問題文の色
+  if (quizIndex === 0) {
+    c.fillStyle = '#000000'; // 1問目だけ黒色
+  } else if (quizIndex === 2 || quizIndex === 3) {
+    c.fillStyle = '#000000'; // 3,4問目も黒色
+  } else {
+    c.fillStyle = 'white';
+  }
   c.font         = '24px sans-serif';
   c.textAlign    = 'left';
   c.textBaseline = 'top';
@@ -172,13 +178,17 @@ function drawQuiz() {
   }
 
   // コード描画
+  if (quizIndex === 0 || quizIndex === 2 || quizIndex === 3) {
+    c.fillStyle = '#000000'; // 1,3,4問目は黒色
+  } else {
+    c.fillStyle = 'white';
+  }
   c.font         = "18px monospace";
-  c.fillStyle    = 'white';
   c.textAlign    = 'left';
   c.textBaseline = 'top';
   const rawCodeLines = currentQuiz.code.trim().split('\n');
   let codeLines = rawCodeLines.slice();
-  const codeYStart = codeY + qLines * 28 + 10 - (quizIndex === 3 ? codeScrollY : 0);
+  const codeYStart = codeY + qLines * 28 + 10 - ((quizIndex === 3 || quizIndex === 4) ? codeScrollY : 0);
   codeLines.forEach((line, i) => {
     // \\n を \n に変換して表示
     const displayLine = line.replace(/\\\\n/g, '\\n');
@@ -209,9 +219,9 @@ function drawQuiz() {
       const centerX = px + tagWidth / 2;
       const centerY = py + radiusY;
 
-      // ★ 4問目のclip範囲外なら描画しない
+      // ★ 4問目と5問目のclip範囲外なら描画しない
       if (
-        quizIndex === 3 &&
+        (quizIndex === 3 || quizIndex === 4) &&
         (centerY < clipY || centerY > clipY + clipH)
       ) {
         // clip範囲外なので何も描画しない
@@ -221,7 +231,8 @@ function drawQuiz() {
           c.save();
           c.beginPath();
           c.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, 2 * Math.PI);
-          c.strokeStyle = '#fff';
+          // 1,3,4問目は黒色
+          c.strokeStyle = (quizIndex === 0 || quizIndex === 2 || quizIndex === 3) ? '#000000' : '#fff';
           c.lineWidth   = 2;
           c.stroke();
           c.restore();
@@ -230,7 +241,8 @@ function drawQuiz() {
         // ■ 回答済みなら文字だけ中央に描画
         if (userAnswers[bidx] !== null) {
           c.save();
-          c.fillStyle    = '#fff';
+          // 1,3,4問目は黒色
+          c.fillStyle = (quizIndex === 0 || quizIndex === 2 || quizIndex === 3) ? '#000000' : '#fff';
           c.font         = '18px monospace';
           c.textAlign    = 'center';
           c.textBaseline = 'middle';
@@ -268,12 +280,13 @@ function drawQuiz() {
     c.save();
     c.beginPath();
     c.ellipse(cx, cy, 70, 28, 0, 0, 2 * Math.PI);
-    c.fillStyle   = '#A0522D';
+    // ★ 5問目だけ濃い赤色、それ以外は茶色
+    c.fillStyle = (quizIndex === 4) ? '#8B0000' : '#A0522D';
     c.fill();
     c.strokeStyle = '#fff';
     c.lineWidth   = 2;
     c.stroke();
-    c.fillStyle = '#fff';
+    c.fillStyle = (quizIndex === 0 || quizIndex === 2 || quizIndex === 3) ? '#000000' : '#fff';
     c.fillText(choice, cx, cy);
     c.restore();
     currentQuiz.choiceRects[i] = {
@@ -358,7 +371,9 @@ function drawQuiz() {
   const min = Math.floor(timeLeft / 60);
   const sec = timeLeft % 60;
   c.font = '24px sans-serif';
-  c.fillStyle = isTimeout ? 'red' : 'yellow';
+  c.fillStyle = isTimeout
+    ? 'red'
+    : (quizIndex === 0 ? 'blue' : 'yellow'); // 1問目だけ青色
   c.textAlign = 'right';
   c.fillText(`残り時間: ${min}分${sec}秒`, canvas.width - 40, 40);
 
