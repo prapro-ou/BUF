@@ -95,15 +95,15 @@ npc_map.forEach((row, i) => {
                     }
                 }));
                 break;
-            // case 377 : npcs.push(new npc377({
-            //         npc_num: symbol,
-            //     //衝突マップのずれを調整
-            //         location: {
-            //             x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
-            //             y: i * TILE_SIZE + offset.y 
-            //         }
-            //     }));
-            //     break;
+            case 502 : npcs.push(new kusaNpc({
+                    npc_num: symbol,
+                //衝突マップのずれを調整
+                    location: {
+                        x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
+                        y: i * TILE_SIZE + offset.y 
+                    }
+                }));
+                break;
             // case 378 : npcs.push(new npc378({
             //         npc_num: symbol,
             //     //衝突マップのずれを調整
@@ -228,7 +228,7 @@ function draw() {
   const EandH = [...npcs, Hero];
   EandH.sort((a, b) => a.loc.y - b.loc.y);
   EandH.forEach(entity => entity.draw());
-  boundaries.forEach(boundary => boundary.draw());
+//   boundaries.forEach(boundary => boundary.draw());
   Hero.draw();
   Foreground.draw();
 }

@@ -20,7 +20,9 @@ class inventory {
     })
   }
 }
-
+// has(itemName) {
+//     return this.items.includes(itemName);
+//   }
 
 removeItem(item) {
   const existing = this.items.find(i => i.name === item.name)

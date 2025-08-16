@@ -12,6 +12,11 @@ class hero extends human {
     this.is_talking = false;
     this.currentImage = playerImages.down; // 初期画像
     this.coin = 0
+    this.hasFor = false;
+    this.hasIf = false;
+    this.hasWhile = false;
+    this.hasSwitch = false;
+    this.hasBreak = false;
   }
     update_state(){
         if(Background.velocity.x !== 0 || Background.velocity.y !== 0){

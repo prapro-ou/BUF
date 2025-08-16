@@ -1,7 +1,7 @@
 //
 //
 //
-class kanbanNpc extends npc01 {
+class kusaNpc extends npc01 {
     constructor({npc_num, location}){
     super({npc_num, location})
     this.num = npc_num;
@@ -12,7 +12,7 @@ class kanbanNpc extends npc01 {
     this.img.onload = () => {
         this.img_loaded = true;
     };
-    this.img.src = kanbanNpcImage.src;
+    this.img.src = kusaNpcImage.src;
     this.conv_num = 0
     this.state = 0
     this.frame = 0
@@ -26,6 +26,7 @@ class kanbanNpc extends npc01 {
         return this.is_nearest
     }
     talk(){
+        if(!Hero.hasFor) this.state  = -1
         switch (this.state){
             case 0 : this.state = 1;
                      break;
@@ -38,9 +39,11 @@ draw_conv(c_num) {
 
   // 会話データの選択
   if (this.state === 1) {
-    dialog = kanbanNpcdialog_1;
+    dialog = kusaNpcdialog_1;
   } else if (this.state === 4 || this.state === 6) {
   dialog = this.postChoiceDialog;
+} else if (this.state === -1) {
+  dialog = kusaNpcdialog_noFor;
 }
 
   // 会話が存在する場合のみ描画
@@ -63,50 +66,54 @@ draw_conv(c_num) {
 
   // 会話終了処理
   if (dialog && this.conv_num >= dialog.length) {
-    if (this.state === 1) {
+        if (this.state === 1) {
       this.state = 2; // 選択肢表示へ
     } else if (this.state === 4) {
       // ✅ 選択後の分岐処理
-      if (this.postChoiceDialog === kanbanNpcdialog_yes) {
+      if (this.postChoiceDialog === kusaNpcdialog_yes) {
         this.state = 5; // YES選択 → クイズ開始
-      } else if (this.postChoiceDialog === kanbanNpcdialog_no) {
+      } else if (this.postChoiceDialog === kusaNpcdialog_no) {
         this.state = 0; // NO選択 → 状態リセット
         Hero.is_talking = false;
       }
     } else if (this.state === 6) {
-  if (this.postChoiceDialog === kanbanNpcdialog_lose) {
+  if (this.postChoiceDialog === kusaNpcdialog_lose) {
     this.state = 0;
     Hero.is_talking = false;
-  } else if (this.postChoiceDialog === kanbanNpcdialog_clear) {
+  } else if (this.postChoiceDialog === kusaNpcdialog_clear) {
     Hero.is_talking = false;
+    console.log("a")
     Hero.coin += 1000
     // ✅ 自分自身を npcs 配列から削除
     const index = npcs.indexOf(this);
     if (index !== -1) {
       npcs.splice(index, 1);
     }
-    onQuestClear("kanbanNpc")
+    onQuestClear("kusaNpc")
     //新しい衝突マップにする
-    collision_map.length = 0;
-    boundaries.length = 0;
-    for(let i = 0;  i < collision2.length; i+=MAP_WIDTH){
-    collision_map.push(collision2.slice(i, MAP_WIDTH+i))
-    }
-    collision_map.forEach((row, i) => {
-    row.forEach((symbol, j) => {
-        if(symbol  === 472)
-        boundaries.push(
-            new col_default({
-                //衝突マップのずれを調整
-                location: {
-                    x: j * TILE_SIZE + offset.x + Background.totalOffset.x, //タイルのサイズを基準にする座標
-                    y: i * TILE_SIZE + offset.y + Background.totalOffset.y
-                }
-            })
-        )
-    })    
-})
+// collision_map.length = 0;
+// boundaries.length = 0;
+//     for(let i = 0;  i < collision3.length; i+=MAP_WIDTH){
+//     collision_map.push(collision3.slice(i, MAP_WIDTH+i))
+//     }
+//     collision_map.forEach((row, i) => {
+//     row.forEach((symbol, j) => {
+//         if(symbol  === 472)
+//         boundaries.push(
+//             new col_default({
+//                 //衝突マップのずれを調整
+//                 location: {
+//                     x: j * TILE_SIZE + offset.x + Background.totalOffset.x, //タイルのサイズを基準にする座標
+//                     y: i * TILE_SIZE + offset.y + Background.totalOffset.y
+//                 }
+//             })
+//         )
+//     })    
+// })
   }
+} else if (this.state === -1){
+  this.state = 0;
+  Hero.is_talking = false;
 }
 
 
@@ -121,22 +128,23 @@ draw_conv(c_num) {
 draw00(){
     c.drawImage(
         this.img, 
-        0, 32, NPC_W, NPC_H,
-        this.loc.x, this.loc.y,
-        NPC_W*3, NPC_H*3
+        0, 32, 1024, 1024,
+        this.loc.x-8, this.loc.y,
+        NPC_W*4, NPC_H*4
     );
     c.drawImage(
         wait_icon, 
         32*((this.frame >> 4) % 4) , 0, 32, 64,
-        this.loc.x+34, this.loc.y-48,
-        32, 64 
+        this.loc.x+32, this.loc.y-60,
+        48, 96
     )}
+
 draw01(){
     c.drawImage(
         this.img, 
-        0, 32, NPC_W, NPC_H,
-        this.loc.x, this.loc.y,
-        NPC_W*3, NPC_H*3
+        0, 32, 1024, 1024,
+        this.loc.x-8, this.loc.y,
+        NPC_W*4, NPC_H*4
     );
     this.draw_conv(this.conv_num)
 }
@@ -163,7 +171,7 @@ update() {
 
     if (keys.space.pressed && !keys.space.wasPressed) {
       keys.space.wasPressed = true;
-      this.postChoiceDialog = this.choice === "yes" ? kanbanNpcdialog_yes : kanbanNpcdialog_no;
+      this.postChoiceDialog = this.choice === "yes" ? kusaNpcdialog_yes : kusaNpcdialog_no;
       this.state = 4;
       this.postChoiceIndex = 0;
       this.textProgress = 0;
@@ -176,7 +184,7 @@ update() {
   // クイズ処理（状態5）
   if (this.state === 5) {
     const result = Quiz(); // クイズ実行
-    this.postChoiceDialog = result ? kanbanNpcdialog_clear : kanbanNpcdialog_lose;
+    this.postChoiceDialog = result ? kusaNpcdialog_clear : kusaNpcdialog_lose;
     this.state = 6;
     this.conv_num = 0;
     this.textProgress = 0;
@@ -193,6 +201,7 @@ draw() {
   if (!this.img_loaded) return;
 
   switch (this.state) {
+    case -1:this.draw01(); break;
     case 0: this.draw00(); break;
     case 1: this.draw01(); break;
     case 2:

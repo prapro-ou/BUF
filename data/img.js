@@ -33,6 +33,10 @@ playerImages.right.src = playerImg_right.src;
 
 const kanbanNpcImage = new Image()
       kanbanNpcImage.src = '../img/Character/kanbanNpc.png'
+const kusaNpcImage = new Image()
+      kusaNpcImage.src = '../img/Character/kusaNpc.png'
+const nobirukusa = new Image()
+      nobirukusa.src = '../img/effect/nobirukusa.png'
 
 const kaziya = new Image();
 kaziya.src = '../img/Character/blacksmith.png'

@@ -18,7 +18,7 @@ function nearNpc(npc) {
         x: npc.loc.x + NPC_W / 2,
         y: npc.loc.y + NPC_H / 2
     };
-    return distance(heroCenter, npcCenter) < 96;
+    return distance(heroCenter, npcCenter) < 108;
 }
 
 //プレイヤーから一番近いNPCを探索
@@ -218,9 +218,22 @@ function onQuestClear(npcId) {
         description: "一度使えば、同じ行動を何度でも繰り返せるようになる…かもしれない。",
         onBuy: () => {
           Hero.inv.addItem({ name: "FOR", count: 1, description: "一度使えば、同じ行動を何度でも繰り返せるようになる…かもしれない。" });
+          Hero.hasFor = true; // ← フラグを立てるだけでOK
         }
       });
       break;
+    case "kusaNpc":
+      shopItems.push({
+        name: "IF",
+        price: 0,
+        zaiko: 1,
+        description: "条件によって行動を変える力。選択の意味が、少しだけ分かるようになるかもしれない。",
+        onBuy: () => {
+          Hero.hasIf = true; // ← IF文のフラグを立てる
+        }
+      });
+      break;
+
 }
 }
 
