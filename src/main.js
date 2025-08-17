@@ -2,6 +2,7 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 let isInShop = false;
+
 //ゲーム画像サイズ
 canvas.width = 1024
 canvas.height = 576
@@ -21,6 +22,14 @@ const Background = new bg_default({
     },
     iamge: bgImage
 })
+// const Bridge = new fg_default({
+//     location: {
+//         x: offset.x,//マップ画像データの左上を基準にする座標
+//         y: offset.y
+//     },
+//     iamge: bridgeImage
+// })
+
 const Foreground = new fg_default({
     location: {
         x: offset.x,//マップ画像データの左上を基準にする座標
@@ -104,6 +113,15 @@ npc_map.forEach((row, i) => {
                 }));
                 break;
             case 501 : npcs.push(new kusaBabaNpc({
+                    npc_num: symbol,
+                //衝突マップのずれを調整
+                    location: {
+                        x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
+                        y: i * TILE_SIZE + offset.y 
+                    }
+                }));
+                break;
+            case 503 : npcs.push(new hasiNpc({
                     npc_num: symbol,
                 //衝突マップのずれを調整
                     location: {
@@ -253,7 +271,7 @@ function draw() {
   entities.sort((a, b) => a.loc.y - b.loc.y);
 
   entities.forEach(entity => entity.draw());
-boundaries.forEach(b => b.draw())
+  boundaries.forEach(b => b.draw())
   Foreground.draw();
 }
 

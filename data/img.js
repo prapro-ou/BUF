@@ -1,6 +1,8 @@
 //
 //画像読み込み用
 //
+const bgImage2 = new Image()
+bgImage2.src = '../img/Maps/bg_default2.png'
 const bgImage = new Image()
 bgImage.src = '../img/Maps/bg_default.png'
 const fgImage = new Image()
@@ -41,5 +43,9 @@ const kusaBaba_cry = new Image()
       kusaBaba_cry.src = '../img/Character/GranMa_cry.png'
 const kusaBaba_hpy = new Image()
       kusaBaba_hpy.src = '../img/Character/GranMa_Happy.png'
+const hasiNpcImage = new Image()
+      hasiNpcImage.src = '../img/Character/hasiNpc.png'
+const BOSSImage = new Image()
+      BOSSImage.src = '../img/Character/npc_kuromaku.png'
 const kaziya = new Image();
 kaziya.src = '../img/Character/blacksmith.png'

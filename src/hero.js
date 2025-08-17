@@ -13,7 +13,7 @@ class hero extends human {
     this.currentImage = playerImages.down; // 初期画像
     this.coin = 0
     this.hasFor = false;
-    this.hasIf = false;
+    this.hasIf = true;
     this.hasWhile = false;
     this.hasSwitch = false;
     this.hasBreak = false;
@@ -70,6 +70,11 @@ class hero extends human {
         //     this.img_num = 0
         //     this.img.src = playerImg_down.src
         // }
+      // console.log(is_bridge_fixed)
+      // if(is_bridge_fixed){
+      //   console.log('橋描画')
+      //   Bridge.draw()
+      // }
     c.drawImage(
       this.currentImage,
       96 * this.img_num,

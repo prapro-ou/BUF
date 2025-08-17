@@ -36,6 +36,7 @@ class bg_default extends ground{
             kusas.forEach(shop => {
                 shop.loc.x+=this.velocity.x
             }) 
+            // Bridge.loc.x+=this.velocity.x
             
             //Y座標の更新
             //背景のY座標を更新
@@ -54,6 +55,8 @@ class bg_default extends ground{
             kusas.forEach(shop => {
                 shop.loc.y+=this.velocity.y
             }) 
+            // Bridge.loc.y+=this.velocity.y
+
             this.totalOffset.x += this.velocity.x;
             this.totalOffset.y += this.velocity.y;
     }

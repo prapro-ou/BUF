@@ -1,7 +1,7 @@
 //
+//はしNPCのクラス
 //
-//
-class kusaNpc extends npc01 {
+class hasiNpc extends npc01 {
     constructor({npc_num, location}){
     super({npc_num, location})
     this.num = npc_num;
@@ -12,7 +12,7 @@ class kusaNpc extends npc01 {
     this.img.onload = () => {
         this.img_loaded = true;
     };
-    this.img.src = kusaNpcImage.src;
+    this.img.src = hasiNpcImage.src;
     this.conv_num = 0
     this.state = 0
     this.frame = 0
@@ -26,12 +26,13 @@ class kusaNpc extends npc01 {
         return this.is_nearest
     }
     talk(){
-        if(!Hero.hasFor) this.state  = -1
+        if(!Hero.hasIf) this.state  = -1
         switch (this.state){
             case 0 : this.state = 1;
                      break;
             case 3 : this.state = 4;
                      break;
+            case 7 : this.state = 8;
         }
     }
 draw_conv(c_num) {
@@ -39,11 +40,13 @@ draw_conv(c_num) {
 
   // 会話データの選択
   if (this.state === 1) {
-    dialog = kusaNpcdialog_1;
+    dialog = hasiNpcdialog_1;
   } else if (this.state === 4 || this.state === 6) {
   dialog = this.postChoiceDialog;
 } else if (this.state === -1) {
-  dialog = kusaNpcdialog_noFor;
+  dialog = hasiNpcdialog_noIf;
+} else if (this.state === 8) {
+  dialog = hasiNpcdialog_end
 }
 
   // 会話が存在する場合のみ描画
@@ -70,38 +73,39 @@ draw_conv(c_num) {
       this.state = 2; // 選択肢表示へ
     } else if (this.state === 4) {
       // ✅ 選択後の分岐処理
-      if (this.postChoiceDialog === kusaNpcdialog_yes) {
+      if (this.postChoiceDialog === hasiNpcdialog_yes) {
         this.state = 5; // YES選択 → クイズ開始
-      } else if (this.postChoiceDialog === kusaNpcdialog_no) {
+      } else if (this.postChoiceDialog === hasiNpcdialog_no) {
         this.state = 0; // NO選択 → 状態リセット
         Hero.is_talking = false;
       }
     } else if (this.state === 6) {
-  if (this.postChoiceDialog === kusaNpcdialog_lose) {
+  if (this.postChoiceDialog === hasiNpcdialog_lose) {
     this.state = 0;
     Hero.is_talking = false;
-  } else if (this.postChoiceDialog === kusaNpcdialog_clear) {
+  } else if (this.postChoiceDialog === hasiNpcdialog_clear) {
     Hero.is_talking = false;
     console.log("a")
-    Hero.coin += 1000
+    Hero.coin += 5000
+    this.state = 7
     // ✅ 自分自身を npcs 配列から削除
-    const index = npcs.indexOf(this);
-    if (index !== -1) {
-      npcs.splice(index, 1);
-    }
-    onQuestClear("kusaNpc")
-    //  ✅ おばあさんの状態を更新
-    npcs.forEach(npc => {
-      if (npc instanceof kusaBabaNpc) {
-        npc.state = 2;
-      }
-    });
-    kusas.forEach(kusa => kusa.state = 1)
+    // const index = npcs.indexOf(this);
+    // if (index !== -1) {
+    //   npcs.splice(index, 1);
+    // }
+    //onQuestClear("kusaNpc")\
+    Background.img.src =  bgImage2.src
+    // npcs.forEach(npc => {
+    //   if (npc instanceof kusaBabaNpc) {
+    //     npc.state = 2;
+    //   }
+    // });
+    // kusas.forEach(kusa => kusa.state = 1)
     //新しい衝突マップにする
     collision_map.length = 0;
     boundaries.length = 0;
-        for(let i = 0;  i < collision3.length; i+=MAP_WIDTH){
-        collision_map.push(collision3.slice(i, MAP_WIDTH+i))
+        for(let i = 0;  i < collision4.length; i+=MAP_WIDTH){
+        collision_map.push(collision4.slice(i, MAP_WIDTH+i))
         }
         collision_map.forEach((row, i) => {
         row.forEach((symbol, j) => {
@@ -116,13 +120,14 @@ draw_conv(c_num) {
                 })
             )
         })    
-    })
-    kusa_map.length = 0;
-    kusas.length = 0;
+    });
   }
 } else if (this.state === -1){
   this.state = 0;
   Hero.is_talking = false;
+} else if (this.state === 8){
+  this.state = 7;
+  Hero.is_talking = false 
 }
 
 
@@ -131,33 +136,37 @@ draw_conv(c_num) {
   }
 }
 
-
-
-
 draw00(){
     c.drawImage(
         this.img, 
-        0, 32, 1024, 1024,
+        32, 0, 32, 32,
         this.loc.x-8, this.loc.y,
         NPC_W*4, NPC_H*4
     );
     c.drawImage(
         wait_icon, 
         32*((this.frame >> 4) % 4) , 0, 32, 64,
-        this.loc.x+32, this.loc.y-60,
-        48, 96
+        this.loc.x+34, this.loc.y-48,
+        32, 64 
     )}
 
 draw01(){
     c.drawImage(
         this.img, 
-        0, 32, 1024, 1024,
+        32, 0, 32, 32,
         this.loc.x-8, this.loc.y,
         NPC_W*4, NPC_H*4
     );
     this.draw_conv(this.conv_num)
 }
-
+draw02(){
+    c.drawImage(
+        this.img, 
+        32, 0, 32, 32,
+        this.loc.x-8, this.loc.y,
+        NPC_W*4, NPC_H*4
+    );
+}
 update() {
   this.frame++;
 
@@ -180,7 +189,7 @@ update() {
 
     if (keys.space.pressed && !keys.space.wasPressed) {
       keys.space.wasPressed = true;
-      this.postChoiceDialog = this.choice === "yes" ? kusaNpcdialog_yes : kusaNpcdialog_no;
+      this.postChoiceDialog = this.choice === "yes" ? hasiNpcdialog_yes : hasiNpcdialog_no;
       this.state = 4;
       this.postChoiceIndex = 0;
       this.textProgress = 0;
@@ -193,7 +202,7 @@ update() {
   // クイズ処理（状態5）
   if (this.state === 5) {
     const result = Quiz(); // クイズ実行
-    this.postChoiceDialog = result ? kusaNpcdialog_clear : kusaNpcdialog_lose;
+    this.postChoiceDialog = result ? hasiNpcdialog_clear : hasiNpcdialog_lose;
     this.state = 6;
     this.conv_num = 0;
     this.textProgress = 0;
@@ -203,9 +212,8 @@ update() {
   if (!keys.space.pressed) {
     keys.space.wasPressed = false;
   }
+
 }
-
-
 draw() {
   if (!this.img_loaded) return;
 
@@ -219,8 +227,8 @@ draw() {
       break;
     case 4: this.draw01(); break;
     case 6: this.draw01(); break;
+    case 7: this.draw02(); break;
+    case 8: this.draw01(); break;
   }
 }
-
-    
 }
