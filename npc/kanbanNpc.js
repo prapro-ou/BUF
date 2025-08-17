@@ -85,27 +85,26 @@ draw_conv(c_num) {
     if (index !== -1) {
       npcs.splice(index, 1);
     }
-    onQuestClear("kanbanNpc")
     //新しい衝突マップにする
-    collision_map.length = 0;
-    boundaries.length = 0;
-    for(let i = 0;  i < collision2.length; i+=MAP_WIDTH){
-    collision_map.push(collision2.slice(i, MAP_WIDTH+i))
-    }
-    collision_map.forEach((row, i) => {
-    row.forEach((symbol, j) => {
-        if(symbol  === 472)
-        boundaries.push(
-            new col_default({
-                //衝突マップのずれを調整
-                location: {
-                    x: j * TILE_SIZE + offset.x + Background.totalOffset.x, //タイルのサイズを基準にする座標
-                    y: i * TILE_SIZE + offset.y + Background.totalOffset.y
-                }
-            })
-        )
-    })    
-})
+//     collision_map.length = 0;
+//     boundaries.length = 0;
+//     for(let i = 0;  i < collision2.length; i+=MAP_WIDTH){
+//     collision_map.push(collision2.slice(i, MAP_WIDTH+i))
+//     }
+//     collision_map.forEach((row, i) => {
+//     row.forEach((symbol, j) => {
+//         if(symbol  === 472)
+//         boundaries.push(
+//             new col_default({
+//                 //衝突マップのずれを調整
+//                 location: {
+//                     x: j * TILE_SIZE + offset.x + Background.totalOffset.x, //タイルのサイズを基準にする座標
+//                     y: i * TILE_SIZE + offset.y + Background.totalOffset.y
+//                 }
+//             })
+//         )
+//     })    
+// })
   }
 }
 
@@ -125,7 +124,7 @@ draw00(){
         this.loc.x, this.loc.y,
         NPC_W*3, NPC_H*3
     );
-
+  }
 draw01(){
     c.drawImage(
         this.img, 
