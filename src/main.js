@@ -130,6 +130,15 @@ npc_map.forEach((row, i) => {
                     }
                 }));
                 break;
+            case 506 : npcs.push(new BOSS({
+                    npc_num: symbol,
+                //衝突マップのずれを調整
+                    location: {
+                        x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
+                        y: i * TILE_SIZE + offset.y 
+                    }
+                }));
+                break;            
             default : break;
         }
         

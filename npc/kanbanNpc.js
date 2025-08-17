@@ -125,12 +125,7 @@ draw00(){
         this.loc.x, this.loc.y,
         NPC_W*3, NPC_H*3
     );
-    c.drawImage(
-        wait_icon, 
-        32*((this.frame >> 4) % 4) , 0, 32, 64,
-        this.loc.x+34, this.loc.y-48,
-        32, 64 
-    )}
+
 draw01(){
     c.drawImage(
         this.img, 

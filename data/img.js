@@ -47,5 +47,6 @@ const hasiNpcImage = new Image()
       hasiNpcImage.src = '../img/Character/hasiNpc.png'
 const BOSSImage = new Image()
       BOSSImage.src = '../img/Character/npc_kuromaku.png'
+const treasureImage = ''
 const kaziya = new Image();
 kaziya.src = '../img/Character/blacksmith.png'
