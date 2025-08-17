@@ -15,7 +15,7 @@ function nearNpc(npc) {
         y: canvas.height / 2 + HERO_H / 2
     };
     const npcCenter = {
-        x: npc.loc.x + NPC_W / 2,
+        x: npc.loc.x + NPC_W / 2+8,
         y: npc.loc.y + NPC_H / 2
     };
     return distance(heroCenter, npcCenter) < 108;
