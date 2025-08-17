@@ -2,7 +2,6 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 let isInShop = false;
-
 //ゲーム画像サイズ
 canvas.width = 1024
 canvas.height = 576
@@ -104,20 +103,42 @@ npc_map.forEach((row, i) => {
                     }
                 }));
                 break;
-            // case 378 : npcs.push(new npc378({
-            //         npc_num: symbol,
-            //     //衝突マップのずれを調整
-            //         location: {
-            //             x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
-            //             y: i * TILE_SIZE + offset.y 
-            //         }
-            //     }));
-            //     break;
+            case 501 : npcs.push(new kusaBabaNpc({
+                    npc_num: symbol,
+                //衝突マップのずれを調整
+                    location: {
+                        x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
+                        y: i * TILE_SIZE + offset.y 
+                    }
+                }));
+                break;
             default : break;
         }
         
     })    
 })
+const kusa_map = []
+for(let i = 0;  i < kusa_loc.length; i+=MAP_WIDTH){
+    kusa_map.push(kusa_loc.slice(i, MAP_WIDTH+i))
+}
+const kusas = []
+kusa_map.forEach((row, i) => {
+    row.forEach((symbol, j) => {
+        if(symbol  === 473)
+        kusas.push(
+            new kusa_default({
+                //衝突マップのずれを調整
+                location: {
+                    x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
+                    y: i * TILE_SIZE + offset.y 
+                }
+            })
+        )
+    })    
+})
+
+
+
 
 
 //eでインタラクトして，NPCの会話に関する関数フックとする
@@ -145,9 +166,10 @@ function go_shop() {
     }
   }
 }
-
-
-function update() {
+ let frame = 0
+function update(deltaTime) {
+  frame++;
+  if(frame > 10000000) frame = 0
   findNearestNPC(Hero, npcs);
 
   if (keys.tab.pressed) {
@@ -167,14 +189,15 @@ function update() {
     }
   }
 
-  npcs.forEach(npc => npc.update());
+  npcs.forEach(npc => npc.update(deltaTime));
+  if (((frame << 4) % 2) === 0) {
+    kusas.forEach(kusa => kusa.update(deltaTime));
+  }
 
-  // Hero.update() は常に呼び出す
-  Hero.update();
+  Hero.update(deltaTime);
 
-  // 背景移動は UIが出ていないときだけ
   if (!Hero.inv.inventoryVisible && !isInShop && !Hero.is_talking) {
-    Background.update();
+    Background.update(deltaTime);
   }
 }
 
@@ -223,32 +246,44 @@ function draw() {
     return;
   }
 
-  // 通常描画
   Background.draw();
-  const EandH = [...npcs, Hero];
-  EandH.sort((a, b) => a.loc.y - b.loc.y);
-  EandH.forEach(entity => entity.draw());
-//   boundaries.forEach(boundary => boundary.draw());
-  Hero.draw();
+
+  // 描画対象をまとめてY座標でソート
+  const entities = [...npcs, ...kusas, Hero];
+  entities.sort((a, b) => a.loc.y - b.loc.y);
+
+  entities.forEach(entity => entity.draw());
+boundaries.forEach(b => b.draw())
   Foreground.draw();
 }
 
+
 function startGame() {
-  // 画像がすでに読み込まれていれば即開始
   if (fgImage.complete) {
-    animate();
+    requestAnimationFrame(animate);
   } else {
     fgImage.onload = () => {
-      animate();
+      requestAnimationFrame(animate);
     };
   }
 }
 
-function animate(){
-    window.requestAnimationFrame(animate)
-    update()
-    draw()
+
+const FPS = 60; // 目標フレームレート
+const FRAME_INTERVAL = 1000 / FPS; // 1フレームの間隔（ミリ秒）
+let lastTime = 0;
+
+function animate(currentTime) {
+  window.requestAnimationFrame(animate);
+
+  const deltaTime = currentTime - lastTime;
+  lastTime = currentTime;
+
+  update(deltaTime);
+  draw();
 }
+
+
 
 // キーボードが押されたとき
 document.addEventListener("keydown", function(e) {
@@ -298,12 +333,8 @@ document.addEventListener("keyup", function(e) {
     if (e.code === "Space") {
         keys.space.pressed = false
     }
-  })
-  document.addEventListener("keyup", function(e) {
-  if (e.code === "KeyE") {
+    if (e.code === "KeyE") {
     keys.e.pressed = false;
     keys.e.wasPressed = false; // ← これが重要！
   }
-
-  // 他キーも同様に
-});
+  })

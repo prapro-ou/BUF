@@ -230,6 +230,7 @@ function onQuestClear(npcId) {
         description: "条件によって行動を変える力。選択の意味が、少しだけ分かるようになるかもしれない。",
         onBuy: () => {
           Hero.hasIf = true; // ← IF文のフラグを立てる
+          Hero.inv.addItem({ name: "IF", count: 1, description: "条件によって行動を変える力。選択の意味が、少しだけ分かるようになるかもしれない。"});
         }
       });
       break;

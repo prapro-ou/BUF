@@ -90,26 +90,34 @@ draw_conv(c_num) {
       npcs.splice(index, 1);
     }
     onQuestClear("kusaNpc")
+    npcs.forEach(npc => {
+      if (npc instanceof kusaBabaNpc) {
+        npc.state = 2;
+      }
+    });
+    kusas.forEach(kusa => kusa.state = 1)
     //新しい衝突マップにする
-// collision_map.length = 0;
-// boundaries.length = 0;
-//     for(let i = 0;  i < collision3.length; i+=MAP_WIDTH){
-//     collision_map.push(collision3.slice(i, MAP_WIDTH+i))
-//     }
-//     collision_map.forEach((row, i) => {
-//     row.forEach((symbol, j) => {
-//         if(symbol  === 472)
-//         boundaries.push(
-//             new col_default({
-//                 //衝突マップのずれを調整
-//                 location: {
-//                     x: j * TILE_SIZE + offset.x + Background.totalOffset.x, //タイルのサイズを基準にする座標
-//                     y: i * TILE_SIZE + offset.y + Background.totalOffset.y
-//                 }
-//             })
-//         )
-//     })    
-// })
+    collision_map.length = 0;
+    boundaries.length = 0;
+        for(let i = 0;  i < collision3.length; i+=MAP_WIDTH){
+        collision_map.push(collision3.slice(i, MAP_WIDTH+i))
+        }
+        collision_map.forEach((row, i) => {
+        row.forEach((symbol, j) => {
+            if(symbol  === 472)
+            boundaries.push(
+                new col_default({
+                    //衝突マップのずれを調整
+                    location: {
+                        x: j * TILE_SIZE + offset.x + Background.totalOffset.x, //タイルのサイズを基準にする座標
+                        y: i * TILE_SIZE + offset.y + Background.totalOffset.y
+                    }
+                })
+            )
+        })    
+    })
+    kusa_map.length = 0;
+    kusas.length = 0;
   }
 } else if (this.state === -1){
   this.state = 0;

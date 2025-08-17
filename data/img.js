@@ -37,6 +37,9 @@ const kusaNpcImage = new Image()
       kusaNpcImage.src = '../img/Character/kusaNpc.png'
 const nobirukusa = new Image()
       nobirukusa.src = '../img/effect/nobirukusa.png'
-
+const kusaBaba_cry = new Image()
+      kusaBaba_cry.src = '../img/Character/GranMa_cry.png'
+const kusaBaba_hpy = new Image()
+      kusaBaba_hpy.src = '../img/Character/GranMa_Happy.png'
 const kaziya = new Image();
 kaziya.src = '../img/Character/blacksmith.png'

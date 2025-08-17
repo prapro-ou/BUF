@@ -33,7 +33,10 @@ class bg_default extends ground{
             shops.forEach(shop => {
                 shop.loc.x+=this.velocity.x
             })
-
+            kusas.forEach(shop => {
+                shop.loc.x+=this.velocity.x
+            }) 
+            
             //Y座標の更新
             //背景のY座標を更新
             boundaries.forEach(boundary => {
@@ -48,6 +51,9 @@ class bg_default extends ground{
             shops.forEach(shop => {
                 shop.loc.y+=this.velocity.y
             })
+            kusas.forEach(shop => {
+                shop.loc.y+=this.velocity.y
+            }) 
             this.totalOffset.x += this.velocity.x;
             this.totalOffset.y += this.velocity.y;
     }
@@ -65,28 +71,29 @@ class bg_default extends ground{
         }
         return true
     }
-    update_move() {
-        let nextX = 0;  
-        let nextY = 0;
+update_move(deltaTime) {
+    let nextX = 0;  
+    let nextY = 0;
 
-        if (keys.w.pressed) nextY += MAX_SPEED;
-        if (keys.s.pressed) nextY -= MAX_SPEED;
-        if (keys.a.pressed) nextX += MAX_SPEED;
-        if (keys.d.pressed) nextX -= MAX_SPEED;
+    const speed = MAX_SPEED * (deltaTime / 1000); // 秒単位の速度
 
-        // 斜め移動の速度補正
-        if (nextX !== 0 && nextY !== 0) {
-            
-            nextX /= SQRT2;
-            nextY /= SQRT2;
-        }
+    if (keys.w.pressed) nextY += speed;
+    if (keys.s.pressed) nextY -= speed;
+    if (keys.a.pressed) nextX += speed;
+    if (keys.d.pressed) nextX -= speed;
 
-        // まず斜めの衝突をチェック
+    // 斜め移動の速度補正
+    if (nextX !== 0 && nextY !== 0) {
+        nextX /= SQRT2;
+        nextY /= SQRT2;
+    }
+
+    // キー入力があるときだけ衝突判定
+    if (nextX !== 0 || nextY !== 0) {
         if (this.check_collide(nextX, nextY)) {
             this.velocity.x = nextX;
             this.velocity.y = nextY;
         } 
-        // 斜めでダメなら個別に軸ごとにチェック
         else if (this.check_collide(nextX, 0)) {
             this.velocity.x = nextX;
             this.velocity.y = 0;
@@ -99,12 +106,19 @@ class bg_default extends ground{
             this.velocity.x = 0;
             this.velocity.y = 0;
         }
+    } else {
+        this.velocity.x = 0;
+        this.velocity.y = 0;
     }
-    update(){
-        this.movable = true
-        this.update_move()
-        if(this.movable)this.move()
-    }
+}
+
+
+    update(deltaTime){
+    this.movable = true
+    this.update_move(deltaTime)
+    if(this.movable) this.move()
+}
+
     draw(){
         c.drawImage(this.img, this.loc.x, this.loc.y) //プレイヤー初期画面
     }
