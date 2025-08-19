@@ -21,3 +21,14 @@ canvas {
   display: none;
   z-index: 500;
 }
+#coinDisplay {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  font-size: 18px;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 4px 8px;
+  border-radius: 6px;
+  z-index: 1000;
+}

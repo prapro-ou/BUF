@@ -253,3 +253,18 @@ function splitMapData(data, width) {
   return result;
 }
 
+function drawCoinText(ctx, coinAmount) {
+  ctx.save();
+  ctx.font = '18px sans-serif';
+  ctx.fillStyle = 'white';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'top';
+
+  // シャドウで視認性アップ
+  ctx.shadowColor = 'black';
+  ctx.shadowBlur = 4;
+
+  ctx.fillText(`💰 ${coinAmount} G`, 12, 12);
+  ctx.restore();
+}
+
