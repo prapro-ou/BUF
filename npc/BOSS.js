@@ -74,18 +74,38 @@ class BOSS extends npc01 {
         } else if (this.postChoiceDialog === BOSSdialog_clear) {
           Hero.is_talking = false;
           Hero.coin += 5000;
-
+          collision_map.length = 0;
+          boundaries.length = 0;
+          for(let i = 0;  i < collision5.length; i+=MAP_WIDTH){
+          collision_map.push(collision5.slice(i, MAP_WIDTH+i))
+          }
+        collision_map.forEach((row, i) => {
+        row.forEach((symbol, j) => {
+            if(symbol  === 472)
+            boundaries.push(
+                new col_default({
+                    //衝突マップのずれを調整
+                    location: {
+                        x: j * TILE_SIZE + offset.x + Background.totalOffset.x, //タイルのサイズを基準にする座標
+                        y: i * TILE_SIZE + offset.y + Background.totalOffset.y
+                    }
+                })
+            )
+        })    
+    });
+  }
           const index = npcs.indexOf(this);
           if (index !== -1) npcs.splice(index, 1);
-          npcs.push(new treasureBox({
-                    npc_num: 777,
-                //衝突マップのずれを調整
-                    location: this.loc
-                }));
-          // 宝箱をアクティブにするなどの演出
-        //   treasureBox.state = 1;
-        }
-      } else if (this.state === -1) {
+      //     npcs.push(new treasureBox({
+      //               npc_num: 777,
+      //           //衝突マップのずれを調整
+      //               location: this.loc
+      //           }));
+      //     // 宝箱をアクティブにするなどの演出
+      //   //   treasureBox.state = 1;
+      //   }
+      // } else 
+        if (this.state === -1) {
         this.state = 0;
         Hero.is_talking = false;
       }

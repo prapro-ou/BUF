@@ -13,7 +13,7 @@ class hero extends human {
     this.currentImage = playerImages.down; // 初期画像
     this.coin = 0
     this.hasFor = false;
-    this.hasIf = true;
+    this.hasIf = false;
     this.hasWhile = false;
     this.hasSwitch = false;
     this.hasBreak = false;
