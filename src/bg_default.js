@@ -19,46 +19,18 @@ class bg_default extends ground{
     }
     move(){
         //移動する
-            //X座標の更新
-            boundaries.forEach(boundary => {
-                boundary.loc.x+=this.velocity.x
-            })
-            //背景のX座標を更新
-            Foreground.loc.x+=this.velocity.x
-            this.loc.x+=this.velocity.x
-            //NPCのX座標を更新
-            npcs.forEach(npc => {
-                npc.loc.x+=this.velocity.x
-            })
-            shops.forEach(shop => {
-                shop.loc.x+=this.velocity.x
-            })
-            kusas.forEach(shop => {
-                shop.loc.x+=this.velocity.x
-            }) 
-            // Bridge.loc.x+=this.velocity.x
-            
-            //Y座標の更新
-            //背景のY座標を更新
-            boundaries.forEach(boundary => {
-                boundary.loc.y+=this.velocity.y
-            })
-            Foreground.loc.y+=this.velocity.y
-            this.loc.y+=this.velocity.y
-            //NPCのY座標を更新
-            npcs.forEach(npc => {
-                npc.loc.y+=this.velocity.y
-            })
-            shops.forEach(shop => {
-                shop.loc.y+=this.velocity.y
-            })
-            kusas.forEach(shop => {
-                shop.loc.y+=this.velocity.y
-            }) 
-            // Bridge.loc.y+=this.velocity.y
+        ["x", "y"].forEach(axis => {
+        boundaries.forEach(obj => obj.loc[axis] += this.velocity[axis]);
+        Foreground.loc[axis] += this.velocity[axis];
+        this.loc[axis] += this.velocity[axis];
+        npcs.forEach(obj => obj.loc[axis] += this.velocity[axis]);
+        shops.forEach(obj => obj.loc[axis] += this.velocity[axis]);
+        kusas.forEach(obj => obj.loc[axis] += this.velocity[axis]);
+        });
 
-            this.totalOffset.x += this.velocity.x;
-            this.totalOffset.y += this.velocity.y;
+        this.totalOffset.x += this.velocity.x;
+        this.totalOffset.y += this.velocity.y;
+
     }
     check_collide(vx, vy){         
         //衝突判定

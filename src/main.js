@@ -14,7 +14,6 @@ bgm.volume = 0.5; // 音量（0.0～1.0）
 bgm.play();
 
 //クラスのインスタンス化
-
 const Background = new bg_default({
     location: {
         x: offset.x,//マップ画像データの左上を基準にする座標
@@ -22,13 +21,6 @@ const Background = new bg_default({
     },
     iamge: bgImage
 })
-// const Bridge = new fg_default({
-//     location: {
-//         x: offset.x,//マップ画像データの左上を基準にする座標
-//         y: offset.y
-//     },
-//     iamge: bridgeImage
-// })
 
 const Foreground = new fg_default({
     location: {
@@ -44,11 +36,13 @@ const Hero = new hero({
     },
     iamge: playerImg_down
 })
-//衝突マップを行ごとに分割
-const collision_map = []
-for(let i = 0;  i < collision.length; i+=MAP_WIDTH){
-    collision_map.push(collision.slice(i, MAP_WIDTH+i))
-}
+
+// 使用例
+const collision_map = splitMapData(collision, MAP_WIDTH);
+const shop_map = splitMapData(shop_data, MAP_WIDTH);
+const npc_map = splitMapData(npc_loc, MAP_WIDTH);
+const kusa_map = splitMapData(kusa_loc, MAP_WIDTH);
+
 //衝突タイルマップを衝突ピクセルマップにする
 const boundaries = []
 collision_map.forEach((row, i) => {
@@ -65,11 +59,7 @@ collision_map.forEach((row, i) => {
         )
     })    
 })
-const shop_map = []
-for(let i = 0;  i < shop_data.length; i+=MAP_WIDTH){
-    shop_map.push(shop_data.slice(i, MAP_WIDTH+i))
-}
-//衝突タイルマップを衝突ピクセルマップにする
+
 const shops = []
 shop_map.forEach((row, i) => {
     row.forEach((symbol, j) => {
@@ -86,10 +76,6 @@ shop_map.forEach((row, i) => {
     })    
 })
 //NPCの位置をマップデータから解析
-const npc_map = []
-for(let i = 0;  i < npc_loc.length; i+=MAP_WIDTH){
-    npc_map.push(npc_loc.slice(i, MAP_WIDTH+i))
-}
 const npcs = []
 npc_map.forEach((row, i) => {
     row.forEach((symbol, j) => {
@@ -103,7 +89,7 @@ npc_map.forEach((row, i) => {
                     }
                 }));
                 break;
-            case 502 : npcs.push(new kusaNpc({
+            case 501 : npcs.push(new kusaBabaNpc({
                     npc_num: symbol,
                 //衝突マップのずれを調整
                     location: {
@@ -112,7 +98,7 @@ npc_map.forEach((row, i) => {
                     }
                 }));
                 break;
-            case 501 : npcs.push(new kusaBabaNpc({
+            case 502 : npcs.push(new kusaNpc({
                     npc_num: symbol,
                 //衝突マップのずれを調整
                     location: {
@@ -144,10 +130,7 @@ npc_map.forEach((row, i) => {
         
     })    
 })
-const kusa_map = []
-for(let i = 0;  i < kusa_loc.length; i+=MAP_WIDTH){
-    kusa_map.push(kusa_loc.slice(i, MAP_WIDTH+i))
-}
+
 const kusas = []
 kusa_map.forEach((row, i) => {
     row.forEach((symbol, j) => {
@@ -163,10 +146,6 @@ kusa_map.forEach((row, i) => {
         )
     })    
 })
-
-
-
-
 
 //eでインタラクトして，NPCの会話に関する関数フックとする
 function invoke_talk(){
@@ -228,9 +207,7 @@ function update(deltaTime) {
   }
 }
 
-
 let canBuy = true;
-
 function drawShopUI() {
   c.drawImage(shopImage, 0, 0, canvas.width, canvas.height);
   c.drawImage(kaziya, 50, 200, 450, 450);
@@ -266,7 +243,6 @@ function drawShopUI() {
 
 }
 
-
 function draw() {
   if (isInShop) {
     drawShopUI();
@@ -277,10 +253,8 @@ function draw() {
 
   // 描画対象をまとめてY座標でソート
   const entities = [...npcs, ...kusas, Hero];
-  entities.sort((a, b) => a.loc.y - b.loc.y);
-
+  entities.sort((a, b) => (a.loc?.y || 0) - (b.loc?.y || 0));
   entities.forEach(entity => entity.draw());
-  boundaries.forEach(b => b.draw())
   Foreground.draw();
 }
 
@@ -314,8 +288,11 @@ function animate(currentTime) {
 
 // キーボードが押されたとき
 document.addEventListener("keydown", function(e) {
-    if (bgm.paused) bgm.play();
-    
+    if (bgm.paused) {
+    bgm.play().catch(err => {
+        console.warn("BGM再生に失敗しました:", err);
+    });
+    }
     if (e.code === "Tab") {
         e.preventDefault() // ブラウザのタブ切り替えを防ぐ
         keys.tab.pressed = true
@@ -360,8 +337,4 @@ document.addEventListener("keyup", function(e) {
     if (e.code === "Space") {
         keys.space.pressed = false
     }
-    if (e.code === "KeyE") {
-    keys.e.pressed = false;
-    keys.e.wasPressed = false; // ← これが重要！
-  }
   })

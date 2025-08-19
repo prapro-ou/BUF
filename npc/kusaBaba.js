@@ -4,6 +4,7 @@
 class kusaBabaNpc extends npc01 {
     constructor({npc_num, location}){
     super({npc_num, location})
+    this.quizEvaluated = false
     this.num = npc_num;
     this.loc = location;
     this.is_nearest = false
@@ -110,7 +111,9 @@ draw01(){
 
 update() {
   this.frame++;
-  if(this.state == 2) this.img.src = kusaBaba_hpy.src
+  if (this.state === 2 && this.img.src !== kusaBaba_hpy.src) {
+  this.img.src = kusaBaba_hpy.src;
+}
   // スペースキーが「今回押された」場合のみ conv_num++
   if ((this.state === 1 || this.state === 3 || this.state === 5) && keys.space.pressed && !keys.space.wasPressed) {
     this.conv_num++;

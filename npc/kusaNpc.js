@@ -21,19 +21,22 @@ class kusaNpc extends npc01 {
     this.postChoiceIndex = 0;
     this.textProgress = 0;
     this.textSpeed = 1;
+    this.quizEvaluated = false
     }
     can_talk(){
         return this.is_nearest
     }
-    talk(){
-        if(!Hero.hasFor) this.state  = -1
-        switch (this.state){
-            case 0 : this.state = 1;
-                     break;
-            case 3 : this.state = 4;
-                     break;
-        }
+    talk() {
+    if (!Hero.hasFor) {
+      this.state = -1;
+      return;
     }
+    switch (this.state) {
+      case 0: this.state = 1; break;
+      case 3: this.state = 4; break;
+    }
+    }
+
 draw_conv(c_num) {
   let dialog = null;
 
@@ -182,6 +185,7 @@ update() {
       keys.space.wasPressed = true;
       this.postChoiceDialog = this.choice === "yes" ? kusaNpcdialog_yes : kusaNpcdialog_no;
       this.state = 4;
+      this.quizEvaluated = false;
       this.postChoiceIndex = 0;
       this.textProgress = 0;
     }
@@ -191,13 +195,15 @@ update() {
   }
 
   // クイズ処理（状態5）
-  if (this.state === 5) {
-    const result = Quiz(); // クイズ実行
-    this.postChoiceDialog = result ? kusaNpcdialog_clear : kusaNpcdialog_lose;
-    this.state = 6;
-    this.conv_num = 0;
-    this.textProgress = 0;
-  }
+  if (this.state === 5 && !this.quizEvaluated) {
+  const result = Quiz();
+  this.postChoiceDialog = result ? kusaNpcdialog_clear : kusaNpcdialog_lose;
+  this.state = 6;
+  this.conv_num = 0;
+  this.textProgress = 0;
+  this.quizEvaluated = true;
+}
+
 
   // 毎フレーム最後に押下状態の更新
   if (!keys.space.pressed) {

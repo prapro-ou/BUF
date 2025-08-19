@@ -42,9 +42,7 @@ class BOSS extends npc01 {
       dialog = BOSSdialog_1;
     } else if (this.state === 4 || this.state === 6) {
       dialog = this.postChoiceDialog;
-    } else if (this.state === -1) {
-      dialog = BOSSdialog_noIf;
-    }
+    } 
 
     if (dialog && this.conv_num < dialog.length) {
       const text = dialog[this.conv_num];
@@ -79,49 +77,46 @@ class BOSS extends npc01 {
           for(let i = 0;  i < collision5.length; i+=MAP_WIDTH){
           collision_map.push(collision5.slice(i, MAP_WIDTH+i))
           }
-        collision_map.forEach((row, i) => {
-        row.forEach((symbol, j) => {
-            if(symbol  === 472)
-            boundaries.push(
-                new col_default({
-                    //衝突マップのずれを調整
-                    location: {
-                        x: j * TILE_SIZE + offset.x + Background.totalOffset.x, //タイルのサイズを基準にする座標
-                        y: i * TILE_SIZE + offset.y + Background.totalOffset.y
-                    }
-                })
-            )
-        })    
-    });
-  }
+          collision_map.forEach((row, i) => {
+            row.forEach((symbol, j) => {
+                if(symbol  === 472)
+                boundaries.push(
+                    new col_default({
+                        //衝突マップのずれを調整
+                        location: {
+                            x: j * TILE_SIZE + offset.x + Background.totalOffset.x, //タイルのサイズを基準にする座標
+                            y: i * TILE_SIZE + offset.y + Background.totalOffset.y
+                        }
+                    })
+                )
+            })    
+          });
           const index = npcs.indexOf(this);
           if (index !== -1) npcs.splice(index, 1);
-      //     npcs.push(new treasureBox({
-      //               npc_num: 777,
-      //           //衝突マップのずれを調整
-      //               location: this.loc
-      //           }));
-      //     // 宝箱をアクティブにするなどの演出
-      //   //   treasureBox.state = 1;
-      //   }
-      // } else 
-        if (this.state === -1) {
-        this.state = 0;
-        Hero.is_talking = false;
+          npcs.push(new treasureBox({
+                    npc_num: 777,
+                //衝突マップのずれを調整
+                    location: {
+                        x: this.loc.x,
+                        y: this.loc.y + 96 
+                    }
+                }));
+          // 宝箱をアクティブにするなどの演出
+        //   treasureBox.state = 1;
+        }
       }
-
       this.conv_num = 0;
       this.textProgress = 0;
     }
   }
+    
 
   draw00() {
-    console.log('BOSS描画')
-    c.drawImage(this.img,  0, 32, NPC_W, NPC_H, this.loc.x-16, this.loc.y+16, NPC_W * 4, NPC_H * 4);
+    c.drawImage(this.img,  0, 32, NPC_W, NPC_H, this.loc.x-16, this.loc.y+40, NPC_W * 4, NPC_H * 4);
   }
 
   draw01() {
-    c.drawImage(this.img,  0, 32, NPC_W, NPC_H, this.loc.x -16, this.loc.y+16, NPC_W * 4, NPC_H * 4);
+    c.drawImage(this.img,  0, 32, NPC_W, NPC_H, this.loc.x -16, this.loc.y+40, NPC_W * 4, NPC_H * 4);
     this.draw_conv(this.conv_num);
   }
 
@@ -148,6 +143,7 @@ class BOSS extends npc01 {
         keys.space.wasPressed = true;
         this.postChoiceDialog = this.choice === "yes" ? BOSSdialog_yes : BOSSdialog_no;
         this.state = 4;
+        this.quizEvaluated = false;
         this.postChoiceIndex = 0;
         this.textProgress = 0;
       }

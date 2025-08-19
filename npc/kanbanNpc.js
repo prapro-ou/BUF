@@ -4,6 +4,7 @@
 class kanbanNpc extends npc01 {
     constructor({npc_num, location}){
     super({npc_num, location})
+    this.quizEvaluated = false
     this.num = npc_num;
     this.loc = location;
     this.is_nearest = false
@@ -68,6 +69,7 @@ draw_conv(c_num) {
     } else if (this.state === 4) {
       // ✅ 選択後の分岐処理
       if (this.postChoiceDialog === kanbanNpcdialog_yes) {
+        
         this.state = 5; // YES選択 → クイズ開始
       } else if (this.postChoiceDialog === kanbanNpcdialog_no) {
         this.state = 0; // NO選択 → 状態リセット
@@ -143,7 +145,6 @@ draw01(){
 
 update() {
   this.frame++;
-
   // スペースキーが「今回押された」場合のみ conv_num++
   if (this.state === 1 && keys.space.pressed && !keys.space.wasPressed) {
     this.conv_num++;
@@ -165,6 +166,7 @@ update() {
       keys.space.wasPressed = true;
       this.postChoiceDialog = this.choice === "yes" ? kanbanNpcdialog_yes : kanbanNpcdialog_no;
       this.state = 4;
+      this.quizEvaluated = false; // ← ここで初期化
       this.postChoiceIndex = 0;
       this.textProgress = 0;
     }
@@ -174,13 +176,15 @@ update() {
   }
 
   // クイズ処理（状態5）
-  if (this.state === 5) {
-    const result = Quiz(); // クイズ実行
-    this.postChoiceDialog = result ? kanbanNpcdialog_clear : kanbanNpcdialog_lose;
-    this.state = 6;
-    this.conv_num = 0;
-    this.textProgress = 0;
-  }
+  if (this.state === 5 && !this.quizEvaluated) {
+  const result = Quiz();
+  this.postChoiceDialog = result ? kanbanNpcdialog_clear : kanbanNpcdialog_lose;
+  this.state = 6;
+  this.conv_num = 0;
+  this.textProgress = 0;
+  this.quizEvaluated = true;
+}
+
 
   // 毎フレーム最後に押下状態の更新
   if (!keys.space.pressed) {
@@ -199,7 +203,7 @@ draw() {
       this.draw01();
       drawChoiceUI(this.loc.x + 20, this.loc.y + 100, this.choice);
       break;
-    case 4: this.draw01(); break;
+    case 4:
     case 6: this.draw01(); break;
   }
 }

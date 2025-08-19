@@ -244,3 +244,12 @@ function resetMovementKeys() {
   keys.s.pressed = false;
   keys.d.pressed = false;
 }
+
+function splitMapData(data, width) {
+  const result = [];
+  for (let i = 0; i < data.length; i += width) {
+    result.push(data.slice(i, i + width));
+  }
+  return result;
+}
+
