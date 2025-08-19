@@ -87,6 +87,9 @@ draw_conv(c_num) {
     Hero.is_talking = false;
     console.log("a")
     Hero.coin += 5000
+    get_coin.currentTime = 0;
+    get_coin.volume = 0.5
+    get_coin.play();
     this.state = 7
     // ✅ 自分自身を npcs 配列から削除
     // const index = npcs.indexOf(this);

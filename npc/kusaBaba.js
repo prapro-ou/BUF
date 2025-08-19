@@ -73,6 +73,9 @@ draw_conv(c_num) {
     } else if (this.state === 3) {
       this.state = 4
       Hero.coin += 1000
+      get_coin.currentTime = 0;
+      get_coin.volume = 0.5
+      get_coin.play();
       Hero.is_talking = false 
     } else if (this.state === 5) {
       this.state = 4

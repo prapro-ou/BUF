@@ -52,6 +52,11 @@ draw_conv(c_num) {
     // テキスト進行
     if (this.textProgress < text.length) {
       this.textProgress += this.textSpeed;
+      const prevProgress = this.textProgress;
+      // SE再生（進行があった場合のみ）
+
+      // npc_speak.currentTime = 0;
+      // npc_speak.play();
     }
 
     // スペースキーで次の文へ
@@ -82,6 +87,9 @@ draw_conv(c_num) {
   } else if (this.postChoiceDialog === kanbanNpcdialog_clear) {
     Hero.is_talking = false;
     Hero.coin += 1000
+    get_coin.currentTime = 0;
+    get_coin.volume = 0.5
+    get_coin.play();
     // ✅ 自分自身を npcs 配列から削除
     const index = npcs.indexOf(this);
     if (index !== -1) {
@@ -148,6 +156,9 @@ update() {
   // スペースキーが「今回押された」場合のみ conv_num++
   if (this.state === 1 && keys.space.pressed && !keys.space.wasPressed) {
     this.conv_num++;
+    next_conv.currentTime = 0;
+    next_conv.volume = 0.5
+    next_conv.play();
     keys.space.wasPressed = true;
   }
 
