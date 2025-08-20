@@ -9,7 +9,7 @@ canvas.height = 576
 
 // BGM再生
 bgm.loop = true; // ループ再生
-bgm.volume = 0; // 音量（0.0～1.0）
+bgm.volume = 0.4; // 音量（0.0～1.0）
 bgm.play();
 
 //クラスのインスタンス化

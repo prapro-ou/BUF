@@ -98,7 +98,7 @@ draw_conv(c_num) {
     onQuestClear("kanbanNpc")
     //新しい衝突マップにする
     collision_map.length = 0;
-    boundaries.length = 0;
+    boundaries.length = 0;  
     for(let i = 0;  i < collision2.length; i+=MAP_WIDTH){
     collision_map.push(collision2.slice(i, MAP_WIDTH+i))
     }
