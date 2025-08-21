@@ -418,6 +418,7 @@ canvas.addEventListener('click', e => {
       seWrong.currentTime = 0;
       seWrong.play();
     }
+    
     drawQuiz();
     if (result && quizIndex < quizList.length - 1) {
       setTimeout(() => {
