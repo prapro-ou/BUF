@@ -174,18 +174,49 @@ function go_shop() {
 }
 function triggerQuiz(npc) {
   quizActive = true;
+  quizList.length = 0; // ← ここでリセット！
+
   switch(npc) {
-    case KANBAN: whoseQuiz = KANBAN;break;
-    case KUSA: whoseQuiz = KUSA;break;
-    case HASI: whoseQuiz = HASI;break;
-    case SYUBOUSYA: whoseQuiz = SYUBOUSYA;break;
-    case TREASURE: whoseQuiz = TREASURE;break;
+    case KANBAN:
+      whoseQuiz = KANBAN;
+      quizList.push(kanbanQuiz);
+      break;
+    case KUSA:
+      whoseQuiz = KUSA;
+      quizList.push(kusaQuiz);
+      break;
+    case HASI:
+      whoseQuiz = HASI;
+      quizList.push(hasiQuiz_1);
+      quizList.push(hasiQuiz_2);
+      break;
+    case SYUBOUSYA:
+      whoseQuiz = SYUBOUSYA;
+      quizList.push(bossQuiz);
+      break;
+    case TREASURE:
+      whoseQuiz = TREASURE;
+      quizList.push(treasureQuiz);
+      break;
   }
+
   quiz_bgm.currentTime = 0;
   quiz_bgm.volume = 0.6;
   quiz_bgm.play();
-}
+  quizIndex = 0;
+    currentQuiz = quizList[quizIndex];
+    userAnswers = Array(currentQuiz.blanks.length).fill(null);
+    selectedBlank = null;
+    result = null;
+    codeScrollY = 0;
+    dragging = null;
+    dragOrigin = null;
+    isTimeout = false;
+    timerId = null;
 
+    startTimer();
+    drawQuiz();
+}
 
  let frame = 0
 function update(deltaTime) {
@@ -259,7 +290,7 @@ function drawShopUI() {
 
 }
 function drawQuiz() {
-    
+
 }
 function draw() {
  if (quizActive) {
@@ -280,8 +311,6 @@ function draw() {
   drawCoinText(c, Hero.coin);
 }
 
-
-
 function startGame() {
   if (fgImage.complete) {
     requestAnimationFrame(animate);
@@ -291,8 +320,6 @@ function startGame() {
     };
   }
 }
-
-
 
 const FPS = 60; // 目標フレームレート
 const FRAME_INTERVAL = 1000 / FPS; // 1フレームの間隔（ミリ秒）
@@ -307,8 +334,6 @@ function animate(currentTime) {
   update(deltaTime);
   draw();
 }
-
-
 
 // キーボードが押されたとき
 document.addEventListener("keydown", function(e) {
@@ -362,3 +387,153 @@ document.addEventListener("keyup", function(e) {
         keys.space.pressed = false
     }
   })
+
+canvas.addEventListener('click', e => {
+  if(!quizActive)return
+  if (bgm.paused) bgm.play();
+  const rect = canvas.getBoundingClientRect();
+  const mx   = e.clientX - rect.left;
+  const my   = e.clientY - rect.top;
+
+  // 答え合わせ
+  if (
+    userAnswers.every(a => a !== null) &&
+    mx >= buttonX && mx <= buttonX + 200 &&
+    my >= 470    && my <= 518 &&
+    !isTimeout // 時間切れ時は答え合わせ不可
+  ) {
+    result = currentQuiz.blanks.every((b, i) =>
+      userAnswers[i] === b.answer
+    );
+    // 効果音再生
+    if (result) {
+      seCorrect.currentTime = 0;
+      seCorrect.play();
+    } else {
+      seWrong.currentTime = 0;
+      seWrong.play();
+    }
+    
+    drawQuiz();
+    if (result && quizIndex < quizList.length - 1) {
+      setTimeout(() => {
+        quizIndex++;
+        currentQuiz = quizList[quizIndex];
+        userAnswers = Array(currentQuiz.blanks.length).fill(null);
+        selectedBlank = null;
+        result        = null;
+        currentQuiz.choiceRects = null;
+        startTimer();
+        drawQuiz();
+      }, 1200);
+    }
+    return;
+  }
+
+  // やり直し
+  if (
+    mx >= extendButtonX && mx <= extendButtonX + extendButtonW &&
+    my >= extendButtonY && my <= extendButtonY + extendButtonH
+  ) {
+    timeLeft += 30;
+    seGauge.currentTime = 0; // ←追加
+    seGauge.play();          // ←追加
+    drawQuiz();
+    return;
+  }
+
+  // やり直しボタン
+  if (
+    mx >= buttonX && mx <= buttonX + 200 &&
+    my >= 524    && my <= 524 + 48
+  ) {
+    // やり直し処理
+    userAnswers = Array(currentQuiz.blanks.length).fill(null);
+    selectedBlank = null;
+    result        = null;
+    currentQuiz.choiceRects = null;
+    codeScrollY   = 0;
+    drawQuiz();
+    return;
+  }
+});
+
+// — ドラッグ＆ドロップ — 
+canvas.addEventListener('mousedown', e => {
+  if(!quizActive)return
+  const rect = canvas.getBoundingClientRect();
+  const mx   = e.clientX - rect.left;
+  const my   = e.clientY - rect.top;
+  currentQuiz.choiceRects.forEach((r, i) => {
+    if (
+      r && mx >= r.x && mx <= r.x + r.w &&
+      my >= r.y && my <= r.y + r.h
+    ) {
+      seClick.currentTime = 0;
+      seClick.play();
+      dragging = {
+        choiceIdx: i,
+        x: mx,
+        y: my,
+        offsetX: mx - r.cx,
+        offsetY: my - r.cy
+      };
+      dragOrigin = { x: r.cx, y: r.cy };
+      drawQuiz();
+    }
+  });
+});
+
+canvas.addEventListener('mousemove', e => {
+  if(!quizActive)return
+  if (!dragging) return;
+  const rect = canvas.getBoundingClientRect();
+  dragging.x = e.clientX - rect.left;
+  dragging.y = e.clientY - rect.top;
+  drawQuiz();
+});
+
+canvas.addEventListener('mouseup', e => {
+  if(!quizActive)return
+  if (!dragging) return;
+  const rect = canvas.getBoundingClientRect();
+  const mx   = e.clientX - rect.left;
+  const my   = e.clientY - rect.top;
+  let set = false;
+  currentQuiz.blanks.forEach((b, i) => {
+    const r = b.rect;
+    if (
+      r && mx >= r.x && mx <= r.x + r.w &&
+      my >= r.y && my <= r.y + r.h
+    ) {
+      userAnswers[i] = dragging.choiceIdx;
+      set = true; // ←追加
+    }
+  });
+  if (set) {                 // ←追加
+    seKeyboard2.currentTime = 0;
+    seKeyboard2.play();
+  }
+  dragging   = null;
+  dragOrigin = null;
+  drawQuiz();
+});
+
+// — スクロールイベント —
+canvas.addEventListener('wheel', e => {
+  if(!quizActive)return
+  // 4問目(3)と5問目(4)だけスクロール有効
+  if (quizIndex !== 3 && quizIndex !== 4) {
+    codeScrollY = 0;
+    return;
+  }
+  const rawCodeLines = currentQuiz.code.trim().split('\n');
+  const visibleLines = 20; // 表示できる行数（調整可）
+  const maxScroll = Math.max(0, rawCodeLines.length * 22 - visibleLines * 22);
+
+  codeScrollY += e.deltaY;
+  if (codeScrollY < 0) codeScrollY = 0;
+  if (codeScrollY > maxScroll) codeScrollY = maxScroll;
+  drawQuiz();
+  e.preventDefault();
+}, { passive: false });

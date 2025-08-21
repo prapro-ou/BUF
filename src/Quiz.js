@@ -3,7 +3,31 @@ const KUSA = 501;
 const HASI = 503;
 const SYUBOUSYA = 506
 const TREASURE = 777
+const commonChoices = ["a", "pi", "c", "s", "b"];
+let quizIndex     = 0;
+let currentQuiz   = quizList[quizIndex];
+let selectedBlank = null;
+let userAnswers   = Array(currentQuiz.blanks.length).fill(null);
+let result        = null;
 
+// ———— レイアウト定数 ————
+const codeX        = 80;
+const codeY        = 40;
+const codeMaxWidth = 420;
+const choiceX      = 850; // 選択肢の位置（右寄せ）
+const buttonX      = 750; // ボタンの位置（元の位置に戻す）
+const choiceBaseY  = 120;
+const choiceGap    = 60;
+
+const extendButtonX = buttonX - 220; // やり直しボタンの左に配置
+const extendButtonY = 524;
+const extendButtonW = 200;
+const extendButtonH = 48;
+
+const reduceButtonX = extendButtonX - 220; // 時間延長ボタンの左
+const reduceButtonY = extendButtonY;
+const reduceButtonW = 200;
+const reduceButtonH = 48;
 class Quiz {
     constructor({question, code, choices, answer, blanks}) {
         this.question = question; // 問題文
@@ -16,6 +40,32 @@ class Quiz {
 
 const quizList = [];
 
+const bgImageKanban    = new Image();
+bgImageKanban.src      = '../img/quiz_bg/scenery2_kanban.png';      // 1問目
+
+const bgImageKusa      = new Image();
+bgImageKusa.src        = '../img/quiz_bg/scenery1_kusa.png';        // 2問目
+
+const bgImageHasi      = new Image();
+bgImageHasi.src        = '../img/quiz_bg/scenery3_hasi.png';        // 3,4問目
+
+const bgImageKuromaku  = new Image();
+bgImageKuromaku.src    = '..//img/quiz_bg/scenery4_kuromaku.png';    // 5問目
+
+const bgImageTakarabako= new Image();
+bgImageTakarabako.src  = '../img/quiz_bg/scenery5_takarabako.png';  // 6問目
+
+const bgImage = new Image();
+bgImage.src = '../gazo/quiz_wood.png'; // デフォルト
+
+const seCorrect   = new Audio('../sound/クイズ正解1.mp3');
+const seWrong     = new Audio('../sound/クイズ不正解1.mp3');
+const seTimeout   = new Audio('../sound/試合終了のゴング.mp3');
+const seClick     = new Audio('../sound/クリック.mp3');      // ←追加
+const seKeyboard2 = new Audio('../sound/キーボード2.mp3');   // ←追加
+const seGauge     = new Audio('../sound/ゲージ回復1.mp3');
+
+let codeScrollY = 0;
 //
 //各NPCの問題実体化
 //
@@ -228,3 +278,7 @@ int main() {
         ],
         reduceIdx: [0] // 例: "printf"（インデックス0）を削減
     })
+
+// ———— ドラッグ用変数 ————
+let dragging   = null;
+let dragOrigin = null;
