@@ -445,6 +445,22 @@ canvas.addEventListener('click', e => {
     drawQuiz();
     return;
   }
+
+  // やり直しボタン
+  if (
+    mx >= buttonX && mx <= buttonX + 200 &&
+    my >= 524    && my <= 524 + 48
+  ) {
+    // やり直し処理
+    userAnswers = Array(currentQuiz.blanks.length).fill(null);
+    selectedBlank = null;
+    result        = null;
+    currentQuiz.choiceRects = null;
+    codeScrollY   = 0;
+    startTimer();
+    drawQuiz();
+    return;
+  }
 });
 
 // — ドラッグ＆ドロップ — 
