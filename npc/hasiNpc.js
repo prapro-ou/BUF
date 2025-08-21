@@ -205,7 +205,7 @@ update() {
 
   // クイズ処理（状態5）
   if (this.state === 5 && !this.quizEvaluated) {
-  const result = Quiz();
+  const result = true;
   this.postChoiceDialog = result ? hasiNpcdialog_clear : hasiNpcdialog_lose;
   this.state = 6;
   this.conv_num = 0;
