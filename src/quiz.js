@@ -1,14 +1,6 @@
-const KANBAN = 500;
-const KUSA = 501;
-const HASI = 503;
-const SYUBOUSYA = 506
-const TREASURE = 777
+
 const commonChoices = ["a", "pi", "c", "s", "b"];
-let quizIndex     = 0;
-let currentQuiz   = quizList[quizIndex];
-let selectedBlank = null;
-let userAnswers   = Array(currentQuiz.blanks.length).fill(null);
-let result        = null;
+const quizList = [];
 
 // ———— レイアウト定数 ————
 const codeX        = 80;
@@ -28,7 +20,8 @@ const reduceButtonX = extendButtonX - 220; // 時間延長ボタンの左
 const reduceButtonY = extendButtonY;
 const reduceButtonW = 200;
 const reduceButtonH = 48;
-class Quiz {
+
+class Quizclass{
     constructor({question, code, choices, answer, blanks}) {
         this.question = question; // 問題文
         this.code = code;         // 穴あきCコード（文字列、_____で穴あき）
@@ -38,7 +31,6 @@ class Quiz {
     }
 }
 
-const quizList = [];
 
 const bgImageKanban    = new Image();
 bgImageKanban.src      = '../img/quiz_bg/scenery2_kanban.png';      // 1問目
@@ -55,8 +47,8 @@ bgImageKuromaku.src    = '..//img/quiz_bg/scenery4_kuromaku.png';    // 5問目
 const bgImageTakarabako= new Image();
 bgImageTakarabako.src  = '../img/quiz_bg/scenery5_takarabako.png';  // 6問目
 
-const bgImage = new Image();
-bgImage.src = '../gazo/quiz_wood.png'; // デフォルト
+// const bgImage = new Image();
+// bgImage.src = '../gazo/quiz_wood.png'; // デフォルト
 
 const seCorrect   = new Audio('../sound/クイズ正解1.mp3');
 const seWrong     = new Audio('../sound/クイズ不正解1.mp3');
@@ -69,7 +61,7 @@ let codeScrollY = 0;
 //
 //各NPCの問題実体化
 //
-const kanbanQuiz = new Quiz({
+const kanbanQuiz = new Quizclass({
         question: "正しい選択肢を選んで，看板を完成させよう！",
         code: `
 #include <stdio.h>
@@ -94,7 +86,7 @@ int main() {
     reduceIdx: [1] // 例: "scanf"（インデックス1）を削減
   })
 
-const kusaQuiz = new Quiz({
+const kusaQuiz = new Quizclass({
         question: "草を5本刈るプログラムを完成させよう!",
         code: `
 #include <stdio.h>
@@ -120,7 +112,7 @@ int main() {
         reduceIdx: [3] // 例: "5"（インデックス3）を削減
   })
 
-const hasiQuiz_1 = new Quiz({
+const hasiQuiz_1 = new Quizclass({
         question: "橋の状態を確認するプログラムを完成させよう!",
         code: `
 #include <stdio.h>
@@ -157,7 +149,7 @@ int main() {
         ],
         reduceIdx: [6] // 例: "i+1"（インデックス6）を削減
     })
-const hasiQuiz_2 = new Quiz({
+const hasiQuiz_2 = new Quizclass({
         question: "材料の数を数えるプログラムを完成させよう!",
         code: `
 #include <stdio.h>
@@ -203,7 +195,7 @@ int main() {
         reduceIdx: [0] // 例: "printf"（インデックス0）を削減
     })
 
-const bossQuiz = new Quiz({
+const bossQuiz = new Quizclass({
         question: "首謀者を倒すためのプログラムを完成させよう!",
         code: `
 #include <stdio.h>
@@ -249,7 +241,7 @@ int main() {
         ],
         reduceIdx: [3] // 例: "else if"（インデックス3）を削減
     })
-const treasureQuiz = new Quiz({
+const treasureQuiz = new Quizclass({
         question: "暗証番号を総当たりで探すプログラムを完成させよう!",
         code: `
 #include <stdio.h>
@@ -282,3 +274,40 @@ int main() {
 // ———— ドラッグ用変数 ————
 let dragging   = null;
 let dragOrigin = null;
+
+function startTimer() {
+  clearInterval(timerId);
+  timeLeft = 60;
+  isTimeout = false;
+  timerId = setInterval(() => {
+    timeLeft--;
+    if (timeLeft <= 0) {
+      timeLeft = 0;
+      isTimeout = true;
+      clearInterval(timerId);
+      seTimeout.currentTime = 0; // ←追加
+      seTimeout.play();         // ←追加
+      drawQuiz();
+    } else {
+      drawQuiz();
+    }
+  }, 1000);
+}
+
+function wrapText(text, x, y, maxWidth, lineHeight) {
+  const words = text.split(' ');
+  let line = '', lines = 0;
+  for (let w of words) {
+    const test = line + w + ' ';
+    if (c.measureText(test).width > maxWidth && line) {
+      c.fillText(line, x, y);
+      line = w + ' ';
+      y   += lineHeight;
+      lines++;
+    } else {
+      line = test;
+    }
+  }
+  c.fillText(line, x, y);
+  return lines + 1;
+}

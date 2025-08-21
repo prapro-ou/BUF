@@ -5,7 +5,7 @@
 const MAP_WIDTH = 80; //マップの横幅
 const MAP_HEIGHT = 80; //マップの縦幅
 const TILE_SIZE = 96; //タイルのサイズ
-const MAX_SPEED = 300; // 1秒間に300px動く速さ（例）
+const MAX_SPEED = 1000; // 1秒間に300px動く速さ（例）
 const HERO_W = 96; //ヒーローの横幅
 const HERO_H = 96; //ヒーローの縦幅
 const NPC_W = 32
@@ -39,4 +39,8 @@ const shopItems = [
   }
 ];
 
-
+const KANBAN = 500;
+const KUSA = 501;
+const HASI = 503;
+const SYUBOUSYA = 506
+const TREASURE = 777
