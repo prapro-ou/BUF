@@ -3,7 +3,7 @@ const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 let isInShop = false;
 let quizActive = false;
-
+let whoseQuiz = null;
 //ゲーム画像サイズ
 canvas.width = 1024
 canvas.height = 576
@@ -173,17 +173,14 @@ function go_shop() {
   }
 }
 function triggerQuiz(npc) {
-  currentQuizNpc = npc;
-  quizIndex = 0;
-  currentQuiz = npc.quizList[quizIndex];
-  userAnswers = Array(currentQuiz.blanks.length).fill(null);
-  selectedBlank = null;
-  result = null;
-  currentQuiz.choiceRects = null;
-  codeScrollY = 0;
   quizActive = true;
-  startTimer();
-  drawQuiz();
+  switch(npc) {
+    case KANBAN: whoseQuiz = KANBAN;break;
+    case KUSA: whoseQuiz = KUSA;break;
+    case HASI: whoseQuiz = HASI;break;
+    case SYUBOUSYA: whoseQuiz = SYUBOUSYA;break;
+    case TREASURE: whoseQuiz = TREASURE;break;
+  }
   quiz_bgm.currentTime = 0;
   quiz_bgm.volume = 0.6;
   quiz_bgm.play();
@@ -261,10 +258,12 @@ function drawShopUI() {
 });
 
 }
-
+function drawQuiz() {
+    
+}
 function draw() {
  if (quizActive) {
-    drawQuiz(ctx); // クイズUI描画
+    drawQuiz(); // クイズUI描画
     return;
   }
   

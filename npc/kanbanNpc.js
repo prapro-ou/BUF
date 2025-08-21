@@ -35,7 +35,7 @@ class kanbanNpc extends npc01 {
                      break;
         }
     }
-draw_conv(c_num) {
+draw_conv() {
   let dialog = null;
 
   // 会話データの選択
@@ -53,9 +53,8 @@ draw_conv(c_num) {
     // テキスト進行
     if (this.textProgress < text.length) {
       this.textProgress += this.textSpeed;
-      const prevProgress = this.textProgress;
+      // const prevProgress = this.textProgress;
       // SE再生（進行があった場合のみ）
-
       // npc_speak.currentTime = 0;
       // npc_speak.play();
     }
@@ -76,7 +75,7 @@ draw_conv(c_num) {
       // ✅ 選択後の分岐処理
       if (this.postChoiceDialog === kanbanNpcdialog_yes) {
       this.state = STATE_QUIZ;
-      //triggerQuiz(this); // ← main.js 側で定義
+      triggerQuiz(this.num); // ← main.js 側で定義
     } else if (this.postChoiceDialog === kanbanNpcdialog_no) {
         this.state = 0; // NO選択 → 状態リセット
         Hero.is_talking = false;
