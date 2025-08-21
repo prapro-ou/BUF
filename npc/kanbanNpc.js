@@ -1,6 +1,7 @@
 //
 //
 //
+const STATE_QUIZ = 5
 class kanbanNpc extends npc01 {
     constructor({npc_num, location}){
     super({npc_num, location})
@@ -74,9 +75,9 @@ draw_conv(c_num) {
     } else if (this.state === 4) {
       // ✅ 選択後の分岐処理
       if (this.postChoiceDialog === kanbanNpcdialog_yes) {
-        
-        this.state = 5; // YES選択 → クイズ開始
-      } else if (this.postChoiceDialog === kanbanNpcdialog_no) {
+      this.state = STATE_QUIZ;
+      triggerQuiz(this); // ← main.js 側で定義
+    } else if (this.postChoiceDialog === kanbanNpcdialog_no) {
         this.state = 0; // NO選択 → 状態リセット
         Hero.is_talking = false;
       }
@@ -188,7 +189,6 @@ update() {
 
   // クイズ処理（状態5）
   if (this.state === 5 && !this.quizEvaluated) {
-  const result = Quiz();
   this.postChoiceDialog = result ? kanbanNpcdialog_clear : kanbanNpcdialog_lose;
   this.state = 6;
   this.conv_num = 0;

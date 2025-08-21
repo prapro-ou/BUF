@@ -2,6 +2,7 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 let isInShop = false;
+let quizActive = false;
 
 //ゲーム画像サイズ
 canvas.width = 1024
@@ -171,10 +172,29 @@ function go_shop() {
     }
   }
 }
+function triggerQuiz(npc) {
+  currentQuizNpc = npc;
+  quizIndex = 0;
+  currentQuiz = npc.quizList[quizIndex];
+  userAnswers = Array(currentQuiz.blanks.length).fill(null);
+  selectedBlank = null;
+  result = null;
+  currentQuiz.choiceRects = null;
+  codeScrollY = 0;
+  quizActive = true;
+  startTimer();
+  drawQuiz();
+  quiz_bgm.currentTime = 0;
+  quiz_bgm.volume = 0.6;
+  quiz_bgm.play();
+}
+
+
  let frame = 0
 function update(deltaTime) {
   frame++;
   if(frame > 10000000) frame = 0
+if (quizActive) return; // クイズ中は更新停止
   findNearestNPC(Hero, npcs);
 
   if (keys.tab.pressed) {
@@ -243,20 +263,24 @@ function drawShopUI() {
 }
 
 function draw() {
+ if (quizActive) {
+    drawQuiz(ctx); // クイズUI描画
+    return;
+  }
+  
   if (isInShop) {
     drawShopUI();
     return;
   }
 
   Background.draw();
-
-  // 描画対象をまとめてY座標でソート
   const entities = [...npcs, ...kusas, Hero];
   entities.sort((a, b) => (a.loc?.y || 0) - (b.loc?.y || 0));
   entities.forEach(entity => entity.draw());
   Foreground.draw();
   drawCoinText(c, Hero.coin);
 }
+
 
 
 function startGame() {
@@ -268,6 +292,7 @@ function startGame() {
     };
   }
 }
+
 
 
 const FPS = 60; // 目標フレームレート
