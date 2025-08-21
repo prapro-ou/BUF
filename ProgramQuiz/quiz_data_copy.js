@@ -4,12 +4,16 @@ const quizList = [
     new Quiz({
         question: "正しい選択肢を選んで，看板を完成させよう！",
         code: `
-整数型：distance
-文字列型：where
-distance ← 3
-where ← "green island"
+#include <stdio.h>
 
-_________(_________まで_________キロ)
+int main() {
+    int distance = 3;
+    char where[] = "green island";
+    // 看板に文字を表示する
+    _________("%sまで%dキロ\\n", _________, _________);
+
+    return 0;
+}
     `.trim(),
     // 選択肢の配列（インデックス 0～3）
     choices: ["printf","scanf","distance","where"],
@@ -18,7 +22,8 @@ _________(_________まで_________キロ)
     { answer: 0 },  // 1つめの「_____」の正解は choices[0]（"printf"）
     { answer: 3 },  // 2つめの「_____」は choices[3]（"where"）
     { answer: 2 }   // 3つめの「_____」は choices[2]（"distance"）
-    ]
+    ],
+    reduceIdx: [1] // 例: "scanf"（インデックス1）を削減
   }),
     new Quiz({
         question: "2問目:草を5本刈るプログラムを完成させよう!",
@@ -42,7 +47,8 @@ int main() {
             { answer: 2 }, // "4"
             { answer: 0 }, // "printf"
             { answer: 5 }  // "i+1"
-        ]
+        ],
+        reduceIdx: [3] // 例: "5"（インデックス3）を削減
     }),
     new Quiz({
         question: "3問目:橋の状態を確認するプログラムを完成させよう!",
@@ -78,7 +84,8 @@ int main() {
             { answer: 3 }, // "else if"
             { answer: 4 }, // "i"
             { answer: 0 }, // "printf"
-        ]
+        ],
+        reduceIdx: [6] // 例: "i+1"（インデックス6）を削減
     }),
     new Quiz({
         question: "4問目:材料の数を数えるプログラムを完成させよう!",
@@ -122,10 +129,57 @@ int main() {
             { answer: 3 }, // "else if"
             { answer: 3 }, // "else if"
             { answer: 3 }, // "else if"
-        ]
+        ],
+        reduceIdx: [0] // 例: "printf"（インデックス0）を削減
     }),
     new Quiz({
-        question: "5問目:暗証番号を総当たりで探すプログラムを完成させよう!",
+        question: "5問目:黒幕を倒すためのプログラムを完成させよう!",
+        code: `
+#include <stdio.h>
+
+int main() {
+    int i,hit;
+    _________ (i = 0; i <= 30; i++) {
+        hit = 0; 
+
+        _________ (i % 2 == 0) { // 頭部の弱点
+            printf("%d: 頭部に命中！\\n", i);
+            hit = 1;
+        }
+        _________ (i % 3 == 0) { // 胴体の弱点
+            printf("%d: 胴体に命中！\\n", i);
+            hit = 1;
+        }
+        _________ (i % 4 == 0) { // 手の弱点
+            printf("%d: 手に命中！\\n", i);
+            hit = 1;
+        }
+        _________ (i % 5 == 0) { // 足の弱点
+            printf("%d: 足に命中！\\n", i);
+            hit = 1;
+        }
+
+        if (hit == 0) {
+            printf("%d: 攻撃は外れた...\\n", i);
+        }
+    }
+
+    printf("黒幕を倒した！\\n");
+    return 0;
+}
+        `.trim(),
+        choices: ["printf","for","if","else if",],
+        blanks: [
+            { answer: 1 }, // "for"
+            { answer: 2 }, // "if"
+            { answer: 2 }, // "if"
+            { answer: 2 }, // "if"
+            { answer: 2 }, // "if"
+        ],
+        reduceIdx: [3] // 例: "else if"（インデックス3）を削減
+    }),
+    new Quiz({
+        question: "6問目:暗証番号を総当たりで探すプログラムを完成させよう!",
         code: `
 #include <stdio.h>
 
@@ -150,6 +204,7 @@ int main() {
             { answer: 1 }, // "while"
             { answer: 2 }, // "if"
             { answer: 3 }  // "else"
-        ]
+        ],
+        reduceIdx: [0] // 例: "printf"（インデックス0）を削減
     })
 ];

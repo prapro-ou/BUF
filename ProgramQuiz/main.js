@@ -457,7 +457,6 @@ canvas.addEventListener('click', e => {
     result        = null;
     currentQuiz.choiceRects = null;
     codeScrollY   = 0;
-    startTimer();
     drawQuiz();
     return;
   }
