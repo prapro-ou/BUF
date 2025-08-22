@@ -187,7 +187,7 @@ function drawItemButton(label, x, y, onClick) {
   c.strokeRect(x, y, 200, 40);
   c.fillStyle = "white";
   c.font = "20px 'M PLUS 1p'";
-  c.fillText(label, x + 10, y + 28);
+  c.fillText(label, x + 10, y + 8);
 
   // クリック判定（購入制限付き）
   canvas.addEventListener("mousedown", function handler(e) {
