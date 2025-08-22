@@ -67,8 +67,14 @@ class treasureBox extends npc01 {
       if (this.state === 1) {
         this.state = 2;
       } else if (this.state === 4) {
-        this.state = this.postChoiceDialog === treasureBoxdialog_yes ? 5 : 0;
-        Hero.is_talking = this.state !== 0;
+        // ✅ 選択後の分岐処理
+      if (this.postChoiceDialog === treasureBoxdialog_yes) {
+        this.state = 5; // YES選択 → クイズ開始
+        triggerQuiz(TREASURE); // ← main.js 側で定義
+      } else if (this.postChoiceDialog === treasureBoxdialog_no) {
+        this.state = 0; // NO選択 → 状態リセット
+        Hero.is_talking = false;
+      }
       } else if (this.state === 6) {
         if (this.postChoiceDialog === treasureBoxdialog_lose) {
           this.state = 0;
@@ -129,7 +135,6 @@ class treasureBox extends npc01 {
     }
 
     if (this.state === 5) {
-      const result = Quiz();
       this.postChoiceDialog = result ? treasureBoxdialog_clear : treasureBoxdialog_lose;
       if(result) this.img.src = treasureBoxImage2.src
       this.img.src = treasureBoxImage2.src

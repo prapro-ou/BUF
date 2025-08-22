@@ -63,8 +63,14 @@ class BOSS extends npc01 {
       if (this.state === 1) {
         this.state = 2; // 選択肢表示へ
       } else if (this.state === 4) {
-        this.state = this.postChoiceDialog === BOSSdialog_yes ? 5 : 0;
-        Hero.is_talking = this.state !== 0;
+        // ✅ 選択後の分岐処理
+      if (this.postChoiceDialog === BOSSdialog_yes) {
+        this.state = 5; // YES選択 → クイズ開始
+        triggerQuiz(SYUBOUSYA); // ← main.js 側で定義
+      } else if (this.postChoiceDialog === BOSSdialog_no) {
+        this.state = 0; // NO選択 → 状態リセット
+        Hero.is_talking = false;
+      }
       } else if (this.state === 6) {
         if (this.postChoiceDialog === BOSSdialog_lose) {
           this.state = 0;
@@ -153,7 +159,6 @@ class BOSS extends npc01 {
     }
 
     if (this.state === 5) {
-      const result = Quiz(); // クイズ実行
       this.postChoiceDialog = result ? BOSSdialog_clear : BOSSdialog_lose;
       this.state = 6;
       this.conv_num = 0;

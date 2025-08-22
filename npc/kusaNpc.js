@@ -75,6 +75,7 @@ draw_conv(c_num) {
       // ✅ 選択後の分岐処理
       if (this.postChoiceDialog === kusaNpcdialog_yes) {
         this.state = 5; // YES選択 → クイズ開始
+        triggerQuiz(KUSA); // ← main.js 側で定義
       } else if (this.postChoiceDialog === kusaNpcdialog_no) {
         this.state = 0; // NO選択 → 状態リセット
         Hero.is_talking = false;
@@ -196,7 +197,6 @@ update() {
 
   // クイズ処理（状態5）
   if (this.state === 5 && !this.quizEvaluated) {
-  const result = Quiz();
   this.postChoiceDialog = result ? kusaNpcdialog_clear : kusaNpcdialog_lose;
   this.state = 6;
   this.conv_num = 0;
