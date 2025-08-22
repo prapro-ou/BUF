@@ -69,6 +69,11 @@ function drawSpeechBubbleMultiline(text, x, y, progress) {
 
   const bubbleHeight = lines.length * lineHeight + padding * 2;
   const bubbleWidth = maxWidth;
+  c.save();
+  c.font = "20px 'M PLUS 1p'";
+  c.textAlign = "left";
+  c.textBaseline = "top";
+  c.fillStyle = "white";
 
   // 吹き出しの背景
   c.fillStyle = "black";
@@ -83,7 +88,7 @@ function drawSpeechBubbleMultiline(text, x, y, progress) {
   c.fillStyle = "white";
   c.font = "20px 'M PLUS 1p'"; // ✅ レトロ風フォント
   lines.forEach((line, index) => {
-    c.fillText(line, x + padding, y - bubbleHeight + padding + lineHeight * (index + 1) - 6);
+    c.fillText(line, x + padding, y - bubbleHeight + padding + lineHeight * (index + 1) -20);
   });
 }
 
@@ -120,14 +125,14 @@ function drawChoiceUI(x, y, selected) {
   // カーソル
   const cursorOffset = 12;
   if (selected === "yes") {
-    c.fillText("▶", yesX - cursorOffset, baseY-2);
+    c.fillText("▶", yesX - cursorOffset, baseY-22);
   } else {
-    c.fillText("▶", noX - cursorOffset, baseY-2);
+    c.fillText("▶", noX - cursorOffset, baseY-22);
   }
 
   // 選択肢
-  c.fillText("YES", yesX+14, baseY+1);
-  c.fillText("NO", noX+14, baseY+1);
+  c.fillText("YES", yesX+14, baseY-19);
+  c.fillText("NO", noX+14, baseY-19);
 }
  function Quiz(){
     return true;

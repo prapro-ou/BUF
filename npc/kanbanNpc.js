@@ -75,7 +75,7 @@ draw_conv() {
       // ✅ 選択後の分岐処理
       if (this.postChoiceDialog === kanbanNpcdialog_yes) {
       this.state = STATE_QUIZ;
-      triggerQuiz(HASI); // ← main.js 側で定義
+      triggerQuiz(KANBAN); // ← main.js 側で定義
     } else if (this.postChoiceDialog === kanbanNpcdialog_no) {
         this.state = 0; // NO選択 → 状態リセット
         Hero.is_talking = false;
@@ -185,7 +185,6 @@ update() {
 
   // クイズ処理（状態5）
   if (this.state === 5 && !this.quizEvaluated) {
-  let result = false
   this.postChoiceDialog = result ? kanbanNpcdialog_clear : kanbanNpcdialog_lose;
   this.state = 6;
   this.conv_num = 0;

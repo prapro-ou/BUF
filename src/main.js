@@ -224,6 +224,34 @@ function triggerQuiz(npc) {
     startTimer();
     drawQuiz();
 }
+function endQuiz() {
+  quizActive = false;
+  clearInterval(timerId);
+
+  // クイズBGM停止
+  quiz_bgm.pause();
+  quiz_bgm.currentTime = 0;
+
+  // 通常BGM再開（必要なら）
+  bgm.currentTime = 0;
+  bgm.play();
+
+  // 状態リセット（必要に応じて）
+  currentQuiz = null;
+  userAnswers = [];
+  dragging = null;
+  dragOrigin = null;
+  codeScrollY = 0;
+  isTimeout = false;
+  whoseQuiz = null;
+// ✅ Canvasの描画設定をリセット
+  c.font = "20px 'M PLUS 1p'";
+  c.textAlign = 'left';
+  c.textBaseline = 'top';
+  draw()
+  // 演出や報酬処理を追加するならここ
+  // showReward(), updateNPCState(), etc.
+}
 
  let frame = 0
 function update(deltaTime) {
@@ -299,44 +327,37 @@ function drawShopUI() {
 }
 function drawQuiz() {
   // 問題ごとに背景画像を切り替え
-  if (quizIndex === 0) {
+    if (whoseQuiz === KANBAN) {
     if (bgImageKanban.complete) {
       c.drawImage(bgImageKanban, 0, 0, canvas.width, canvas.height);
     } else {
       c.fillStyle = '#888'; c.fillRect(0, 0, canvas.width, canvas.height);
     }
-  } else if (quizIndex === 1) {
+  } else if (whoseQuiz === KUSA) {
     if (bgImageKusa.complete) {
       c.drawImage(bgImageKusa, 0, 0, canvas.width, canvas.height);
     } else {
       c.fillStyle = '#888'; c.fillRect(0, 0, canvas.width, canvas.height);
     }
-  } else if (quizIndex === 2 || quizIndex === 3) {
+  } else if (whoseQuiz === HASI) {
     if (bgImageHasi.complete) {
       c.drawImage(bgImageHasi, 0, 0, canvas.width, canvas.height);
     } else {
       c.fillStyle = '#888'; c.fillRect(0, 0, canvas.width, canvas.height);
     }
-  } else if (quizIndex === 4) {
+  } else if (whoseQuiz === BOSS) {
     if (bgImageKuromaku.complete) {
       c.drawImage(bgImageKuromaku, 0, 0, canvas.width, canvas.height);
     } else {
       c.fillStyle = '#888'; c.fillRect(0, 0, canvas.width, canvas.height);
     }
-  } else if (quizIndex === 5) {
+  } else if (whoseQuiz === TREASURE) {
     if (bgImageTakarabako.complete) {
       c.drawImage(bgImageTakarabako, 0, 0, canvas.width, canvas.height);
     } else {
       c.fillStyle = '#888'; c.fillRect(0, 0, canvas.width, canvas.height);
     }
-  } else {
-    if (bgImage.complete) {
-      c.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
-    } else {
-      c.fillStyle = '#888'; c.fillRect(0, 0, canvas.width, canvas.height);
-    }
   }
-
   // 問題文の色
   if (quizIndex === 0) {
     c.fillStyle = '#000000'; // 1問目だけ黒色
@@ -572,7 +593,9 @@ function drawQuiz() {
     c.fillStyle = 'red';
     c.textAlign = 'center';
     c.fillText('時間切れ', canvas.width / 2, canvas.height / 2);
-    return; // 以降の描画をスキップ
+    setTimeout(() => {
+    endQuiz();
+  }, 2000); // 2秒後に終了（演出の余韻）
   }
 }
 function draw() {
@@ -668,34 +691,33 @@ document.addEventListener("keyup", function(e) {
   })
 
 canvas.addEventListener('click', e => {
-  if(!quizActive)return
-  // if (bgm.paused) bgm.play();
+  if (!quizActive) return;
 
   const rect = canvas.getBoundingClientRect();
   const mx   = e.clientX - rect.left;
   const my   = e.clientY - rect.top;
 
-  // 答え合わせ
-  if (
+  // 答え合わせボタン
+  const isAnswerButtonClicked =
     userAnswers.every(a => a !== null) &&
     mx >= buttonX && mx <= buttonX + 200 &&
     my >= 470    && my <= 518 &&
-    !isTimeout // 時間切れ時は答え合わせ不可
-  ) {
+    !isTimeout;
+
+  if (isAnswerButtonClicked) {
     result = currentQuiz.blanks.every((b, i) =>
       userAnswers[i] === b.answer
     );
-    // 効果音再生
-    if (result) {
-      seCorrect.currentTime = 0;
-      seCorrect.play();
-    } else {
-      seWrong.currentTime = 0;
-      seWrong.play();
-    }
-    
+
+    // 効果音
+    const se = result ? seCorrect : seWrong;
+    se.currentTime = 0;
+    se.play();
+
     drawQuiz();
+
     if (result && quizIndex < quizList.length - 1) {
+      // 正解 & 次の問題あり → 次へ
       setTimeout(() => {
         quizIndex++;
         currentQuiz = quizList[quizIndex];
@@ -706,18 +728,24 @@ canvas.addEventListener('click', e => {
         startTimer();
         drawQuiz();
       }, 1200);
+    } else {
+      // 最終問題 or 不正解 → 終了
+      setTimeout(() => {
+        endQuiz();
+      }, 2000);
     }
+
     return;
   }
 
-  // やり直し
+  // 時間延長ボタン
   if (
     mx >= extendButtonX && mx <= extendButtonX + extendButtonW &&
     my >= extendButtonY && my <= extendButtonY + extendButtonH
   ) {
     timeLeft += 30;
-    seGauge.currentTime = 0; // ←追加
-    seGauge.play();          // ←追加
+    seGauge.currentTime = 0;
+    seGauge.play();
     drawQuiz();
     return;
   }
@@ -727,7 +755,6 @@ canvas.addEventListener('click', e => {
     mx >= buttonX && mx <= buttonX + 200 &&
     my >= 524    && my <= 524 + 48
   ) {
-    // やり直し処理
     userAnswers = Array(currentQuiz.blanks.length).fill(null);
     selectedBlank = null;
     result        = null;

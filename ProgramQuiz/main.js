@@ -464,29 +464,44 @@ canvas.addEventListener('click', e => {
 });
 
 // — ドラッグ＆ドロップ — 
-canvas.addEventListener('mousedown', e => {
-  const rect = canvas.getBoundingClientRect();
-  const mx   = e.clientX - rect.left;
-  const my   = e.clientY - rect.top;
-  currentQuiz.choiceRects.forEach((r, i) => {
-    if (
-      r && mx >= r.x && mx <= r.x + r.w &&
-      my >= r.y && my <= r.y + r.h
-    ) {
-      seClick.currentTime = 0;
-      seClick.play();
-      dragging = {
-        choiceIdx: i,
-        x: mx,
-        y: my,
-        offsetX: mx - r.cx,
-        offsetY: my - r.cy
-      };
-      dragOrigin = { x: r.cx, y: r.cy };
-      drawQuiz();
+canvas.addEventListener('click', (e) => {
+  const mx = e.offsetX;
+  const my = e.offsetY;
+
+  // 答え合わせボタンの範囲
+  const isAnswerButtonClicked =
+    mx >= buttonX && mx <= buttonX + 200 &&
+    my >= 470    && my <= 518;
+
+  if (isAnswerButtonClicked && userAnswers.every(a => a !== null)) {
+    result = currentQuiz.blanks.every((b, i) =>
+      userAnswers[i] === b.answer
+    );
+
+    drawQuiz(); // 正誤表示
+
+    if (result && quizIndex < quizList.length - 1) {
+      setTimeout(() => {
+        quizIndex++;
+        currentQuiz = quizList[quizIndex];
+        userAnswers = Array(currentQuiz.blanks.length).fill(null);
+        result = null;
+        dragging = null;
+        dragOrigin = null;
+        codeScrollY = 0;
+        isTimeout = false;
+        startTimer();
+        drawQuiz();
+      }, 1200);
+    } else {
+      // 最終問題 or 不正解
+      setTimeout(() => {
+        endQuiz();
+      }, 2000);
     }
-  });
+  }
 });
+
 
 canvas.addEventListener('mousemove', e => {
   if (!dragging) return;
