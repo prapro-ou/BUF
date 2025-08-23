@@ -207,7 +207,7 @@ function triggerQuiz(npc) {
       break;
     case HASI:
       whoseQuiz = HASI;
-      //quizList.push(hasiQuiz_1);
+      quizList.push(hasiQuiz_1);
       quizList.push(hasiQuiz_2);
       break;
     case SYUBOUSYA:
