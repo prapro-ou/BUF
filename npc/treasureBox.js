@@ -58,6 +58,9 @@ class treasureBox extends npc01 {
 
       if (this.textProgress >= text.length && keys.space.pressed && !keys.space.wasPressed) {
         this.conv_num++;
+        next_conv.currentTime = 0;
+        next_conv.volume = 0.5
+        next_conv.play();
         this.textProgress = 0;
         keys.space.wasPressed = true;
       }

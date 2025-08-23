@@ -60,6 +60,9 @@ draw_conv(c_num) {
     // スペースキーで次の文へ
     if (this.textProgress >= text.length && keys.space.pressed && !keys.space.wasPressed) {
       this.conv_num++;
+      next_conv.currentTime = 0;
+      next_conv.volume = 0.5
+      next_conv.play();
       this.textProgress = 0;
       keys.space.wasPressed = true;
     }
@@ -120,6 +123,9 @@ update() {
   // スペースキーが「今回押された」場合のみ conv_num++
   if ((this.state === 1 || this.state === 3 || this.state === 5) && keys.space.pressed && !keys.space.wasPressed) {
     this.conv_num++;
+    next_conv.currentTime = 0;
+    next_conv.volume = 0.5
+    next_conv.play();
     keys.space.wasPressed = true;
   }
 

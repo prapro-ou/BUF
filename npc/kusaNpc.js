@@ -62,6 +62,9 @@ draw_conv(c_num) {
     // スペースキーで次の文へ
     if (this.textProgress >= text.length && keys.space.pressed && !keys.space.wasPressed) {
       this.conv_num++;
+      next_conv.currentTime = 0;
+      next_conv.volume = 0.5
+      next_conv.play();
       this.textProgress = 0;
       keys.space.wasPressed = true;
     }
@@ -89,6 +92,9 @@ draw_conv(c_num) {
     console.log("a")
     Hero.coin += 1000
     // ✅ 自分自身を npcs 配列から削除
+    dissmiss_npc.currentTime = 0;
+    dissmiss_npc.volume = 0.5
+    dissmiss_npc.play();
     const index = npcs.indexOf(this);
     if (index !== -1) {
       npcs.splice(index, 1);

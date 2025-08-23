@@ -63,6 +63,9 @@ draw_conv(c_num) {
     if (this.textProgress >= text.length && keys.space.pressed && !keys.space.wasPressed) {
       this.conv_num++;
       this.textProgress = 0;
+      next_conv.currentTime = 0;
+      next_conv.volume = 0.5
+      next_conv.play();      
       keys.space.wasPressed = true;
     }
   }

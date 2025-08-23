@@ -57,10 +57,13 @@ draw_conv() {
       // SE再生（進行があった場合のみ）
       // npc_speak.currentTime = 0;
       // npc_speak.play();
-    }
+    } 
 
     // スペースキーで次の文へ
     if (this.textProgress >= text.length && keys.space.pressed && !keys.space.wasPressed) {
+      next_conv.currentTime = 0;
+      next_conv.volume = 0.5
+      next_conv.play();
       this.conv_num++;
       this.textProgress = 0;
       keys.space.wasPressed = true;
@@ -75,7 +78,7 @@ draw_conv() {
       // ✅ 選択後の分岐処理
       if (this.postChoiceDialog === kanbanNpcdialog_yes) {
       this.state = STATE_QUIZ;
-      triggerQuiz(KANBAN); // ← main.js 側で定義
+      //triggerQuiz(KANBAN); // ← main.js 側で定義
     } else if (this.postChoiceDialog === kanbanNpcdialog_no) {
         this.state = 0; // NO選択 → 状態リセット
         Hero.is_talking = false;
@@ -91,6 +94,9 @@ draw_conv() {
     get_coin.volume = 0.5
     get_coin.play();
     // ✅ 自分自身を npcs 配列から削除
+    dissmiss_npc.currentTime = 0;
+    dissmiss_npc.volume = 0.5
+    dissmiss_npc.play();
     const index = npcs.indexOf(this);
     if (index !== -1) {
       npcs.splice(index, 1);
@@ -185,6 +191,7 @@ update() {
 
   // クイズ処理（状態5）
   if (this.state === 5 && !this.quizEvaluated) {
+  result =  true
   this.postChoiceDialog = result ? kanbanNpcdialog_clear : kanbanNpcdialog_lose;
   this.state = 6;
   this.conv_num = 0;

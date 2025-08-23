@@ -9,6 +9,7 @@ let currentQuiz
 let selectedBlank 
 let userAnswers 
 let result    
+c.imageSmoothingEnabled = false;
 
 //ゲーム画像サイズ
 canvas.width = 1024
@@ -16,7 +17,7 @@ canvas.height = 576
 
 // BGM再生
 bgm.loop = true; // ループ再生
-bgm.volume = 0.4; // 音量（0.0～1.0）
+bgm.volume = 0.4; // 音量（0.0～1.0）l
 bgm.play();
 
 //クラスのインスタンス化
@@ -172,6 +173,10 @@ function go_shop() {
     const shopBlock = shops[i];
     if (nearShopEntrance(shopBlock)) {
       isInShop = true;
+      if (!bgm.paused) {
+        bgm.pause();
+        bgm.currentTime = 0;
+}
       console.log("🛒 ショップに入りました！");
       break;
     }
@@ -270,6 +275,8 @@ if (quizActive) return; // クイズ中は更新停止
     keys.e.wasPressed = true;
 
     if (isInShop) {
+      bgm.currentTime = 0;
+      bgm.play();
       isInShop = false;
       console.log("🚪 ショップから出ました");
     } else {
@@ -294,6 +301,7 @@ if (quizActive) return; // クイズ中は更新停止
 let canBuy = true;
 function drawShopUI() {
   c.drawImage(shopImage, 0, 0, canvas.width, canvas.height);
+  helpUI();
   c.drawImage(kaziya, 50, 200, 450, 450);
   drawSpeechBubbleMultiline("いらっしゃい！何を買うんだい？", 100, 180, 999);
 
@@ -302,7 +310,8 @@ function drawShopUI() {
   c.fillText(`🪙 所持コイン: ${Hero.coin}`, 700, 150);
 
   shopItems.forEach((item, index) => {
-  drawItemButton(item.name, 700, 200 + index * 100, () => {
+  let label = `${item.name} - ${item.price}コイン`;
+  drawItemButton(label, 700, 200 + index * 100, () => {
     if (Hero.coin >= item.price) {
       if (item.zaiko > 0) {
         item.onBuy();
@@ -628,6 +637,7 @@ function draw() {
   entities.sort((a, b) => (a.loc?.y || 0) - (b.loc?.y || 0));
   entities.forEach(entity => entity.draw());
   Foreground.draw();
+  helpUI();
   drawCoinText(c, Hero.coin);
 }
 
@@ -677,8 +687,7 @@ document.addEventListener("keydown", function(e) {
         keys.e.pressed = true
     }
     if (e.code === "Space") {
-        console.log(quizList)
-        keys.space.pressed = true
+      keys.space.pressed = true
     }
 })
 // キーボードが離されたとき

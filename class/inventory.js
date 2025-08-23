@@ -8,6 +8,9 @@ class inventory {
 
     // アイテムを追加するメソッド
     addItem(item) {
+      buy_item.currentTime = 0; // 最初から再生
+      buy_item.volume = 0.5
+      buy_item.play();
   const existing = this.items.find(i => i.name === item.name)
   if (existing) {
     existing.count += item.count || 1 // countが指定されていなければ+1
