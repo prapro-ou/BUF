@@ -4,11 +4,17 @@ const c = canvas.getContext('2d')
 let isInShop = false;
 let quizActive = false;
 let whoseQuiz = null;
+let helpHide = false;
+
 let quizIndex 
 let currentQuiz 
 let selectedBlank 
 let userAnswers 
 let result    
+
+let gameState = PLAYING;
+
+
 c.imageSmoothingEnabled = false;
 
 //ゲーム画像サイズ
@@ -258,12 +264,11 @@ function endQuiz() {
   // 演出や報酬処理を追加するならここ
   // showReward(), updateNPCState(), etc.
 }
-
- let frame = 0
-function update(deltaTime) {
-  frame++;
-  if(frame > 10000000) frame = 0
-if (quizActive) return; // クイズ中は更新停止
+function updatePlaying(deltaTime) {
+  if (quizActive) return; // クイズ中は更新停止
+  if(keys.i.pressed && !keys.i.wasPressed){
+    helpHide = !helpHide
+  }
   findNearestNPC(Hero, npcs);
 
   if (keys.tab.pressed) {
@@ -292,11 +297,133 @@ if (quizActive) return; // クイズ中は更新停止
 
   Hero.update(deltaTime);
 
-  if (!Hero.inv.inventoryVisible && !isInShop && !Hero.is_talking ) {
-    if(bgm.paused)bgm.play()
+  if (!Hero.inv.inventoryVisible && !isInShop && !Hero.is_talking) {
+    if (bgm.paused) bgm.play();
     Background.update(deltaTime);
   }
+  keys.i.wasPressed = keys.i.pressed;
 }
+let currentIntroIndex = 0;
+// 現在どこまで表示したか
+let introCharIndex      = 0;
+// 文字を1つ表示する間隔（ミリ秒）
+const introTypingInterval = 50; 
+// 経過時間を溜める
+let introTypingElapsed  = 0;
+// 文字送り完了フラグ
+let introTypingFinished = false;
+function updateIntro(deltaTime) {
+  // イントロ中は常にインベントリ非表示
+  Hero.inv.inventoryVisible = false;
+  Hero.inv.display();
+
+  const fullText = introMessage[currentIntroIndex];
+
+  if (!introTypingFinished) {
+    // タイプライター文字送り
+    introTypingElapsed += deltaTime;
+    if (introTypingElapsed >= introTypingInterval) {
+      introTypingElapsed -= introTypingInterval;
+      introCharIndex++;
+      if (introCharIndex >= fullText.length) {
+        introCharIndex = fullText.length;
+        introTypingFinished = true;
+      }
+    }
+  } else {
+    // 全文表示済み → スペースキーで次へ
+    if (keys.space.pressed && !keys.space.wasPressed) {
+      currentIntroIndex++;
+      if (currentIntroIndex >= introMessage.length) {
+        gameState = PLAYING;
+      } else {
+        // 次のメッセージへ移行時にタイプ設定をリセット
+        introCharIndex      = 0;
+        introTypingElapsed  = 0;
+        introTypingFinished = false;
+      }
+    }
+  }
+
+  // 次フレーム用に状態をキャッシュ
+  keys.space.wasPressed = keys.space.pressed;
+}
+
+
+ let frame = 0
+function update(deltaTime) {
+  frame++;
+  if (frame > 10000000) frame = 0;
+
+  switch (gameState) {
+    case INTRO:
+      updateIntro(deltaTime);
+      break;
+    case PLAYING:
+      updatePlaying(deltaTime);
+      break;
+  }
+}
+
+function drawIntro() {
+  const fullText = introMessage[currentIntroIndex];
+  const text     = fullText.substring(0, introCharIndex);
+
+  // 1. 背景クリア
+  c.fillStyle = "black";
+  c.fillRect(0, 0, canvas.width, canvas.height);
+
+  // 2. ドット絵フォント設定
+  c.imageSmoothingEnabled      = false;
+  canvas.style.imageRendering = 'pixelated';
+  c.font         = "16px 'DotGothic16', monospace";
+  c.fillStyle    = "white";
+  c.textAlign    = "center";
+  c.textBaseline = "middle";
+
+  // 3. 自動改行ロジック
+  const maxWidth   = canvas.width * 0.8;
+  const lineHeight = 20;
+  const words      = text.split(" ");
+  const lines      = [];
+  let line         = "";
+
+  for (let w of words) {
+    const test = line + w + " ";
+    if (c.measureText(test).width > maxWidth && line) {
+      lines.push(line.trim());
+      line = w + " ";
+    } else {
+      line = test;
+    }
+  }
+  lines.push(line.trim());
+
+  // 4. 中央揃えで描画
+  const totalHeight = lines.length * lineHeight;
+  let y = canvas.height / 2 - totalHeight / 2 + lineHeight / 2;
+  for (let l of lines) {
+    c.fillText(l, canvas.width / 2, y);
+    y += lineHeight;
+  }
+
+  // 5. 末尾案内文の描画
+  const isDone  = introCharIndex >= fullText.length;
+  const marginX = 20;
+  const marginY = 20;
+  // フレームを16分割して点滅
+// (frame >> 4) で16フレームごとにカウントが1つずつ下がり、&1で偶数奇数を判定
+if (((frame >> 6) & 1) === 0 && isDone) {
+  c.font         = "14px 'DotGothic16', monospace";
+  c.fillStyle    = "white";
+  c.textAlign    = "right";
+  c.textBaseline = "bottom";
+  c.fillText("▼ spaceで進む", canvas.width - marginX, canvas.height - marginY);
+}
+
+}
+
+
 
 let canBuy = true;
 function drawShopUI() {
@@ -621,17 +748,7 @@ function drawQuiz() {
   }, 2000); // 2秒後に終了（演出の余韻）
   }
 }
-function draw() {
- if (quizActive) {
-    drawQuiz(); // クイズUI描画
-    return;
-  }
-  
-  if (isInShop) {
-    drawShopUI();
-    return;
-  }
-
+function drawDefault(){
   Background.draw();
   const entities = [...npcs, ...kusas, Hero];
   entities.sort((a, b) => (a.loc?.y || 0) - (b.loc?.y || 0));
@@ -640,12 +757,33 @@ function draw() {
   helpUI();
   drawCoinText(c, Hero.coin);
 }
+function draw() {
+if(gameState === INTRO) {
+  drawIntro();
+  return;
+}
+if(gameState === PLAYING){
+  if (quizActive) {
+    drawQuiz(); // クイズUI描画
+    return;
+  }
+  
+  if (isInShop) {
+    drawShopUI();
+    return;
+  }
+ 
+  drawDefault();
+}
+  
+}
 
 function startGame() {
   if (fgImage.complete) {
     requestAnimationFrame(animate);
   } else {
     fgImage.onload = () => {
+      gameState = INTRO;
       requestAnimationFrame(animate);
     };
   }
@@ -660,7 +798,6 @@ function animate(currentTime) {
 
   const deltaTime = currentTime - lastTime;
   lastTime = currentTime;
-
   update(deltaTime);
   draw();
 }
@@ -686,6 +823,9 @@ document.addEventListener("keydown", function(e) {
     if (e.code === "KeyE") {
         keys.e.pressed = true
     }
+    if (e.code === "KeyI") {
+        keys.i.pressed = true
+    }
     if (e.code === "Space") {
       keys.space.pressed = true
     }
@@ -704,9 +844,12 @@ document.addEventListener("keyup", function(e) {
     if (e.code === "KeyD") {
         keys.d.pressed = false
     }
+    if (e.code === "KeyI") {
+        keys.i.pressed = false
+    }
     if (e.code === "KeyE") {
         keys.e.pressed = false
-         keys.e.wasPressed = false; // ← これが重要！
+        keys.e.wasPressed = false; // ← これが重要！
     }
     if (e.code === "Space") {
         keys.space.pressed = false

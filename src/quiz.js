@@ -281,19 +281,26 @@ function startTimer() {
 }
 
 function wrapText(text, x, y, maxWidth, lineHeight) {
+  if (typeof text !== "string") {
+    console.warn("wrapText: text is not a string", text);
+    text = String(text ?? "");
+  }
+
   const words = text.split(' ');
   let line = '', lines = 0;
+
   for (let w of words) {
     const test = line + w + ' ';
     if (c.measureText(test).width > maxWidth && line) {
       c.fillText(line, x, y);
       line = w + ' ';
-      y   += lineHeight;
+      y += lineHeight;
       lines++;
     } else {
       line = test;
     }
   }
+
   c.fillText(line, x, y);
   return lines + 1;
 }

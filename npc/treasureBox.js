@@ -16,7 +16,7 @@ class treasureBox extends npc01 {
     this.choice = null;
     this.postChoiceDialog = null;
     this.textProgress = 0;
-    this.textSpeed = 1;
+    this.textSpeed = 0.25;
   }
 
   can_talk() {

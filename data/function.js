@@ -273,16 +273,21 @@ function drawCoinText(ctx, coinAmount) {
 }
 
 function helpUI() {
+  const instructions_default_hide = ["iキーでヘルプを表示"]
   const instructions_default = [
     "操作方法:",
     "WASDキーで移動，選択肢移動",
     "TABキーで持ち物一覧表示",
     "NPCに近づいてEキーで会話",
-    "spaceキーで会話を進める",
-    "道具屋入口でEキーで入店"
+    "spaceキーで会話を進める，決定",
+    "道具屋入口でEキーで入店",
+    "i: これを非表示"
   ];
   const instructions_shop = ["         　　❕Eキーで店を出る"];
-  const instructions = isInShop ? instructions_shop : instructions_default;
+  let instructions
+  if(isInShop) instructions = instructions_shop
+  if(!isInShop) instructions = helpHide ? instructions_default_hide : instructions_default;
+  
 
   c.save();
   c.font = '18px sans-serif';
@@ -292,7 +297,7 @@ function helpUI() {
   c.shadowColor = 'black';
   c.shadowBlur = 4;
 
-  const startX = canvas.width - 250;
+  const startX = canvas.width - 280;
   const startY = 20;
   const lineHeight = 24;
 
@@ -301,33 +306,4 @@ function helpUI() {
   });
 
   c.restore();
-}
-
-function gameInstruction(){
-  c.save();
-  c.font = '24px sans-serif';
-  c.fillStyle = 'white';
-  c.textAlign = 'center';
-  c.textBaseline = 'middle';
-  c.shadowColor = 'black';
-  c.shadowBlur = 4;
-
-  const instructions = [
-    "このゲームはプログラミングの基礎を学ぶためのものです。",
-    "NPCと会話し、クイズに答えて新しい道具を手に入れましょう。",
-    "道具を使って、より複雑な選択や繰り返しを体験できます。",
-    "楽しみながらプログラミングの概念を理解しましょう！",
-    "（スペースキーで進む）"
-  ];
-
-  const startX = canvas.width / 2;
-  const startY = canvas.height / 2 - (instructions.length * 15);
-  const lineHeight = 30;
-
-  instructions.forEach((line, index) => {
-    c.fillText(line, startX, startY + index * lineHeight);
-  });
-
-  c.restore();
-
 }

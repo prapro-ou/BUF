@@ -21,7 +21,7 @@ class kusaBabaNpc extends npc01 {
     this.postChoiceDialog = null; // yes/no に応じた会話配列
     this.postChoiceIndex = 0;
     this.textProgress = 0;
-    this.textSpeed = 1;
+    this.textSpeed = 0.25;
     }
     can_talk(){
         return this.is_nearest

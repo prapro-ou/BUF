@@ -20,7 +20,7 @@ class hasiNpc extends npc01 {
     this.postChoiceDialog = null; // yes/no に応じた会話配列
     this.postChoiceIndex = 0;
     this.textProgress = 0;
-    this.textSpeed = 1;
+    this.textSpeed = 0.25;
     }
     can_talk(){
         return this.is_nearest
@@ -153,7 +153,7 @@ draw00(){
     c.drawImage(
         wait_icon, 
         32*((this.frame >> 4) % 4) , 0, 32, 64,
-        this.loc.x+34, this.loc.y-48,
+        this.loc.x+40, this.loc.y-48,
         32, 64 
     )}
 
