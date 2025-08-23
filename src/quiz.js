@@ -152,12 +152,8 @@ int main() {
 const hasiQuiz_2 = new Quizclass({
         question: "材料の数を数えるプログラムを完成させよう!",
         code: `
-#include <stdio.h>
-
-int main() {
     int materials[] = {0, 1, 3, 2, 1, 0, 4, 3, 2, 1, 4, 0};
     int n = sizeof(materials) / sizeof(materials[0]);
-
     int stone = 0, iron = 0, sand = 0, wood = 0, clay = 0;
 
     _________ (int i = 0; i < n; i++) {
@@ -173,7 +169,6 @@ int main() {
             clay++;
         }
     }
-
     printf("石: %d個\\n", stone);
     printf("鉄: %d個\\n", iron);
     printf("砂: %d個\\n", sand);
@@ -181,7 +176,7 @@ int main() {
     printf("粘土: %d個\\n", clay);
 
     return 0;
-}
+
         `.trim(),
         choices: ["printf","for","if","else if",],
         blanks: [
@@ -198,9 +193,6 @@ int main() {
 const bossQuiz = new Quizclass({
         question: "首謀者を倒すためのプログラムを完成させよう!",
         code: `
-#include <stdio.h>
-
-int main() {
     int i,hit;
     _________ (i = 0; i <= 30; i++) {
         hit = 0; 
@@ -221,15 +213,9 @@ int main() {
             printf("%d: 足に命中！\\n", i);
             hit = 1;
         }
+        if (hit == 0) printf("%d: 攻撃は外れた...\\n", i);
+    };printf("黒幕を倒した！\\n");
 
-        if (hit == 0) {
-            printf("%d: 攻撃は外れた...\\n", i);
-        }
-    }
-
-    printf("黒幕を倒した！\\n");
-    return 0;
-}
         `.trim(),
         choices: ["printf","for","if","else if",],
         blanks: [

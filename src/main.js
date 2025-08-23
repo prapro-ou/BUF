@@ -210,6 +210,7 @@ function triggerQuiz(npc) {
     quiz_bgm.currentTime = 0;
     quiz_bgm.volume = 0.6;
     quiz_bgm.play();
+    quiz_bgm.loop = true;
     quizIndex = 0;
     currentQuiz = quizList[quizIndex];
     userAnswers = Array(currentQuiz.blanks.length).fill(null);
@@ -326,6 +327,9 @@ function drawShopUI() {
 
 }
 function drawQuiz() {
+  // 砂時計の所持数表示
+  const hourglass = Hero.inv.items.find(i => i.name === "砂時計");
+  const count = hourglass ? hourglass.count : 0;
   // 問題ごとに背景画像を切り替え
     if (whoseQuiz === KANBAN) {
     if (bgImageKanban.complete) {
@@ -345,7 +349,7 @@ function drawQuiz() {
     } else {
       c.fillStyle = '#888'; c.fillRect(0, 0, canvas.width, canvas.height);
     }
-  } else if (whoseQuiz === BOSS) {
+  } else if (whoseQuiz === SYUBOUSYA) {
     if (bgImageKuromaku.complete) {
       c.drawImage(bgImageKuromaku, 0, 0, canvas.width, canvas.height);
     } else {
@@ -358,14 +362,17 @@ function drawQuiz() {
       c.fillStyle = '#888'; c.fillRect(0, 0, canvas.width, canvas.height);
     }
   }
+  c.font = "20px 'M PLUS 1p', sans-serif";
+  c.fillStyle = "#00ffcc";
+  c.fillText(`⏳ 砂時計: ${count}個`, canvas.width - 100, 70); // 右上に表示
+
   // 問題文の色
-  if (quizIndex === 0) {
+  if (whoseQuiz === KANBAN || whoseQuiz === HASI || whoseQuiz === KUSA) {
     c.fillStyle = '#000000'; // 1問目だけ黒色
-  } else if (quizIndex === 2 || quizIndex === 3) {
-    c.fillStyle = '#000000'; // 3,4問目も黒色
   } else {
     c.fillStyle = 'white';
   }
+
   c.font         = '24px sans-serif';
   c.textAlign    = 'left';
   c.textBaseline = 'top';
@@ -391,8 +398,8 @@ function drawQuiz() {
   }
 
   // コード描画
-  if (quizIndex === 0 || quizIndex === 2 || quizIndex === 3) {
-    c.fillStyle = '#000000'; // 1,3,4問目は黒色
+  if (whoseQuiz === KANBAN || whoseQuiz === HASI || whoseQuiz === KUSA) {
+    c.fillStyle = '#000000'; // 1問目だけ黒色
   } else {
     c.fillStyle = 'white';
   }
@@ -455,10 +462,14 @@ function drawQuiz() {
         if (userAnswers[bidx] !== null) {
           c.save();
           // 1,3,4問目は黒色
-          c.fillStyle = (quizIndex === 0 || quizIndex === 2 || quizIndex === 3) ? '#000000' : '#fff';
+        if (whoseQuiz === KANBAN || whoseQuiz === HASI || whoseQuiz === KUSA) {
+            c.fillStyle = '#000b41ff'; // 1問目だけ黒色
+          } else {
+            c.fillStyle = '#d4ff00ff';
+          }          
           c.font         = '18px monospace';
           c.textAlign    = 'center';
-          c.textBaseline = 'middle';
+          c.textBaseline = 'middle';  
           c.fillText(
             currentQuiz.choices[userAnswers[bidx]],
             centerX, centerY
@@ -581,9 +592,12 @@ function drawQuiz() {
   const min = Math.floor(timeLeft / 60);
   const sec = timeLeft % 60;
   c.font = '24px sans-serif';
-  c.fillStyle = isTimeout
-    ? 'red'
-    : (quizIndex === 0 ? 'blue' : 'yellow'); // 1問目だけ青色
+   if (whoseQuiz === KANBAN || whoseQuiz === HASI || whoseQuiz === KUSA) {
+    c.fillStyle = '#000000'; // 1問目だけ黒色
+  } else {
+    c.fillStyle = 'white';
+  }
+  if(isTimeout)c.fillStyle = 'red';
   c.textAlign = 'right';
   c.fillText(`残り時間: ${min}分${sec}秒`, canvas.width - 40, 40);
 
@@ -739,16 +753,28 @@ canvas.addEventListener('click', e => {
   }
 
   // 時間延長ボタン
-  if (
-    mx >= extendButtonX && mx <= extendButtonX + extendButtonW &&
-    my >= extendButtonY && my <= extendButtonY + extendButtonH
-  ) {
+if (
+  mx >= extendButtonX && mx <= extendButtonX + extendButtonW &&
+  my >= extendButtonY && my <= extendButtonY + extendButtonH
+) {
+  const hourglass = Hero.inv.items.find(i => i.name === "砂時計");
+
+  if (hourglass && hourglass.count > 0) {
+    // 時間延長処理
     timeLeft += 30;
     seGauge.currentTime = 0;
     seGauge.play();
     drawQuiz();
+
+    // 砂時計を1つ消費
+    Hero.inv.removeItem({ name: "砂時計", count: 1 });
+
     return;
+  } else {
+    console.log("⏳ 砂時計がないため時間延長できません");
   }
+}
+
 
   // やり直しボタン
   if (
