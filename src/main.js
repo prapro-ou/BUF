@@ -12,7 +12,7 @@ let selectedBlank
 let userAnswers 
 let result    
 
-let gameState = PLAYING;
+let gameState = INTRO;
 
 
 c.imageSmoothingEnabled = false;
@@ -21,10 +21,7 @@ c.imageSmoothingEnabled = false;
 canvas.width = 1024
 canvas.height = 576
 
-// BGM再生
-bgm.loop = true; // ループ再生
-bgm.volume = 0.4; // 音量（0.0～1.0）l
-bgm.play();
+
 
 //クラスのインスタンス化
 const Background = new bg_default({
@@ -182,7 +179,11 @@ function go_shop() {
       if (!bgm.paused) {
         bgm.pause();
         bgm.currentTime = 0;
-}
+      }
+      shop_bgm.volume = 0.2
+      shop_bgm.loop = true;
+      shop_bgm.currentTime = 0
+      shop_bgm.play()
       console.log("🛒 ショップに入りました！");
       break;
     }
@@ -280,6 +281,7 @@ function updatePlaying(deltaTime) {
     keys.e.wasPressed = true;
 
     if (isInShop) {
+      shop_bgm.pause()
       bgm.currentTime = 0;
       bgm.play();
       isInShop = false;
@@ -333,9 +335,16 @@ function updateIntro(deltaTime) {
   } else {
     // 全文表示済み → スペースキーで次へ
     if (keys.space.pressed && !keys.space.wasPressed) {
+      next_conv.currentTime = 0;
+      next_conv.volume = 0.5
+      next_conv.play();
       currentIntroIndex++;
       if (currentIntroIndex >= introMessage.length) {
         gameState = PLAYING;
+        // BGM再生
+        bgm.loop = true; // ループ再生
+        bgm.volume = 0.4; // 音量（0.0～1.0）l
+        bgm.play();
       } else {
         // 次のメッセージへ移行時にタイプ設定をリセット
         introCharIndex      = 0;
@@ -749,6 +758,10 @@ function drawQuiz() {
   }
 }
 function drawDefault(){
+  if(bgm.paused) 
+     {bgm.loop = true; // ループ再生
+      bgm.volume = 0.4; // 音量（0.0～1.0）l
+      bgm.play();}
   Background.draw();
   const entities = [...npcs, ...kusas, Hero];
   entities.sort((a, b) => (a.loc?.y || 0) - (b.loc?.y || 0));
