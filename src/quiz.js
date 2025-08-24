@@ -257,6 +257,12 @@ int main() {
         reduceIdx: [0] // 例: "printf"（インデックス0）を削減
     })
 
+const KANBAN = 500;
+const KUSA = 501;
+const HASI = 503;
+const SYUBOUSYA = 506
+const TREASURE = 777
+
 // ———— ドラッグ用変数 ————
 let dragging   = null;
 let dragOrigin = null;
@@ -264,6 +270,7 @@ let dragOrigin = null;
 function startTimer() {
   clearInterval(timerId);
   timeLeft = 60;
+  if(whoseQuiz == SYUBOUSYA) timeLeft = 60 * 2
   isTimeout = false;
   timerId = setInterval(() => {
     timeLeft--;

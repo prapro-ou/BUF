@@ -68,8 +68,17 @@ class BOSS extends npc01 {
       } else if (this.state === 4) {
         // ✅ 選択後の分岐処理
       if (this.postChoiceDialog === BOSSdialog_yes) {
-        this.state = 5; // YES選択 → クイズ開始
-        triggerQuiz(SYUBOUSYA); // ← main.js 側で定義
+        gameState = RAINING
+        this.state = 5;
+        bgm.pause()
+        initRain()
+        transition_bgm.currentTime = 0
+        transition_bgm.volume = 0.5
+      if(transition_bgm.paused) transition_bgm.play()
+        setTimeout(() => {
+          whoseQuiz = SYUBOUSYA
+          transition(QUIZ, SYUBOUSYA); // ← main.js 側で定義された遷移処理
+        }, 6000); // ← 演出の長さは調整可能
       } else if (this.postChoiceDialog === BOSSdialog_no) {
         this.state = 0; // NO選択 → 状態リセット
         Hero.is_talking = false;
@@ -137,6 +146,9 @@ class BOSS extends npc01 {
 
     if ((this.state === 1 || this.state === 4 || this.state === 6 || this.state === -1) &&
         keys.space.pressed && !keys.space.wasPressed) {
+        next_conv.currentTime = 0;
+    next_conv.volume = 0.5
+    next_conv.play();
       this.conv_num++;
       keys.space.wasPressed = true;
     }

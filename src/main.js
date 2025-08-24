@@ -11,17 +11,20 @@ let currentQuiz
 let selectedBlank 
 let userAnswers 
 let result    
+let answerChecked = false;
 
-let gameState = INTRO;
-
-
-c.imageSmoothingEnabled = false;
+let gameState = PLAYING;
+let seni = false
+let END = false
 
 //ゲーム画像サイズ
 canvas.width = 1024
 canvas.height = 576
 
-
+c.mozimageSmoothingEnabled = false;
+c.msimageSmoothingEnabled = false;
+c.webkitimageSmoothingEnabled = false;
+c.imageSmoothingEnabled = false;
 
 //クラスのインスタンス化
 const Background = new bg_default({
@@ -54,20 +57,20 @@ const kusa_map = splitMapData(kusa_loc, MAP_WIDTH);
 
 //衝突タイルマップを衝突ピクセルマップにする
 const boundaries = []
-collision_map.forEach((row, i) => {
-    row.forEach((symbol, j) => {
-        if(symbol  === 472)
-        boundaries.push(
-            new col_default({
-                //衝突マップのずれを調整
-                location: {
-                    x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
-                    y: i * TILE_SIZE + offset.y 
-                }
-            })
-        )
-    })    
-})
+// collision_map.forEach((row, i) => {
+//     row.forEach((symbol, j) => {
+//         if(symbol  === 472)
+//         boundaries.push(
+//             new col_default({
+//                 //衝突マップのずれを調整
+//                 location: {
+//                     x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
+//                     y: i * TILE_SIZE + offset.y 
+//                 }
+//             })
+//         )
+//     })    
+// })
 
 const shops = []
 shop_map.forEach((row, i) => {
@@ -175,21 +178,34 @@ function go_shop() {
   for (let i = 0; i < shops.length; i++) {
     const shopBlock = shops[i];
     if (nearShopEntrance(shopBlock)) {
-      isInShop = true;
-      if (!bgm.paused) {
-        bgm.pause();
-        bgm.currentTime = 0;
-      }
-      shop_bgm.volume = 0.2
-      shop_bgm.loop = true;
-      shop_bgm.currentTime = 0
-      shop_bgm.play()
-      console.log("🛒 ショップに入りました！");
-      break;
+      gameState = RAINING
+      bgm.pause()
+      initRain()
+      entershop_bgm.currentTime = 0
+      entershop_bgm.volume = 0.5
+      entershop_bgm.play()
+      setTimeout(() => {
+        isInShop = true;
+        if (!bgm.paused) {
+          bgm.pause();
+          bgm.currentTime = 0;
+        }
+        shop_bgm.volume = 0.4
+        shop_bgm.loop = true;
+        shop_bgm.currentTime = 0
+        shop_bgm.play()
+        gameState = PLAYING
+        console.log("🛒 ショップに入りました！");
+        return
+      },5900); // ← 演出の長さは調整可能
+      
     }
   }
 }
 function triggerQuiz(npc) {
+  Hero.inv.inventoryVisible = false;
+  Hero.inv.display();
+
     if (!bgm.paused) {
   bgm.pause();
   bgm.currentTime = 0;
@@ -233,14 +249,25 @@ function triggerQuiz(npc) {
     dragOrigin = null;
     isTimeout = false;
     timerId = null;
-
+    answerChecked = false; // ✅ 答え合わせロック解除
     startTimer();
     drawQuiz();
+}
+function transition(where, data) {
+    gameState = PLAYING
+      // 遷移処理
+      if (where === SHOP) {
+        go_shop();
+        return
+      } else if (where === QUIZ) {
+        triggerQuiz(data);
+        return
+      }
 }
 function endQuiz() {
   quizActive = false;
   clearInterval(timerId);
-
+  gameState = PLAYING
   // クイズBGM停止
   quiz_bgm.pause();
   quiz_bgm.currentTime = 0;
@@ -281,14 +308,22 @@ function updatePlaying(deltaTime) {
     keys.e.wasPressed = true;
 
     if (isInShop) {
+      gameState = RAINING
       shop_bgm.pause()
+      initRain()
+      entershop_bgm.currentTime = 0
+      entershop_bgm.volume = 0.5
+      entershop_bgm.play()
+setTimeout(() => {
+      gameState = PLAYING
       bgm.currentTime = 0;
       bgm.play();
       isInShop = false;
       console.log("🚪 ショップから出ました");
+},5900); // ← 演出の長さは調整可能
     } else {
       invoke_talk();
-      go_shop();
+      transition(SHOP)
     }
   }
 
@@ -358,13 +393,27 @@ function updateIntro(deltaTime) {
   keys.space.wasPressed = keys.space.pressed;
 }
 
+//画面遷移関数用
+const drops = [];
+let columnWidth = 20;
+const columns = Math.floor(canvas.width / columnWidth);
+function updateRain() {
+  for (let drop of drops) {
+    drop.y += drop.speed;
+    if (drop.y > canvas.height+4) {
+      drop.y = Math.random() * -canvas.height;
+      drop.char = Math.random() < 0.5 ? '0' : '1';
+    }
+  }
+}
 
  let frame = 0
 function update(deltaTime) {
   frame++;
   if (frame > 10000000) frame = 0;
-
+  if(END) gameState = RAINING
   switch (gameState) {
+    case RAINING: return
     case INTRO:
       updateIntro(deltaTime);
       break;
@@ -432,7 +481,52 @@ if (((frame >> 6) & 1) === 0 && isDone) {
 
 }
 
+function drawRain() {
+  Hero.inv.inventoryVisible = false;
+  Hero.inv.display();
+  c.font = "32px 'Press Start 2P', monospace";
+  const harmoniousColors = END ?[
+  "#0B0B0B", // 漆黒：完全な闇、背景に最適
+  "#0B0B0B", // 漆黒：完全な闇、背景に最適
+  "#0B0B0B", // 漆黒：完全な闇、背景に最適
+  "#0B0B0B", // 漆黒：完全な闇、背景に最適
+  "#0B0B0B", // 漆黒：完全な闇、背景に最適
+  "#0B0B0B", // 漆黒：完全な闇、背景に最適
+  "#5A5A5A" // ダークグレー：テキストや影に
 
+]:[
+    "#2E7D32", "#66BB6A", "#A5D6A7", "#388E3C"
+  ];
+
+  for (let drop of drops) {
+    const color = harmoniousColors[Math.floor(Math.random() * harmoniousColors.length)];
+    c.fillStyle = color;
+
+    // 黒枠付きで視認性UP
+    c.lineWidth = 2;
+    c.strokeStyle = "black";
+    c.strokeText(drop.char, drop.x, drop.y);
+    c.fillText(drop.char, drop.x, drop.y);
+  }
+  // Loading... アニメーション表示
+
+const loadingText = END ? "THANK YOU FOR PLAYING" : "Loading"
+if(!END){
+c.font = "96px 'Press Start 2P', monospace"; // 小さめでドット感強調
+c.fillStyle = "#FFFFFF";
+if(whoseQuiz == SYUBOUSYA)c.fillStyle = "#a00000ff";
+c.textAlign = "center";
+c.textBaseline = "bottom";
+c.fillText(loadingText, canvas.width / 2, canvas.height - 400);
+} else if (END) {
+c.font = "32px 'Press Start 2P', monospace"; // 小さめでドット感強調
+c.fillStyle = "#FFFFFF";
+c.textAlign = "center";
+c.textBaseline = "bottom";
+c.fillText(loadingText, canvas.width / 2, canvas.height - 400);
+}
+
+}
 
 let canBuy = true;
 function drawShopUI() {
@@ -473,6 +567,7 @@ function drawShopUI() {
 }
 function drawQuiz() {
   // 砂時計の所持数表示
+  if(gameState == RAINING) return
   const hourglass = Hero.inv.items.find(i => i.name === "砂時計");
   const count = hourglass ? hourglass.count : 0;
   // 問題ごとに背景画像を切り替え
@@ -752,9 +847,18 @@ function drawQuiz() {
     c.fillStyle = 'red';
     c.textAlign = 'center';
     c.fillText('時間切れ', canvas.width / 2, canvas.height / 2);
-    setTimeout(() => {
-    endQuiz();
-  }, 2000); // 2秒後に終了（演出の余韻）
+    // 最終問題 or 不正解 → 終了
+      setTimeout(() => {
+          initRain()
+          quiz_bgm.pause()
+          endquiz_bgm.currentTime = 0
+          endquiz_bgm.volume = 0.5
+          endquiz_bgm.play()
+          gameState = RAINING
+        }, 2000);
+        setTimeout(() => {
+          endQuiz()
+        }, 6500); // ← 演出の長さは調整可能
   }
 }
 function drawDefault(){
@@ -771,6 +875,12 @@ function drawDefault(){
   drawCoinText(c, Hero.coin);
 }
 function draw() {
+if(gameState === RAINING) {
+  updateRain()
+  drawRain()
+  return
+}
+ 
 if(gameState === INTRO) {
   drawIntro();
   return;
@@ -793,6 +903,7 @@ if(gameState === PLAYING){
 
 function startGame() {
   if (fgImage.complete) {
+    initRain()
     requestAnimationFrame(animate);
   } else {
     fgImage.onload = () => {
@@ -841,7 +952,7 @@ document.addEventListener("keydown", function(e) {
     }
     if (e.code === "Space") {
       keys.space.pressed = true
-    }
+      }
 })
 // キーボードが離されたとき
 document.addEventListener("keyup", function(e) {
@@ -883,42 +994,51 @@ canvas.addEventListener('click', e => {
     my >= 470    && my <= 518 &&
     !isTimeout;
 
-  if (isAnswerButtonClicked) {
-    result = currentQuiz.blanks.every((b, i) =>
-      userAnswers[i] === b.answer
-    );
+  if (isAnswerButtonClicked && !answerChecked) {
+  answerChecked = true; // ✅ 一度押したらロック
 
-    // 効果音
-    const se = result ? seCorrect : seWrong;
-    se.currentTime = 0;
-    se.play();
+  result = currentQuiz.blanks.every((b, i) =>
+    userAnswers[i] === b.answer
+  );
 
-    drawQuiz();
+  const se = result ? seCorrect : seWrong;
+  se.currentTime = 0;
+  se.play();
+  if (gameState != RAINING) drawQuiz();
 
-    if (result && quizIndex < quizList.length - 1) {
-      // 正解 & 次の問題あり → 次へ
-      setTimeout(() => {
-        quizIndex++;
-        currentQuiz = quizList[quizIndex];
-        userAnswers = Array(currentQuiz.blanks.length).fill(null);
-        selectedBlank = null;
-        result        = null;
-        currentQuiz.choiceRects = null;
-        startTimer();
-        drawQuiz();
-      }, 1200);
-    } else {
-      // 最終問題 or 不正解 → 終了
-      setTimeout(() => {
-        endQuiz();
-      }, 2000);
-    }
-
-    return;
+  if (result && quizIndex < quizList.length - 1) {
+    setTimeout(() => {
+      quizIndex++;
+      currentQuiz = quizList[quizIndex];
+      userAnswers = Array(currentQuiz.blanks.length).fill(null);
+      selectedBlank = null;
+      result = null;
+      currentQuiz.choiceRects = null;
+      answerChecked = false; // ✅ 次の問題で解除
+      startTimer();
+      if (gameState != RAINING) drawQuiz();
+    }, 1200);
+  } else {
+    setTimeout(() => {
+      initRain();
+      quiz_bgm.pause();
+      endquiz_bgm.currentTime = 0;
+      endquiz_bgm.volume = 0.5;
+      endquiz_bgm.play();
+      gameState = RAINING;
+    }, 2000);
+    setTimeout(() => {
+      endQuiz();
+    }, 6500);
   }
 
+  return;
+}
+
+
+
   // 時間延長ボタン
-if (
+if (!answerChecked &&
   mx >= extendButtonX && mx <= extendButtonX + extendButtonW &&
   my >= extendButtonY && my <= extendButtonY + extendButtonH
 ) {
@@ -929,7 +1049,8 @@ if (
     timeLeft += 30;
     seGauge.currentTime = 0;
     seGauge.play();
-    drawQuiz();
+    if(gameState != RAINING)drawQuiz();
+
 
     // 砂時計を1つ消費
     Hero.inv.removeItem({ name: "砂時計", count: 1 });
@@ -942,7 +1063,7 @@ if (
 
 
   // やり直しボタン
-  if (
+  if (!answerChecked &&
     mx >= buttonX && mx <= buttonX + 200 &&
     my >= 524    && my <= 524 + 48
   ) {
@@ -951,7 +1072,8 @@ if (
     result        = null;
     currentQuiz.choiceRects = null;
     codeScrollY   = 0;
-    drawQuiz();
+    if(gameState != RAINING)drawQuiz();
+
     return;
   }
 });
@@ -977,7 +1099,7 @@ canvas.addEventListener('mousedown', e => {
         offsetY: my - r.cy
       };
       dragOrigin = { x: r.cx, y: r.cy };
-      drawQuiz();
+      if(gameState != RAINING)drawQuiz();
     }
   });
 });
@@ -988,7 +1110,7 @@ canvas.addEventListener('mousemove', e => {
   const rect = canvas.getBoundingClientRect();
   dragging.x = e.clientX - rect.left;
   dragging.y = e.clientY - rect.top;
-  drawQuiz();
+  if(gameState != RAINING)drawQuiz();
 });
 
 canvas.addEventListener('mouseup', e => {
@@ -1014,7 +1136,7 @@ canvas.addEventListener('mouseup', e => {
   }
   dragging   = null;
   dragOrigin = null;
-  drawQuiz();
+  if(gameState != RAINING)drawQuiz();
 });
 
 // — スクロールイベント —
@@ -1032,6 +1154,6 @@ canvas.addEventListener('wheel', e => {
   codeScrollY += e.deltaY;
   if (codeScrollY < 0) codeScrollY = 0;
   if (codeScrollY > maxScroll) codeScrollY = maxScroll;
-  drawQuiz();
+  if(gameState != RAINING)drawQuiz();
   e.preventDefault();
 }, { passive: false });

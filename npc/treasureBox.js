@@ -72,8 +72,16 @@ class treasureBox extends npc01 {
       } else if (this.state === 4) {
         // ✅ 選択後の分岐処理
       if (this.postChoiceDialog === treasureBoxdialog_yes) {
-        this.state = 5; // YES選択 → クイズ開始
-        triggerQuiz(TREASURE); // ← main.js 側で定義
+        gameState = RAINING
+        this.state = 5;
+        bgm.pause()
+        initRain()
+        transition_bgm.currentTime = 0
+        transition_bgm.volume = 0.5
+      if(transition_bgm.paused) transition_bgm.play()
+        setTimeout(() => {
+          transition(QUIZ, TREASURE); // ← main.js 側で定義された遷移処理
+        }, 6000); // ← 演出の長さは調整可能
       } else if (this.postChoiceDialog === treasureBoxdialog_no) {
         this.state = 0; // NO選択 → 状態リセット
         Hero.is_talking = false;
@@ -84,12 +92,18 @@ class treasureBox extends npc01 {
           Hero.is_talking = false;
         } else if (this.postChoiceDialog === treasureBoxdialog_clear) {
           Hero.is_talking = false;
-          Hero.coin += 5000;
+          Hero.coin = -1;
           this.state = 7;
+          bgm.pause()
+          initRain()
+          END = true
+          gameState = RAINING
         }
       } else if (this.state === 8) {
-        this.state = 7;
-        Hero.is_talking = false;
+        bgm.pause()
+        initRain()
+        END = true
+        gameState = RAINING
       }
 
       this.conv_num = 0;
@@ -111,7 +125,11 @@ class treasureBox extends npc01 {
 
     if ([1, 4, 6, 8].includes(this.state) &&
         keys.space.pressed && !keys.space.wasPressed) {
+          next_conv.currentTime = 0;
+      next_conv.volume = 0.5
+      next_conv.play();
       this.conv_num++;
+      
       keys.space.wasPressed = true;
     }
 
@@ -140,10 +158,10 @@ class treasureBox extends npc01 {
     if (this.state === 5) {
       this.postChoiceDialog = result ? treasureBoxdialog_clear : treasureBoxdialog_lose;
       if(result) this.img.src = treasureBoxImage2.src
-      this.img.src = treasureBoxImage2.src
       this.state = 6;
       this.conv_num = 0;
       this.textProgress = 0;
+
     }
 
     if (!keys.space.pressed) {

@@ -77,8 +77,16 @@ draw_conv() {
     } else if (this.state === 4) {
       // ✅ 選択後の分岐処理
       if (this.postChoiceDialog === kanbanNpcdialog_yes) {
-      this.state = STATE_QUIZ;
-      triggerQuiz(KANBAN); // ← main.js 側で定義
+      gameState = RAINING
+      this.state = 5;
+      bgm.pause()
+      initRain()
+      transition_bgm.currentTime = 0
+      transition_bgm.volume = 0.5
+      if(transition_bgm.paused) transition_bgm.play()
+      setTimeout(() => {
+        transition(QUIZ, KANBAN); // ← main.js 側で定義された遷移処理
+      },5900); // ← 演出の長さは調整可能
     } else if (this.postChoiceDialog === kanbanNpcdialog_no) {
         this.state = 0; // NO選択 → 状態リセット
         Hero.is_talking = false;
@@ -218,7 +226,9 @@ draw() {
       drawChoiceUI(this.loc.x + 20, this.loc.y + 100, this.choice);
       break;
     case 4:
+    case STATE_QUIZ:
     case 6: this.draw01(); break;
+    
   }
 }
 

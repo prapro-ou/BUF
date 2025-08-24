@@ -307,3 +307,15 @@ function helpUI() {
 
   c.restore();
 }
+
+function initRain() {
+  drops.length = 0;
+  for (let i = -3; i < columns+3; i++) {
+    drops.push({
+      x: i * columnWidth,
+      y: Math.random() * -canvas.height,
+      speed: 2 + Math.random() * 3,
+      char: Math.random() < 0.5 ? '0' : '1'
+    });
+  }
+}

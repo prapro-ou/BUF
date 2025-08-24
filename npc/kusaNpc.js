@@ -77,8 +77,16 @@ draw_conv(c_num) {
     } else if (this.state === 4) {
       // ✅ 選択後の分岐処理
       if (this.postChoiceDialog === kusaNpcdialog_yes) {
-        this.state = 5; // YES選択 → クイズ開始
-        triggerQuiz(KUSA); // ← main.js 側で定義
+        gameState = RAINING
+        this.state = 5;
+        bgm.pause()
+        initRain()
+        transition_bgm.currentTime = 0
+        transition_bgm.volume = 0.5
+        if(transition_bgm.paused) transition_bgm.play()
+        setTimeout(() => {
+          transition(QUIZ, KUSA); // ← main.js 側で定義された遷移処理
+        }, 6000); // ← 演出の長さは調整可能
       } else if (this.postChoiceDialog === kusaNpcdialog_no) {
         this.state = 0; // NO選択 → 状態リセット
         Hero.is_talking = false;
