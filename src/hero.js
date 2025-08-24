@@ -12,8 +12,8 @@ class hero extends human {
     this.is_talking = false;
     this.currentImage = playerImages.down; // 初期画像
     this.coin = 0
-    this.hasFor = true
-    this.hasIf = true;
+    this.hasFor = false
+    this.hasIf = false;
     this.hasWhile = false;
     this.hasSwitch = false;
     this.hasBreak = false;
@@ -75,6 +75,12 @@ class hero extends human {
       //   console.log('橋描画')
       //   Bridge.draw()
       // }
+      if(this.img_num == 2) {
+        
+        walk_sound.currentTime = 0;
+        walk_sound.volume = 0.1;
+        walk_sound.play();
+      }
     c.drawImage(
       this.currentImage,
       96 * this.img_num,

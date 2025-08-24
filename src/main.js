@@ -13,7 +13,7 @@ let userAnswers
 let result    
 let answerChecked = false;
 
-let gameState = PLAYING;
+let gameState = INTRO;
 let seni = false
 let END = false
 
@@ -57,20 +57,20 @@ const kusa_map = splitMapData(kusa_loc, MAP_WIDTH);
 
 //衝突タイルマップを衝突ピクセルマップにする
 const boundaries = []
-// collision_map.forEach((row, i) => {
-//     row.forEach((symbol, j) => {
-//         if(symbol  === 472)
-//         boundaries.push(
-//             new col_default({
-//                 //衝突マップのずれを調整
-//                 location: {
-//                     x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
-//                     y: i * TILE_SIZE + offset.y 
-//                 }
-//             })
-//         )
-//     })    
-// })
+collision_map.forEach((row, i) => {
+    row.forEach((symbol, j) => {
+        if(symbol  === 472)
+        boundaries.push(
+            new col_default({
+                //衝突マップのずれを調整
+                location: {
+                    x: j * TILE_SIZE + offset.x , //タイルのサイズを基準にする座標
+                    y: i * TILE_SIZE + offset.y 
+                }
+            })
+        )
+    })    
+})
 
 const shops = []
 shop_map.forEach((row, i) => {
@@ -178,18 +178,15 @@ function go_shop() {
   for (let i = 0; i < shops.length; i++) {
     const shopBlock = shops[i];
     if (nearShopEntrance(shopBlock)) {
-      gameState = RAINING
-      bgm.pause()
       initRain()
+      gameState = RAINING
+      
       entershop_bgm.currentTime = 0
       entershop_bgm.volume = 0.5
       entershop_bgm.play()
       setTimeout(() => {
         isInShop = true;
-        if (!bgm.paused) {
-          bgm.pause();
-          bgm.currentTime = 0;
-        }
+        
         shop_bgm.volume = 0.4
         shop_bgm.loop = true;
         shop_bgm.currentTime = 0
@@ -214,31 +211,47 @@ function triggerQuiz(npc) {
   quizList.length = 0; // ← ここでリセット！
   switch(npc) {
     case KANBAN:
+      quiz_bgm.currentTime = 0;
+      quiz_bgm.volume = 0.6;
+      quiz_bgm.play();
       whoseQuiz = KANBAN;
       quizList.push(kanbanQuiz);
       break;
     case KUSA:
       whoseQuiz = KUSA;
+      kusaQuiz_bgm.currentTime = 0;
+      kusaQuiz_bgm.volume = 0.3;
+      kusaQuiz_bgm.play();
       quizList.push(kusaQuiz);
       break;
     case HASI:
       whoseQuiz = HASI;
+      quiz_bgm.currentTime = 0;
+      quiz_bgm.volume = 0.3;
+      quiz_bgm.play();
       quizList.push(hasiQuiz_1);
       quizList.push(hasiQuiz_2);
       break;
     case SYUBOUSYA:
       whoseQuiz = SYUBOUSYA;
+      boss_bgm.currentTime = 0;
+      boss_bgm.volume = 0.3;
+      boss_bgm.play();
       quizList.push(bossQuiz);
       break;
     case TREASURE:
       whoseQuiz = TREASURE;
+      quiz_bgm.currentTime = 0;
+      quiz_bgm.volume = 0.6;
+      quiz_bgm.play();
       quizList.push(treasureQuiz);
       break;
   }
-    quiz_bgm.currentTime = 0;
-    quiz_bgm.volume = 0.6;
-    quiz_bgm.play();
+    
     quiz_bgm.loop = true;
+    boss_bgm.loop = true;
+    kusaQuiz_bgm.loop = true;
+    
     quizIndex = 0;
     currentQuiz = quizList[quizIndex];
     userAnswers = Array(currentQuiz.blanks.length).fill(null);
@@ -303,7 +316,7 @@ function updatePlaying(deltaTime) {
     keys.tab.pressed = false;
     Hero.inv.inventoryVisible = !Hero.inv.inventoryVisible;
   }
-
+  if(isInShop && !bgm.paused) bgm.pause()
   if (keys.e.pressed && !keys.e.wasPressed) {
     keys.e.wasPressed = true;
 
@@ -485,7 +498,7 @@ function drawRain() {
   Hero.inv.inventoryVisible = false;
   Hero.inv.display();
   c.font = "32px 'Press Start 2P', monospace";
-  const harmoniousColors = END ?[
+  let harmoniousColors = END ?[
   "#0B0B0B", // 漆黒：完全な闇、背景に最適
   "#0B0B0B", // 漆黒：完全な闇、背景に最適
   "#0B0B0B", // 漆黒：完全な闇、背景に最適
@@ -497,6 +510,35 @@ function drawRain() {
 ]:[
     "#2E7D32", "#66BB6A", "#A5D6A7", "#388E3C"
   ];
+if(!entershop_bgm.paused) harmoniousColors = [
+  "#8B5A2B", // ウォールナットブラウン：深みのある木材色
+  "#A0522D", // セピア：温かみのある樹皮色
+  "#D2B48C", // タン：乾いた木肌のような色
+  "#556B2F", // ダークオリーブグリーン：葉の陰影
+  "#6B4226", // マホガニー：赤みのある高級木材
+  "#C3B091", // バーチベージュ：白木系の柔らかい色
+  "#3E2F1C"  // 焦げ茶：根や幹の重厚感
+]
+
+ 
+if(whoseQuiz == SYUBOUSYA) harmoniousColors = [
+  "#050505", // 漆黒：完全な闇、背景に最適
+  "#1A0000", // 暗赤：血の気が引いたような赤
+  "#2B0F0F", // 焦げ赤：焼け焦げたような深い赤
+  "#3A1F1F", // 錆赤：金属的で冷たい印象
+  "#1C1C1C", // 鉄黒：無機質な黒
+  "#2F2F2F", // 墨黒：柔らかいが沈んだ黒
+  "#4B1E1E"  // 暗紅：重厚で静かな赤
+]
+if(whoseQuiz == TREASURE) harmoniousColors = [
+  "#FFD700", // ゴールド：王道の金色
+  "#FFF8DC", // コーンシルク：柔らかい金の光
+  "#FFCC00", // 黄金：やや濃いめの金
+  "#E6BE8A", // シャンパンゴールド：上品な輝き
+  "#DAA520", // ダークゴールド：重厚感あり
+  "#F5DEB3", // ウィート：淡い金色の背景に
+  "#FFEF9F"  // ライトゴールド：光のハイライトに最適
+]
 
   for (let drop of drops) {
     const color = harmoniousColors[Math.floor(Math.random() * harmoniousColors.length)];
@@ -850,7 +892,7 @@ function drawQuiz() {
     // 最終問題 or 不正解 → 終了
       setTimeout(() => {
           initRain()
-          quiz_bgm.pause()
+          stopQuizbgm();
           endquiz_bgm.currentTime = 0
           endquiz_bgm.volume = 0.5
           endquiz_bgm.play()
@@ -904,6 +946,7 @@ if(gameState === PLAYING){
 function startGame() {
   if (fgImage.complete) {
     initRain()
+    Hero.inv.addItem({ name: "PRINTF", count: 1, description: "現在の状態や変数の値を画面に表示するための基本的なツール.特別な効果はないが,状況把握には欠かせない. " });
     requestAnimationFrame(animate);
   } else {
     fgImage.onload = () => {
@@ -1021,7 +1064,7 @@ canvas.addEventListener('click', e => {
   } else {
     setTimeout(() => {
       initRain();
-      quiz_bgm.pause();
+      stopQuizbgm();
       endquiz_bgm.currentTime = 0;
       endquiz_bgm.volume = 0.5;
       endquiz_bgm.play();

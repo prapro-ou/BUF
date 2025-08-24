@@ -190,13 +190,22 @@ update() {
     if (keys.a.pressed && !keys.a.wasPressed) {
       this.choice = "yes";
       keys.a.wasPressed = true;
+      choose.currentTime = 0;
+      choose.volume = 0.2
+      choose.play();
     }
     if (keys.d.pressed && !keys.d.wasPressed) {
       this.choice = "no";
       keys.d.wasPressed = true;
+      choose.currentTime = 0;
+      choose.volume = 0.2
+      choose.play();
     }
 
     if (keys.space.pressed && !keys.space.wasPressed) {
+      decide.currentTime = 0;
+      decide.volume = 0.3
+      decide.play();
       keys.space.wasPressed = true;
       this.postChoiceDialog = this.choice === "yes" ? kusaNpcdialog_yes : kusaNpcdialog_no;
       this.state = 4;

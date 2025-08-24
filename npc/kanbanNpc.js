@@ -177,14 +177,23 @@ update() {
   if (this.state === 2) {
     if (keys.a.pressed && !keys.a.wasPressed) {
       this.choice = "yes";
+      choose.currentTime = 0;
+      choose.volume = 0.2
+      choose.play();
       keys.a.wasPressed = true;
     }
     if (keys.d.pressed && !keys.d.wasPressed) {
       this.choice = "no";
+      choose.currentTime = 0;
+      choose.volume = 0.2
+      choose.play();
       keys.d.wasPressed = true;
     }
 
     if (keys.space.pressed && !keys.space.wasPressed) {
+      decide.currentTime = 0;
+      decide.volume = 0.3
+      decide.play();
       keys.space.wasPressed = true;
       this.postChoiceDialog = this.choice === "yes" ? kanbanNpcdialog_yes : kanbanNpcdialog_no;
       this.state = 4;

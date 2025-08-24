@@ -72,6 +72,7 @@ class treasureBox extends npc01 {
       } else if (this.state === 4) {
         // ✅ 選択後の分岐処理
       if (this.postChoiceDialog === treasureBoxdialog_yes) {
+        whoseQuiz = TREASURE
         gameState = RAINING
         this.state = 5;
         bgm.pause()
@@ -95,8 +96,13 @@ class treasureBox extends npc01 {
           Hero.coin = -1;
           this.state = 7;
           bgm.pause()
+          
           initRain()
           END = true
+          end_bgm.loop = true
+          end_bgm.currentTime = 0;
+          end_bgm.volume = 0.6;
+          end_bgm.play();
           gameState = RAINING
         }
       } else if (this.state === 8) {
@@ -137,13 +143,22 @@ class treasureBox extends npc01 {
       if (keys.a.pressed && !keys.a.wasPressed) {
         this.choice = "yes";
         keys.a.wasPressed = true;
+        choose.currentTime = 0;
+        choose.volume = 0.2
+        choose.play();
       }
       if (keys.d.pressed && !keys.d.wasPressed) {
         this.choice = "no";
         keys.d.wasPressed = true;
+        choose.currentTime = 0;
+        choose.volume = 0.2
+        choose.play();
       }
 
       if (keys.space.pressed && !keys.space.wasPressed) {
+        decide.currentTime = 0;
+        decide.volume = 0.3
+        decide.play();
         keys.space.wasPressed = true;
         this.postChoiceDialog = this.choice === "yes" ? treasureBoxdialog_yes : treasureBoxdialog_no;
         this.state = 4;

@@ -68,6 +68,7 @@ class BOSS extends npc01 {
       } else if (this.state === 4) {
         // ✅ 選択後の分岐処理
       if (this.postChoiceDialog === BOSSdialog_yes) {
+        whoseQuiz = SYUBOUSYA
         gameState = RAINING
         this.state = 5;
         bgm.pause()
@@ -76,7 +77,7 @@ class BOSS extends npc01 {
         transition_bgm.volume = 0.5
       if(transition_bgm.paused) transition_bgm.play()
         setTimeout(() => {
-          whoseQuiz = SYUBOUSYA
+          
           transition(QUIZ, SYUBOUSYA); // ← main.js 側で定義された遷移処理
         }, 6000); // ← 演出の長さは調整可能
       } else if (this.postChoiceDialog === BOSSdialog_no) {
@@ -157,13 +158,22 @@ class BOSS extends npc01 {
       if (keys.a.pressed && !keys.a.wasPressed) {
         this.choice = "yes";
         keys.a.wasPressed = true;
+        choose.currentTime = 0;
+        choose.volume = 0.2
+        choose.play();
       }
       if (keys.d.pressed && !keys.d.wasPressed) {
         this.choice = "no";
         keys.d.wasPressed = true;
+        choose.currentTime = 0;
+        choose.volume = 0.2
+        choose.play();
       }
 
       if (keys.space.pressed && !keys.space.wasPressed) {
+        decide.currentTime = 0;
+        decide.volume = 0.3
+        decide.play();
         keys.space.wasPressed = true;
         this.postChoiceDialog = this.choice === "yes" ? BOSSdialog_yes : BOSSdialog_no;
         this.state = 4;

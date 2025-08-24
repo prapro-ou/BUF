@@ -319,3 +319,9 @@ function initRain() {
     });
   }
 }
+
+function stopQuizbgm() {
+  quiz_bgm.pause()
+  kusaQuiz_bgm.pause()
+  boss_bgm.pause()
+}
