@@ -104,7 +104,6 @@ draw00(){
     );
 }
 draw01(){
-    console.log(this.state)
     c.drawImage(
         this.img, 
         32, 0, NPC_W, NPC_H,
