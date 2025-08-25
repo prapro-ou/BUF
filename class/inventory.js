@@ -8,7 +8,7 @@ class inventory {
 
     // アイテムを追加するメソッド
     addItem(item) {
-      if(item.name != "PRINTF"){
+      if(item.name != "PRINTF"|| item.name != "FOR" || item.name != "IF" || item.name != "SWITCH" || item.name != "WHILE" || item.name != "BREAK"){
       buy_item.currentTime = 0; // 最初から再生
       buy_item.volume = 0.5
       buy_item.play();

@@ -5,7 +5,7 @@ const kanbanNpcdialog_1 = ["こんにちは．",
                         "看板の文字が消されて読めなくなっていて人々が道に迷っています．",
                         "文字を復元してみんなが読めるようにしてくれますか？"]
 const kanbanNpcdialog_yes = [
-  "5分以内に復元しないと文字がまた消されちゃうから注意して！"
+  "1分以内に復元しないと文字がまた消されちゃうから注意して！"
 ];
 
 const kanbanNpcdialog_no = [
@@ -43,7 +43,7 @@ const kusaNpcdialog_1 = [
 ]
 
 const kusaNpcdialog_yes = [
-  "5分以内に作らないと機械が壊れてしまうから注意して！"
+  "1分以内に作らないと機械が壊れてしまうから注意して！"
 ];
 
 const kusaNpcdialog_no = [
@@ -90,7 +90,7 @@ const hasiNpcdialog_1 = [
 ]
 
 const hasiNpcdialog_yes = [
-  "5分以内に修復しないとまた壊れてしまうから注意して！"
+  "1分以内に修復しないとまた壊れてしまうから注意して！"
 ];
 
 const hasiNpcdialog_no = [

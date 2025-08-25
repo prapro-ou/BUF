@@ -93,6 +93,7 @@ class BOSS extends npc01 {
           Hero.coin += 5000;
           collision_map.length = 0;
           boundaries.length = 0;
+        Hero.inv.addItem({ name: "While", count: 1, description: "条件が満たされる限り,何度でも繰り返す力を持つ魔道具. " });
           for(let i = 0;  i < collision5.length; i+=MAP_WIDTH){
           collision_map.push(collision5.slice(i, MAP_WIDTH+i))
           }
