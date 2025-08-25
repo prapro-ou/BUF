@@ -22,7 +22,7 @@ class kanbanNpc extends npc01 {
     this.postChoiceDialog = null; // yes/no に応じた会話配列
     this.postChoiceIndex = 0;
     this.textProgress = 0;
-    this.textSpeed = 0.2;
+    this.textSpeed = 0.5;
     }
     can_talk(){
         return this.is_nearest

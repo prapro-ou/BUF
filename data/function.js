@@ -278,7 +278,7 @@ function helpUI() {
     "操作方法:",
     "WASDキーで移動，選択肢移動",
     "TABキーで持ち物一覧表示",
-    "NPCに近づいてEキーで会話",
+    "村人に近づいてEキーで会話",
     "spaceキーで会話を進める，決定",
     "道具屋入口でEキーで入店",
     "i: これを非表示"
@@ -314,7 +314,7 @@ function initRain() {
     drops.push({
       x: i * columnWidth,
       y: Math.random() * -canvas.height,
-      speed: 2 + Math.random() * 3,
+      speed: 5 + Math.random() * 3,
       char: Math.random() < 0.5 ? '0' : '1'
     });
   }

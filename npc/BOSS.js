@@ -17,7 +17,7 @@ class BOSS extends npc01 {
     this.postChoiceDialog = null;
     this.postChoiceIndex = 0;
     this.textProgress = 0;
-    this.textSpeed = 0.25;
+    this.textSpeed = 0.5;
   }
 
   can_talk() {
