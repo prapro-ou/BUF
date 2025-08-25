@@ -17,6 +17,7 @@ class hero extends human {
     this.hasWhile = false;
     this.hasSwitch = false;
     this.hasBreak = false;
+    this.direction_row = 0; // 向きの行番号（0:下, 1:右, 2:左, 3:上）
   }
     update_state(){
         if(Background.velocity.x !== 0 || Background.velocity.y !== 0){
@@ -30,23 +31,24 @@ class hero extends human {
                 this.is_talking = !this.is_talking
               }
     }
-    update_image() {
-    if (this.is_talking || this.is_stopping) {
-      this.img_num = 0;
-      this.currentImage = playerImages.down;
-    } else { 
-      this.img_num = (this.frame >> 4) % 2 + 1;
-      if (Background.velocity.x < 0) {
-        this.currentImage = playerImages.right;
-      } else if (Background.velocity.x > 0) {
-        this.currentImage = playerImages.left;
-      } else if (Background.velocity.y > 0) {
-        this.currentImage = playerImages.up;
-      } else if (Background.velocity.y < 0) {
-        this.currentImage = playerImages.down;
-      }
+update_image() {
+  if (this.is_talking || this.is_stopping) {
+    this.img_num = 0;
+    this.direction_row = 0; // 下向き
+  } else {
+    this.img_num = (this.frame >> 4) % 2 + 1; // 0〜2のアニメーション番号
+    if (Background.velocity.x < 0) {
+      this.direction_row = 1; // 右向き（2行目）
+    } else if (Background.velocity.x > 0) {
+      this.direction_row = 2; // 左向き（3行目）
+    } else if (Background.velocity.y > 0) {
+      this.direction_row = 3; // 上向き（4行目）
+    } else if (Background.velocity.y < 0) {
+      this.direction_row = 0; // 下向き（1行目）
     }
   }
+}
+
     update() {
   this.frame++;
   if (this.frame > 1000000) this.frame = 0;
@@ -65,32 +67,24 @@ class hero extends human {
   this.inv.updateInventoryUI();
   this.inv.display();
 }
-    draw(){
-        // if(this.is_talking){
-        //     this.img_num = 0
-        //     this.img.src = playerImg_down.src
-        // }
-      // console.log(is_bridge_fixed)
-      // if(is_bridge_fixed){
-      //   console.log('橋描画')
-      //   Bridge.draw()
-      // }
-      if(this.img_num == 2) {
-        
-        walk_sound.currentTime = 0;
-        walk_sound.volume = 0.1;
-        walk_sound.play();
-      }
-    c.drawImage(
-      this.currentImage,
-      96 * this.img_num,
-      0,
-      96,
-      96,
-      canvas.width >> 1,
-      canvas.height >> 1,
-      HERO_W,
-      HERO_H
-    );
-    }
+    draw() {
+  if (this.img_num === 2) {
+    walk_sound.currentTime = 0;
+    walk_sound.volume = 0.1;
+    walk_sound.play();
+  }
+
+  c.drawImage(
+    heroImage, // ← 統合された画像
+    96 * this.img_num, // x座標（列）
+    96 * this.direction_row, // y座標（行）
+    96,
+    96,
+    canvas.width >> 1,
+    canvas.height >> 1,
+    HERO_W,
+    HERO_H
+  );
+}
+
 }
