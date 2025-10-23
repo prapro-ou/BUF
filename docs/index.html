@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>My RPG Game</title>
+  <link rel="stylesheet" href="inventory.css">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@400&display=swap" rel="stylesheet">
+  <link
+  href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap"
+  rel="stylesheet"
+>
+
+  <style>
+    body {
+  margin: 0;
+  background-color: black;
+  font-family: 'Press Start 2P', monospace;
+  color: white;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+    canvas {
+      display: block;
+    }
+
+    /* ✅ ゲーム開始画面 */
+    #start-screen {
+  position: absolute;
+  top: 0; left: 0;
+  width: 1024px;
+  height: 576px;
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  margin: auto;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border: 4px solid #00ffcc;
+}
+
+
+    #start-screen h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #00ffcc;
+      text-shadow: 2px 2px #004444;
+    }
+
+    #press-start {
+      font-size: 16px;
+      color: #ffffff;
+      animation: blink 1s step-start infinite;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    /* ✅ インベントリUI（初期は非表示） */
+    #inventory {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: rgba(0, 0, 0, 0.7);
+      border: 2px solid #00ffcc;
+      padding: 10px;
+      display: none;
+      z-index: 500;
+    }
+
+    #inventory h2 {
+      margin: 0 0 10px;
+      font-size: 14px;
+    }
+
+    #inventory-list li {
+      font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="game-container">
+    <canvas></canvas>
+
+    <!-- ✅ インベントリUIを canvas に対して相対配置 -->
+    <div id="inventory">
+      <h2>🎒 持ちもの</h2>
+      <ul id="inventory-list"></ul>
+    </div>
+  </div>
+
+  <!-- ✅ ゲーム開始画面 -->
+  <div id="start-screen">
+    <h1>SYNTAX QUEST</h1>
+    <p id="press-start">Press Space to Start</p>
+  </div>
+
+
+  <!-- ✅ JavaScriptファイルの読み込み -->
+  <script src="sound.js"></script>
+  <script src="human.js"></script>
+  <script src="ground.js"></script>
+  <script src="boundary.js"></script>
+  <script src="inventory.js"></script>
+  <script src="npc01.js"></script>
+  <script src="dialog.js"></script>
+  <script src="img.js"></script>
+  <script src="collision.js"></script>
+  <script src="shop.js"></script>
+  <script src="npc.js"></script>
+  <script src="const.js"></script>
+  <script src="function.js"></script>
+  <script src="kusa.js"></script>
+  <script src="kanbanNpc.js"></script>
+  <script src="kusaNpc.js"></script>
+  <script src="kusaBaba.js"></script>  
+  <script src="BOSS.js"></script>  
+  <script src="hasiNpc.js"></script>
+  <script src="treasureBox.js"></script>
+  <script src="kusa_default.js"></script>
+  <script src="bg_default.js"></script>
+  <script src="fg_default.js"></script>
+  <script src="col_default.js"></script>
+  <script src="hero.js"></script>
+  <script src="quiz.js"></script>
+  <script src="main.js"></script>
+
+  <!-- ✅ ゲーム開始処理 -->
+  <script>
+    let gameStarted = false;
+
+  document.addEventListener('keydown', (e) => {
+    if ((e.key === 'Enter' || e.key === ' ') && !gameStarted) {
+      gameStarted = true; // ✅ これで二度と再起動しない
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('inventory').style.display = 'block';
+      startGame();
+    }
+  });
+
+  </script>
+</body>
+</html>
