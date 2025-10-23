@@ -33,29 +33,29 @@ class Quizclass{
 
 
 const bgImageKanban    = new Image();
-bgImageKanban.src      = '../img/quiz_bg/scenery2_kanban.png';      // 1問目
+bgImageKanban.src      = './img/quiz_bg/scenery2_kanban.png';      // 1問目
 
 const bgImageKusa      = new Image();
-bgImageKusa.src        = '../img/quiz_bg/scenery1_kusa.png';        // 2問目
+bgImageKusa.src        = './img/quiz_bg/scenery1_kusa.png';        // 2問目
 
 const bgImageHasi      = new Image();
-bgImageHasi.src        = '../img/quiz_bg/scenery3_hasi.png';        // 3,4問目
+bgImageHasi.src        = './img/quiz_bg/scenery3_hasi.png';        // 3,4問目
 
 const bgImageKuromaku  = new Image();
-bgImageKuromaku.src    = '..//img/quiz_bg/scenery4_kuromaku.png';    // 5問目
+bgImageKuromaku.src    = './img/quiz_bg/scenery4_kuromaku.png';    // 5問目
 
 const bgImageTakarabako= new Image();
-bgImageTakarabako.src  = '../img/quiz_bg/scenery5_takarabako.png';  // 6問目
+bgImageTakarabako.src  = './img/quiz_bg/scenery5_takarabako.png';  // 6問目
 
 // const bgImage = new Image();
 // bgImage.src = '../gazo/quiz_wood.png'; // デフォルト
 
-const seCorrect   = new Audio('../sound/クイズ正解1.mp3');
-const seWrong     = new Audio('../sound/クイズ不正解1.mp3');
-const seTimeout   = new Audio('../sound/試合終了のゴング.mp3');
-const seClick     = new Audio('../sound/クリック.mp3');      // ←追加
-const seKeyboard2 = new Audio('../sound/キーボード2.mp3');   // ←追加
-const seGauge     = new Audio('../sound/ゲージ回復1.mp3');
+const seCorrect   = new Audio('./sound/クイズ正解1.mp3');
+const seWrong     = new Audio('./sound/クイズ不正解1.mp3');
+const seTimeout   = new Audio('./sound/試合終了のゴング.mp3');
+const seClick     = new Audio('./sound/クリック.mp3');      // ←追加
+const seKeyboard2 = new Audio('./sound/キーボード2.mp3');   // ←追加
+const seGauge     = new Audio('./sound/ゲージ回復1.mp3');
 
 let codeScrollY = 0;
 //
